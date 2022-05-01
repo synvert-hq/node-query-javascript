@@ -4,7 +4,8 @@
   "description": "write typescript code to change typescript code",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test_watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -20,8 +21,11 @@
     "url": "https://github.com/xinminlabs/synvert-core-typescript/issues"
   },
   "homepage": "https://github.com/xinminlabs/synvert-core-typescript#readme",
-  "devDependencies": {
-    "jest": "^28.0.3",
+  "dependencies": {
     "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^28.0.3"
   }
 }
