@@ -37,7 +37,7 @@ namespace Compiler {
         result.push(`.${this.nodeType}`);
       }
       if (this.attributeList) {
-        result.push(this.attributeList);
+        result.push(this.attributeList.toString());
       }
       return result.join('');
     }
@@ -58,6 +58,9 @@ namespace Compiler {
     }
 
     toString(): string {
+      if (this.rest) {
+        return `[${this.attribute}]${this.rest.toString()}`
+      }
       return `[${this.attribute}]`;
     }
   }

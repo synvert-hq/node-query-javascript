@@ -16,5 +16,10 @@ describe('Parser', () => {
       const source = '.ExpressionStatement[directive="use strict"]';
       assertParser(source);
     });
+
+    it("parses two selectors", () => {
+      const source = '.MemberExpression[object=module][property=exports]';
+      assertParser(source);
+    });
   });
 });
