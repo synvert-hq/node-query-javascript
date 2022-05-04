@@ -8,7 +8,11 @@ IDENTIFIER_VALUE ([\.\w]+)
 %%
 
 \s+       /* skip whitespace */
-"."[a-zA-Z]+       return 'NODE_TYPE';
+"."[a-zA-Z]+
+        %{
+                yytext = yytext.substring(1, yytext.length);
+                return 'NODE_TYPE';
+        %}
 "["
         %{
                 this.begin('key');
