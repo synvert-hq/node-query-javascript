@@ -17,7 +17,7 @@ describe('Parser', () => {
       assertParser(source);
     });
 
-    it("parses two selectors", () => {
+    it("parses multiple attributes", () => {
       const source = '.MemberExpression[object=module][property=exports]';
       assertParser(source);
     });
