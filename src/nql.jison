@@ -5,7 +5,8 @@
 %%
 
 expression
-  : selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
+  : CHILD expression { $$ = new Compiler.Expression({ rest: $2, relationship: 'child' }); yy.parser.yy.result = $$ }
+  | selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
   | selector { $$ = new Compiler.Expression({ selector: $1 }); yy.parser.yy.result = $$ }
   ;
 

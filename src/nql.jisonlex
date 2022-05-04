@@ -7,12 +7,13 @@ IDENTIFIER_VALUE ([\.\w]+)
 
 %%
 
-\s+       /* skip whitespace */
+\s+        /* skip whitespace */
 "."[a-zA-Z]+
         %{
                 yytext = yytext.substring(1, yytext.length);
                 return 'NODE_TYPE';
         %}
+">"        return 'CHILD';
 "["
         %{
                 this.begin('key');

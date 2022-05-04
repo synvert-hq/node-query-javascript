@@ -1,27 +1,35 @@
 namespace Compiler {
   interface ExpressionParameters {
-    selector: Selector;
+    selector: Selector | null;
     rest: Expression | null;
+    relationship: string | null;
   }
   export class Expression {
-    private selector: Selector;
+    private selector: Selector | null;
     private rest: Expression | null;
+    private relationship: string | null;
 
-    constructor({ selector, rest }: ExpressionParameters) {
+    constructor({ selector, rest, relationship }: ExpressionParameters) {
       this.selector = selector;
       this.rest = rest;
+      this.relationship = relationship;
     }
 
     toString(): string {
-      if (!this.rest) {
-        return this.selector.toString();
-      }
-
       const result = [];
       if (this.selector) {
         result.push(this.selector.toString());
       }
-      result.push(this.rest.toString());
+      if (this.rest) {
+        switch (this.relationship) {
+          case 'child':
+            result.push(`> ${this.rest.toString()}`);
+            break;
+          default:
+            result.push(this.rest.toString());
+            break;
+        }
+      }
       return result.join(' ');
     }
   }

@@ -28,6 +28,11 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses child selector", () => {
+      const source = ".ClassDeclaration > .MethodDefinition[key=constructor]";
+      assertParser(source);
+    });
+
     it("parses multiple attributes", () => {
       const source = '.MemberExpression[object=module][property=exports]';
       assertParser(source);
