@@ -5,8 +5,8 @@
 %%
 
 expression
-  : selector expression { return new Compiler.Expression({ selector: $1, rest: $2 }) }
-  | selector { return new Compiler.Expression({ selector: $1 }) }
+  : selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
+  | selector { $$ = new Compiler.Expression({ selector: $1 }); yy.parser.yy.result = $$ }
   ;
 
 selector

@@ -1,7 +1,8 @@
-const { parse } = require('../src/parser');
+const { parser } = require('../src/parser');
 
 const assertParser = (source: string): void => {
-  const expression = parse(source);
+  parser.parse(source);
+  const expression = parser.yy.result;
   expect(expression.toString()).toEqual(source);
 }
 
@@ -14,6 +15,16 @@ describe('Parser', () => {
 
     it("parses one selector", () => {
       const source = '.ExpressionStatement[directive="use strict"]';
+      assertParser(source);
+    });
+
+    it("parses two selectors", () => {
+      const source = ".ClassDeclaration .MethodDefinition[key=constructor]";
+      assertParser(source);
+    });
+
+    it("parses three selectors", () => {
+      const source = ".ClassDeclaration .MethodDefinition[key=constructor] .AssignmentExpression";
       assertParser(source);
     });
 

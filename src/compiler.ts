@@ -13,7 +13,16 @@ namespace Compiler {
     }
 
     toString(): string {
-      return this.selector.toString();
+      if (!this.rest) {
+        return this.selector.toString();
+      }
+
+      const result = [];
+      if (this.selector) {
+        result.push(this.selector.toString());
+      }
+      result.push(this.rest.toString());
+      return result.join(' ');
     }
   }
 
