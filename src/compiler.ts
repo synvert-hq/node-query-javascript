@@ -95,6 +95,18 @@ namespace Compiler {
       return `"${this.value}"`;
     }
   }
+
+  export class Identifier {
+    private value: string;
+
+    constructor({ value }: { value: string }) {
+      this.value = value;
+    }
+
+    toString(): string {
+      return this.value;
+    }
+  }
 }
 
 module.exports = Compiler;

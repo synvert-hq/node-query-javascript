@@ -31,6 +31,7 @@ value
   | BOOLEAN
   | NUMBER
   | STRING { $$ = new Compiler.String({ value: $1 }) }
+  | IDENTIFIER_VALUE { $$ = new Compiler.Identifier({ value: $1 }) }
   ;
 
 %%
