@@ -4,6 +4,7 @@
   "description": "write typescript code to change typescript code",
   "main": "index.js",
   "scripts": {
+    "build": "tsc --project tsconfig.build.json",
     "generate": "jison -o src/parser.js src/nql.jison src/nql.jisonlex",
     "test": "jest",
     "test_watch": "jest --watch"
