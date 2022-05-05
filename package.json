@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "generate": "jison -o src/parser.js src/nql.jison src/nql.jisonlex",
+    "watch:generate": "nodemon --watch 'src' --ext 'jison,jisonlex' --exec 'npm run generate'",
     "test": "jest",
     "test_watch": "jest --watch"
   },
@@ -30,6 +31,7 @@
     "@types/jest": "^27.5.0",
     "jest": "^28.0.3",
     "jison": "^0.4.18",
+    "nodemon": "^2.0.16",
     "ts-jest": "^28.0.1"
   }
 }
