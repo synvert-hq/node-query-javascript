@@ -21,18 +21,18 @@ attribute_list
   ;
 
 attribute
-  : KEY EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: $2 }) }
-  | KEY NOT_EQUAL value
+  : KEY EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '==' }) }
+  | KEY NOT_EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '!=' }) }
   ;
 
 value
   : selector
-  | NULL
-  | UNDEFINED
-  | BOOLEAN
-  | NUMBER
-  | STRING { $$ = new Compiler.String({ value: $1 }) }
-  | IDENTIFIER_VALUE { $$ = new Compiler.Identifier({ value: $1 }) }
+  | NULL { $$ = new Compiler.Value($1) }
+  | UNDEFINED { $$ = new Compiler.Value($1) }
+  | BOOLEAN { $$ = new Compiler.Value($1) }
+  | NUMBER { $$ = new Compiler.Value($1) }
+  | STRING { $$ = new Compiler.Value($1) }
+  | IDENTIFIER_VALUE { $$ = new Compiler.Value($1) }
   ;
 
 %%

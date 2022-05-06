@@ -1,9 +1,12 @@
-namespace Compiler {
+import ts = require('typescript');
+
+export namespace Compiler {
   interface ExpressionParameters {
     selector: Selector | null;
     rest: Expression | null;
     relationship: string | null;
   }
+
   export class Expression {
     private selector: Selector | null;
     private rest: Expression | null;
@@ -13,6 +16,22 @@ namespace Compiler {
       this.selector = selector;
       this.rest = rest;
       this.relationship = relationship;
+    }
+
+    match(node: ts.Node) {
+      return this.queryNodes(node).length !== 0;
+    }
+
+    queryNodes(node: ts.Node, descendantMatch: boolean = true): ts.Node[] {
+      if (this.relationship) {
+        return this.findNodesByRelationship(node);
+      }
+
+      const matchingNodes = this.findNodesWithoutRelationship(node, descendantMatch);
+      if (!this.rest) {
+        return matchingNodes;
+      }
+      return matchingNodes.flatMap(matchingNode => this.findNodesByRest(matchingNode, descendantMatch));
     }
 
     toString(): string {
@@ -32,6 +51,58 @@ namespace Compiler {
       }
       return result.join(' ');
     }
+
+    private findNodesByRelationship(node: ts.Node): ts.Node[] {
+      switch (this.relationship) {
+        case 'child':
+          let nodes: ts.Node[] = [];
+          node.forEachChild(childNode => {
+            nodes = nodes.concat(this.findNodesByRest(childNode))
+          });
+          return nodes;
+        default:
+          return [];
+      }
+    }
+
+    private findNodesByRest(node: ts.Node, descendantMatch: boolean = false): ts.Node[] {
+      if (!this.rest) {
+        return [];
+      }
+      return this.rest.queryNodes(node, descendantMatch)
+    }
+
+    private findNodesWithoutRelationship(node: ts.Node | ts.Node[], descendantMatch: boolean = true): ts.Node[] {
+      if (Array.isArray(node)) {
+        return node.flatMap((eachNode) => {
+          return this.findNodesWithoutRelationship(eachNode, descendantMatch)
+        });
+      }
+
+      if (!this.selector) {
+        return [node];
+      }
+
+      const nodes = [];
+      if (this.selector.match(node)) {
+        nodes.push(node);
+      }
+      if (descendantMatch) {
+        this.recusriveEachChild(node, (childNode) => {
+          if (this.selector && this.selector.match(childNode)) {
+            nodes.push(childNode);
+          }
+        });
+      }
+      return nodes;
+    }
+
+    private recusriveEachChild(node: ts.Node, cb: (childNode: ts.Node) => void): void {
+      node.forEachChild(childNode => {
+        cb(childNode);
+        this.recusriveEachChild(childNode, cb);
+      });
+    }
   }
 
   interface SelectorParameters {
@@ -46,6 +117,11 @@ namespace Compiler {
     constructor({ nodeType, attributeList }: SelectorParameters) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
+    }
+
+    match(node: ts.Node): boolean {
+      return this.nodeType == ts.SyntaxKind[node.kind] &&
+        (!this.attributeList || this.attributeList.match(node));
     }
 
     toString(): string {
@@ -74,6 +150,10 @@ namespace Compiler {
       this.rest = rest;
     }
 
+    match(node: ts.Node): boolean {
+      return this.attribute.match(node) && (!this.rest || this.rest.match(node));
+    }
+
     toString(): string {
       if (this.rest) {
         return `[${this.attribute}]${this.rest.toString()}`
@@ -84,13 +164,13 @@ namespace Compiler {
 
   interface AttributeParameters {
     key: string;
-    value: String
+    value: Value;
     operator: string;
   }
 
   export class Attribute {
     private key: string;
-    private value: String
+    private value: Value;
     private operator: string;
 
     constructor({ key, value, operator }: AttributeParameters) {
@@ -99,28 +179,48 @@ namespace Compiler {
       this.operator = operator;
     }
 
+    match(node: ts.Node): boolean {
+      return this.value.match(this.getTargetNode(node), this.operator);
+    }
+
     toString(): string {
       return `${this.key}=${this.value}`;
     }
-  }
 
-  export class String {
-    private value: string;
-
-    constructor({ value }: { value: string }) {
-      this.value = value;
-    }
-
-    toString(): string {
-      return `"${this.value}"`;
+    getTargetNode(node: ts.Node): ts.Node {
+      let result = node as any;
+      this.key.split('.').forEach(key => {
+        result = result[key]
+      })
+      return result;
     }
   }
 
-  export class Identifier {
-    private value: string;
+  export class Value {
+    private value: string
 
-    constructor({ value }: { value: string }) {
+    constructor(value: string) {
       this.value = value;
+    }
+
+    match(node: ts.Node, operator: string): boolean {
+      switch (operator) {
+        case '!=':
+          return this.actualValue(node) != this.expectedValue();
+        default:
+          return this.actualValue(node) == this.expectedValue();
+      }
+    }
+
+    actualValue(node: ts.Node | string): string {
+      if (typeof node === 'string') {
+        return `${node}`;
+      }
+      return node.getFullText().trim();
+    }
+
+    expectedValue(): string {
+      return this.value.toString();
     }
 
     toString(): string {

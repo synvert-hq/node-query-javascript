@@ -78,12 +78,10 @@ IDENTIFIER_VALUE ([\.\w]+)
         %}
 <value>({SINGLE_QUOTE_STRING})
         %{
-                yytext = yytext.substring(1, yytext.length - 1);
                 return 'STRING';
         %}
 <value>({DOUBLE_QUOTE_STRING})
         %{
-                yytext = yytext.substring(1, yytext.length - 1);
                 return 'STRING';
         %}
 <value>("]")

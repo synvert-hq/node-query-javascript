@@ -7,8 +7,8 @@
     "build": "tsc --project tsconfig.build.json",
     "generate": "jison -o src/parser.js src/nql.jison src/nql.jisonlex",
     "watch:generate": "nodemon --watch 'src' --ext 'jison,jisonlex' --exec 'npm run generate'",
-    "test": "jest",
-    "test_watch": "jest --watch"
+    "test": "jest --detectOpenHandles",
+    "test_watch": "jest --watch --detectOpenHandles"
   },
   "repository": {
     "type": "git",
