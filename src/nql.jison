@@ -24,6 +24,7 @@ attribute
   : KEY EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '==' }) }
   | KEY NOT_EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '!=' }) }
   | KEY IN OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: 'in' }) }
+  | KEY NOT_IN OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: 'not_in' }) }
   | KEY EQUAL OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: '==' }) }
   | KEY NOT_EQUAL OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: '!=' }) }
   ;

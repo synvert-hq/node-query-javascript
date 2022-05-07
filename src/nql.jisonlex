@@ -60,6 +60,16 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('value');
                 return 'IN';
         %}
+<key>("not in")
+        %{
+                this.begin('value');
+                return 'NOT_IN';
+        %}
+<key>("NOT IN")
+        %{
+                this.begin('value');
+                return 'NOT_IN';
+        %}
 <key>({IDENTIFIER})       return 'KEY';
 <value>(\s+)  /% skip whitespace */
 <value>("(")

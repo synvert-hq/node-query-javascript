@@ -185,6 +185,8 @@ export namespace Compiler {
 
     toString(): string {
       switch (this.operator) {
+        case 'not_in':
+          return `${this.key} NOT IN (${this.value})`;
         case 'in':
           return `${this.key} IN (${this.value})`;
         case '!=':
@@ -231,6 +233,8 @@ export namespace Compiler {
     match(node: ts.Node | ts.Node[], operator: string): boolean {
       const expected = this.expectedValue();
       switch (operator) {
+        case "not_in":
+          return !Array.isArray(node) && expected.every(expectedValue => expectedValue.match(node, "!="));
         case "in":
           return !Array.isArray(node) && expected.some(expectedValue => expectedValue.match(node, "=="));
         case "!=":

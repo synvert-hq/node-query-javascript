@@ -33,8 +33,13 @@ describe('Parser', () => {
       assertParser(source);
     });
 
-    it("parses array value", () => {
+    it("parses IN array value", () => {
       const source = ".MethodDefinition[key IN (foo bar)]"
+      assertParser(source);
+    });
+
+    it("parses NOT IN array value", () => {
+      const source = ".MethodDefinition[key NOT IN (foo bar)]"
       assertParser(source);
     });
   });
@@ -99,6 +104,11 @@ describe('Parser', () => {
 
     it("matches IN operator", () => {
       const expression = parseExpression('.ClassDeclaration[name IN (User Account UserAccount)]')
+      expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
+    });
+
+    it("matches NOT IN operator", () => {
+      const expression = parseExpression('.ClassDeclaration[name NOT IN (User Account)]')
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
