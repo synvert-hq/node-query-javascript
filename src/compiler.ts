@@ -164,13 +164,13 @@ export namespace Compiler {
 
   interface AttributeParameters {
     key: string;
-    value: Value;
+    value: Value | ArrayValue;
     operator: string;
   }
 
   export class Attribute {
     private key: string;
-    private value: Value;
+    private value: Value | ArrayValue;
     private operator: string;
 
     constructor({ key, value, operator }: AttributeParameters) {
@@ -184,7 +184,12 @@ export namespace Compiler {
     }
 
     toString(): string {
-      return `${this.key}=${this.value}`;
+      switch (this.operator) {
+        case '!=':
+          return `${this.key}!=${this.value}`;
+        default:
+          return `${this.key}=${this.value}`;
+      }
     }
 
     getTargetNode(node: ts.Node): ts.Node {
@@ -196,35 +201,196 @@ export namespace Compiler {
     }
   }
 
-  export class Value {
-    private value: string
+  abstract class Value {
+    abstract match(node: ts.Node, operator: string): boolean;
 
-    constructor(value: string) {
+    actualValue(node: ts.Node | string): string {
+      if (typeof node === 'string') {
+        return node;
+      }
+      return node.getFullText().trim();
+    }
+  }
+
+  interface ArrayValueParameters {
+    value: Value;
+    rest: ArrayValue;
+  }
+
+  export class ArrayValue {
+    private value: Value
+    private rest: ArrayValue
+
+    constructor({ value, rest }: ArrayValueParameters) {
       this.value = value;
+      this.rest = rest;
+    }
+
+    match(node: ts.Node | ts.Node[], operator: string): boolean {
+      const expected = this.expectedValue();
+      switch (operator) {
+        default:
+          return Array.isArray(node) && node.length == expected.length && this.compare(node, expected, operator);
+      }
+    }
+
+    expectedValue(): Value[] {
+      let expected: Value[] = [];
+      if (this.value) {
+        expected.push(this.value);
+      }
+      if (this.rest) {
+        expected = expected.concat(this.rest.expectedValue())
+      }
+      return expected;
+    }
+
+    compare(actual: ts.Node[], expected: Value[], operator: string) {
+      if (expected.length !== actual.length) {
+        return false;
+      }
+
+      for (let index = 0; index < actual.length; index++) {
+        if (!expected[index].match(actual[index], operator)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    toString(): string {
+      if (this.rest) {
+        return `${this.value} ${this.rest}`;
+      }
+      return this.value.toString();
+    }
+  }
+
+  export class Boolean extends Value {
+    constructor(private value: boolean) {
+      super();
     }
 
     match(node: ts.Node, operator: string): boolean {
       switch (operator) {
         case '!=':
-          return this.actualValue(node) != this.expectedValue();
+          return this.actualValue(node) !== this.expectedValue().toString();
         default:
-          return this.actualValue(node) == this.expectedValue();
+          return this.actualValue(node) === this.expectedValue().toString();
       }
     }
 
-    actualValue(node: ts.Node | string): string {
-      if (typeof node === 'string') {
-        return `${node}`;
+    expectedValue(): boolean {
+      return this.value;
+    }
+
+    toString(): string {
+      return this.value.toString();
+    }
+  }
+
+  export class Identifier extends Value {
+    constructor(private value: string) {
+      super();
+    }
+
+    match(node: ts.Node, operator: string): boolean {
+      switch (operator) {
+        case '!=':
+          return this.actualValue(node) !== this.expectedValue();
+        default:
+          return this.actualValue(node) === this.expectedValue();
       }
-      return node.getFullText().trim();
     }
 
     expectedValue(): string {
-      return this.value.toString();
+      return this.value;
     }
 
     toString(): string {
       return this.value;
+    }
+  }
+
+  export class Null extends Value {
+    contructor() {}
+
+    match(node: ts.Node, operator: string): boolean {
+      switch (operator) {
+        case '!=':
+          return this.actualValue(node) !== this.expectedValue();
+        default:
+          return this.actualValue(node) === this.expectedValue();
+      }
+    }
+
+    expectedValue(): string {
+      return 'null';
+    }
+  }
+
+  export class Number extends Value {
+    constructor(private value: number) {
+      super();
+    }
+
+    match(node: ts.Node, operator: string): boolean {
+      switch(operator) {
+        case '!=':
+          return this.actualValue(node) !== this.expectedValue().toString();
+        default:
+          return this.actualValue(node) === this.expectedValue().toString();
+      }
+    }
+
+    expectedValue(): number {
+      return this.value;
+    }
+  }
+
+  export class String extends Value {
+    constructor(private value: string) {
+      super();
+    }
+
+    match(node: ts.Node, operator: string): boolean {
+      switch(operator) {
+        case '!=':
+          return this.actualValue(node) !== this.expectedValue();
+        default:
+          return this.actualValue(node) === this.expectedValue();
+      }
+    }
+
+    actualValue(node: string | ts.Node): string {
+      const value = super.actualValue(node);
+      return value.substring(1, value.length - 1);
+    }
+
+    expectedValue(): string {
+      return this.value;
+    }
+
+    toString(): string {
+      return `"${this.value}"`;
+    }
+  }
+
+  export class Undefined extends Value {
+    contructor() {}
+
+    match(node: ts.Node, operator: string): boolean {
+      switch (operator) {
+        case '!=':
+          return this.actualValue(node) !== this.expectedValue();
+        default:
+          return this.actualValue(node) === this.expectedValue();
+      }
+    }
+
+    expectedValue(): string {
+      return 'undefined';
     }
   }
 }

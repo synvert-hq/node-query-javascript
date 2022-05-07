@@ -23,16 +23,23 @@ attribute_list
 attribute
   : KEY EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '==' }) }
   | KEY NOT_EQUAL value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: '!=' }) }
+  | KEY EQUAL OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: '==' }) }
+  | KEY NOT_EQUAL OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: '!=' }) }
+  ;
+
+array_value
+  : value array_value { $$ = new Compiler.ArrayValue({ value: $1, rest: $2 }) }
+  | value { $$ = new Compiler.ArrayValue({ value: $1 }) }
   ;
 
 value
   : selector
-  | NULL { $$ = new Compiler.Value($1) }
-  | UNDEFINED { $$ = new Compiler.Value($1) }
-  | BOOLEAN { $$ = new Compiler.Value($1) }
-  | NUMBER { $$ = new Compiler.Value($1) }
-  | STRING { $$ = new Compiler.Value($1) }
-  | IDENTIFIER_VALUE { $$ = new Compiler.Value($1) }
+  | NULL { $$ = new Compiler.Null() }
+  | UNDEFINED { $$ = new Compiler.Undefined() }
+  | BOOLEAN { $$ = new Compiler.Boolean($1) }
+  | NUMBER { $$ = new Compiler.Number($1) }
+  | STRING { $$ = new Compiler.String($1) }
+  | IDENTIFIER_VALUE { $$ = new Compiler.Identifier($1) }
   ;
 
 %%
