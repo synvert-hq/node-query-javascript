@@ -32,6 +32,11 @@ describe('Parser', () => {
       const source = '.MemberExpression[object=module][property=exports]';
       assertParser(source);
     });
+
+    it("parses array value", () => {
+      const source = ".MethodDefinition[key IN (foo bar)]"
+      assertParser(source);
+    });
   });
 
   describe("#query_nodes", () => {
@@ -90,6 +95,11 @@ describe('Parser', () => {
     it("matches not equal operator", () => {
       const expression = parseExpression('.NewExpression[arguments.2!=false]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches IN operator", () => {
+      const expression = parseExpression('.ClassDeclaration[name IN (User Account UserAccount)]')
+      expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
     it("matches multiple attributes", () => {

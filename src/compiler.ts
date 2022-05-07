@@ -185,6 +185,8 @@ export namespace Compiler {
 
     toString(): string {
       switch (this.operator) {
+        case 'in':
+          return `${this.key} IN (${this.value})`;
         case '!=':
           return `${this.key}!=${this.value}`;
         default:
@@ -229,8 +231,12 @@ export namespace Compiler {
     match(node: ts.Node | ts.Node[], operator: string): boolean {
       const expected = this.expectedValue();
       switch (operator) {
+        case "in":
+          return !Array.isArray(node) && expected.some(expectedValue => expectedValue.match(node, "=="));
+        case "!=":
+          return Array.isArray(node) && this.compareNotEqual(node, expected);
         default:
-          return Array.isArray(node) && node.length == expected.length && this.compare(node, expected, operator);
+          return Array.isArray(node) && this.compareEqual(node, expected);
       }
     }
 
@@ -245,25 +251,39 @@ export namespace Compiler {
       return expected;
     }
 
-    compare(actual: ts.Node[], expected: Value[], operator: string) {
-      if (expected.length !== actual.length) {
-        return false;
-      }
-
-      for (let index = 0; index < actual.length; index++) {
-        if (!expected[index].match(actual[index], operator)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
     toString(): string {
       if (this.rest) {
         return `${this.value} ${this.rest}`;
       }
       return this.value.toString();
+    }
+
+    private compareNotEqual(actual: ts.Node[], expected: Value[]) {
+      if (expected.length !== actual.length) {
+        return true;
+      }
+
+      for (let index = 0; index < actual.length; index++) {
+        if (expected[index].match(actual[index], '!=')) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private compareEqual(actual: ts.Node[], expected: Value[]) {
+      if (expected.length !== actual.length) {
+        return false;
+      }
+
+      for (let index = 0; index < actual.length; index++) {
+        if (!expected[index].match(actual[index], '==')) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 

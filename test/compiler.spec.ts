@@ -97,4 +97,16 @@ describe("ArrayValue", () => {
     const node = parseCode('[foo, bar]').statements[0].expression.elements;
     expect(value.match(node, '==')).toBeTruthy();
   });
+
+  it("matches not equal", () => {
+    const value = new Compiler.ArrayValue({ value: new Compiler.Identifier('foo'), rest: new Compiler.ArrayValue({ value: new Compiler.Identifier('bar') }) });
+    const node = parseCode('[synvert]').statements[0].expression.elements;
+    expect(value.match(node, '!=')).toBeTruthy();
+  });
+
+  it("matches IN", () => {
+    const value = new Compiler.ArrayValue({ value: new Compiler.Identifier('foo'), rest: new Compiler.ArrayValue({ value: new Compiler.Identifier('bar') }) });
+    const node = parseCode('foo').statements[0];
+    expect(value.match(node, 'in')).toBeTruthy();
+  });
 });

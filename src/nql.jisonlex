@@ -50,6 +50,16 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('value');
                 return 'EQUAL';
         %}
+<key>("in")
+        %{
+                this.begin('value');
+                return 'IN';
+        %}
+<key>("IN")
+        %{
+                this.begin('value');
+                return 'IN';
+        %}
 <key>({IDENTIFIER})       return 'KEY';
 <value>(\s+)  /% skip whitespace */
 <value>("(")
