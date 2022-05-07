@@ -1,16 +1,5 @@
 import ts from 'typescript';
-const { Expression } = require('../src/compiler');
-const { parser } = require('../src/parser');
-
-const parseExpression = (source: string): InstanceType<typeof Expression> => {
-  parser.parse(source)
-  return parser.yy.result;
-}
-
-const assertParser = (source: string): void => {
-  const expression = parseExpression(source);
-  expect(expression.toString()).toEqual(source);
-}
+const { assertParser, parseCode, parseExpression } = require('./helper');
 
 describe('Parser', () => {
   describe('#toString', () => {
@@ -46,32 +35,27 @@ describe('Parser', () => {
   });
 
   describe("#query_nodes", () => {
-    const node: ts.SourceFile = ts.createSourceFile(
-      "code.ts",
-      `
-        interface User {
-          name: string;
-          id: number;
-          active: boolean;
+    const node = parseCode( `
+      interface User {
+        name: string;
+        id: number;
+        active: boolean;
+      }
+
+      class UserAccount {
+        name: string;
+        id: number;
+        active: boolean;
+
+        constructor(name: string, id: number, active: boolean) {
+          this.name = name;
+          this.id = id;
+          this.active = active;
         }
+      }
 
-        class UserAccount {
-          name: string;
-          id: number;
-          active: boolean;
-
-          constructor(name: string, id: number, active: boolean) {
-            this.name = name;
-            this.id = id;
-            this.active = active;
-          }
-        }
-
-        const user: User = new UserAccount("Murphy", 1, true);
-      `,
-      ts.ScriptTarget.Latest,
-      true
-    );
+      const user: User = new UserAccount("Murphy", 1, true);
+    `);
 
     it("matches by node type", () => {
       const expression = parseExpression(".ClassDeclaration");
