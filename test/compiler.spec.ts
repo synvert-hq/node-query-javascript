@@ -116,3 +116,52 @@ describe("ArrayValue", () => {
     expect(value.match(node, 'not_in')).toBeTruthy();
   });
 });
+
+describe("Attribute", () => {
+  it("matches node", () => {
+    const attribute = new Compiler.Attribute({ key: 'name', value: new Compiler.Identifier('Synvert'), operator: '=='});
+    const node = parseCode('class Synvert {}').statements[0];
+    expect(attribute.match(node)).toBeTruthy();
+  });
+
+  it("does not match node", () => {
+    const attribute = new Compiler.Attribute({ key: 'name', value: new Compiler.Identifier('Synvert'), operator: '=='});
+    const node = parseCode('class Foobar {}').statements[0];
+    expect(attribute.match(node)).toBeFalsy();
+  });
+});
+
+describe("AttributeList", () => {
+  it("matches node", () => {
+    const attributeList = new Compiler.AttributeList({
+      attribute: new Compiler.Attribute({ key: 'arguments.0', value: new Compiler.String('Murphy'), operator: '==' }),
+      rest: new Compiler.AttributeList({
+        attribute: new Compiler.Attribute({ key: 'arguments.1', value: new Compiler.Number(1), operator: '==' }),
+        rest: new Compiler.AttributeList({
+          attribute: new Compiler.Attribute({ key: 'arguments.2', value: new Compiler.Boolean(true), operator: '==' })
+        })
+      })
+    });
+    const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0].expression;
+    expect(attributeList.match(node)).toBeTruthy();
+  });
+});
+
+describe("Selector", () => {
+  it("matches node", () => {
+    const selector = new Compiler.Selector({
+      nodeType: 'NewExpression',
+      attributeList: new Compiler.AttributeList({
+        attribute: new Compiler.Attribute({ key: 'arguments.0', value: new Compiler.String('Murphy'), operator: '==' }),
+        rest: new Compiler.AttributeList({
+          attribute: new Compiler.Attribute({ key: 'arguments.1', value: new Compiler.Number(1), operator: '==' }),
+          rest: new Compiler.AttributeList({
+            attribute: new Compiler.Attribute({ key: 'arguments.2', value: new Compiler.Boolean(true), operator: '==' })
+          })
+        })
+      })
+    });
+    const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0].expression;
+    expect(selector.match(node)).toBeTruthy();
+  });
+});

@@ -1,4 +1,4 @@
-import ts = require('typescript');
+import { Node, SyntaxKind } from "typescript";
 
 export namespace Compiler {
   interface ExpressionParameters {
@@ -18,11 +18,12 @@ export namespace Compiler {
       this.relationship = relationship;
     }
 
-    match(node: ts.Node) {
+    // check if the node matches the expression.
+    match(node: Node) {
       return this.queryNodes(node).length !== 0;
     }
 
-    queryNodes(node: ts.Node, descendantMatch: boolean = true): ts.Node[] {
+    queryNodes(node: Node, descendantMatch: boolean = true): Node[] {
       if (this.relationship) {
         return this.findNodesByRelationship(node);
       }
@@ -52,10 +53,10 @@ export namespace Compiler {
       return result.join(' ');
     }
 
-    private findNodesByRelationship(node: ts.Node): ts.Node[] {
+    private findNodesByRelationship(node: Node): Node[] {
       switch (this.relationship) {
         case 'child':
-          let nodes: ts.Node[] = [];
+          let nodes: Node[] = [];
           node.forEachChild(childNode => {
             nodes = nodes.concat(this.findNodesByRest(childNode))
           });
@@ -65,14 +66,14 @@ export namespace Compiler {
       }
     }
 
-    private findNodesByRest(node: ts.Node, descendantMatch: boolean = false): ts.Node[] {
+    private findNodesByRest(node: Node, descendantMatch: boolean = false): Node[] {
       if (!this.rest) {
         return [];
       }
       return this.rest.queryNodes(node, descendantMatch)
     }
 
-    private findNodesWithoutRelationship(node: ts.Node | ts.Node[], descendantMatch: boolean = true): ts.Node[] {
+    private findNodesWithoutRelationship(node: Node | Node[], descendantMatch: boolean = true): Node[] {
       if (Array.isArray(node)) {
         return node.flatMap((eachNode) => {
           return this.findNodesWithoutRelationship(eachNode, descendantMatch)
@@ -97,10 +98,10 @@ export namespace Compiler {
       return nodes;
     }
 
-    private recusriveEachChild(node: ts.Node, cb: (childNode: ts.Node) => void): void {
+    private recusriveEachChild(node: Node, handler: (childNode: Node) => void): void {
       node.forEachChild(childNode => {
-        cb(childNode);
-        this.recusriveEachChild(childNode, cb);
+        handler(childNode);
+        this.recusriveEachChild(childNode, handler);
       });
     }
   }
@@ -119,8 +120,9 @@ export namespace Compiler {
       this.attributeList = attributeList;
     }
 
-    match(node: ts.Node): boolean {
-      return this.nodeType == ts.SyntaxKind[node.kind] &&
+    // check if the node matches the selector.
+    match(node: Node): boolean {
+      return this.nodeType == SyntaxKind[node.kind] &&
         (!this.attributeList || this.attributeList.match(node));
     }
 
@@ -150,7 +152,8 @@ export namespace Compiler {
       this.rest = rest;
     }
 
-    match(node: ts.Node): boolean {
+    // check if the node matches the attribute list.
+    match(node: Node): boolean {
       return this.attribute.match(node) && (!this.rest || this.rest.match(node));
     }
 
@@ -179,7 +182,8 @@ export namespace Compiler {
       this.operator = operator;
     }
 
-    match(node: ts.Node): boolean {
+    // check if the node matches the attribute.
+    match(node: Node): boolean {
       return this.value.match(this.getTargetNode(node), this.operator);
     }
 
@@ -196,7 +200,7 @@ export namespace Compiler {
       }
     }
 
-    getTargetNode(node: ts.Node): ts.Node {
+    private getTargetNode(node: Node): Node {
       let result = node as any;
       this.key.split('.').forEach(key => {
         result = result[key]
@@ -205,15 +209,30 @@ export namespace Compiler {
     }
   }
 
+  // Value is an atom value,
+  // it can be a Boolean, Null, Number, Undefined, String or Identifier.
   abstract class Value {
-    abstract match(node: ts.Node, operator: string): boolean;
+    // check if the actual value matches the expected value.
+    match(node: Node, operator: string): boolean {
+      const actual = this.actualValue(node);
+      const expected = this.expectedValue();
+      switch (operator) {
+        case '!=':
+          return actual !== expected;
+        default:
+          return actual === expected;
+      }
+    }
 
-    actualValue(node: ts.Node | string): string {
+    // actual value can be a string or the source code of a typescript node.
+    actualValue(node: Node | string): string {
       if (typeof node === 'string') {
         return node;
       }
       return node.getFullText().trim();
     }
+
+    abstract expectedValue(): string;
   }
 
   interface ArrayValueParameters {
@@ -221,6 +240,7 @@ export namespace Compiler {
     rest: ArrayValue;
   }
 
+  // ArrayValue is an array of Value.
   export class ArrayValue {
     private value: Value
     private rest: ArrayValue
@@ -230,7 +250,8 @@ export namespace Compiler {
       this.rest = rest;
     }
 
-    match(node: ts.Node | ts.Node[], operator: string): boolean {
+    // check if the actual value matches the expected value.
+    match(node: Node | Node[], operator: string): boolean {
       const expected = this.expectedValue();
       switch (operator) {
         case "not_in":
@@ -244,6 +265,7 @@ export namespace Compiler {
       }
     }
 
+    // expected value is an array of Value.
     expectedValue(): Value[] {
       let expected: Value[] = [];
       if (this.value) {
@@ -262,7 +284,7 @@ export namespace Compiler {
       return this.value.toString();
     }
 
-    private compareNotEqual(actual: ts.Node[], expected: Value[]) {
+    private compareNotEqual(actual: Node[], expected: Value[]) {
       if (expected.length !== actual.length) {
         return true;
       }
@@ -276,7 +298,7 @@ export namespace Compiler {
       return false;
     }
 
-    private compareEqual(actual: ts.Node[], expected: Value[]) {
+    private compareEqual(actual: Node[], expected: Value[]) {
       if (expected.length !== actual.length) {
         return false;
       }
@@ -296,17 +318,9 @@ export namespace Compiler {
       super();
     }
 
-    match(node: ts.Node, operator: string): boolean {
-      switch (operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue().toString();
-        default:
-          return this.actualValue(node) === this.expectedValue().toString();
-      }
-    }
-
-    expectedValue(): boolean {
-      return this.value;
+    // expected value returns string true or false.
+    expectedValue(): string {
+      return this.value.toString();
     }
 
     toString(): string {
@@ -319,15 +333,7 @@ export namespace Compiler {
       super();
     }
 
-    match(node: ts.Node, operator: string): boolean {
-      switch (operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue();
-        default:
-          return this.actualValue(node) === this.expectedValue();
-      }
-    }
-
+    // expected value returns the value.
     expectedValue(): string {
       return this.value;
     }
@@ -338,17 +344,7 @@ export namespace Compiler {
   }
 
   export class Null extends Value {
-    contructor() {}
-
-    match(node: ts.Node, operator: string): boolean {
-      switch (operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue();
-        default:
-          return this.actualValue(node) === this.expectedValue();
-      }
-    }
-
+    // expected value is already 'null'
     expectedValue(): string {
       return 'null';
     }
@@ -359,17 +355,9 @@ export namespace Compiler {
       super();
     }
 
-    match(node: ts.Node, operator: string): boolean {
-      switch(operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue().toString();
-        default:
-          return this.actualValue(node) === this.expectedValue().toString();
-      }
-    }
-
-    expectedValue(): number {
-      return this.value;
+    // expected value as string number.
+    expectedValue(): string {
+      return this.value.toString();
     }
   }
 
@@ -378,22 +366,15 @@ export namespace Compiler {
       super();
     }
 
-    match(node: ts.Node, operator: string): boolean {
-      switch(operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue();
-        default:
-          return this.actualValue(node) === this.expectedValue();
-      }
-    }
-
-    actualValue(node: string | ts.Node): string {
+    // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
+    actualValue(node: string | Node): string {
       const value = super.actualValue(node);
       return value.substring(1, value.length - 1);
     }
 
+    // expected value returns the value.
     expectedValue(): string {
-      return this.value;
+        return this.value;
     }
 
     toString(): string {
@@ -402,17 +383,7 @@ export namespace Compiler {
   }
 
   export class Undefined extends Value {
-    contructor() {}
-
-    match(node: ts.Node, operator: string): boolean {
-      switch (operator) {
-        case '!=':
-          return this.actualValue(node) !== this.expectedValue();
-        default:
-          return this.actualValue(node) === this.expectedValue();
-      }
-    }
-
+    // expected value is already 'undefined'
     expectedValue(): string {
       return 'undefined';
     }
