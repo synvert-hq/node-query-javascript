@@ -112,6 +112,11 @@ describe('Parser', () => {
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
+    it("matches function", () => {
+      const expression = parseExpression('.NewExpression[arguments.length=3]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
     it("matches multiple attributes", () => {
       const expression = parseExpression('.NewExpression[arguments.0="Murphy"][arguments.1=1]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);

@@ -201,11 +201,19 @@ export namespace Compiler {
     }
 
     private getTargetNode(node: Node): Node {
-      let result = node as any;
+      let target = node as any;
       this.key.split('.').forEach(key => {
-        result = result[key]
-      })
-      return result;
+        if (!target) return;
+
+        if (target.hasOwnProperty(key)) {
+          target = target[key];
+        } else if (typeof target[key] === "function") {
+          target = target[key].call(target);
+        } else {
+          target = null;
+        }
+      });
+      return target;
     }
   }
 
@@ -225,9 +233,21 @@ export namespace Compiler {
     }
 
     // actual value can be a string or the source code of a typescript node.
-    actualValue(node: Node | string): string {
+    actualValue(node: Node | string | number | boolean | null | undefined): string {
+      if (node === null) {
+        return 'null';
+      }
+      if (node === undefined) {
+        return 'undefined';
+      }
       if (typeof node === 'string') {
         return node;
+      }
+      if (typeof node === 'number') {
+        return node.toString();
+      }
+      if (typeof node === 'boolean') {
+        return node.toString();
       }
       return node.getFullText().trim();
     }
