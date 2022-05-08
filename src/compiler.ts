@@ -167,13 +167,13 @@ export namespace Compiler {
 
   interface AttributeParameters {
     key: string;
-    value: Value | ArrayValue;
+    value: Value | ArrayValue | Selector;
     operator: string;
   }
 
   export class Attribute {
     private key: string;
-    private value: Value | ArrayValue;
+    private value: Value | ArrayValue | Selector;
     private operator: string;
 
     constructor({ key, value, operator }: AttributeParameters) {

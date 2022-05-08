@@ -33,6 +33,11 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses nested selector", () => {
+      const source = '.VariableDeclaration[initializer=.NewExpression[name=UserAccount]]';
+      assertParser(source);
+    });
+
     it("parses IN array value", () => {
       const source = ".MethodDefinition[key IN (foo bar)]"
       assertParser(source);
@@ -110,6 +115,11 @@ describe('Parser', () => {
     it("matches NOT IN operator", () => {
       const expression = parseExpression('.ClassDeclaration[name NOT IN (User Account)]')
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
+    });
+
+    it("matches nested selector", () => {
+      const expression = parseExpression('.VariableDeclaration[initializer=.NewExpression[expression=UserAccount]]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0]]);
     });
 
     it("matches function", () => {
