@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import ts, { SyntaxKind } from 'typescript';
 const { assertParser, parseCode, parseExpression } = require('./helper');
 
 describe('Parser', () => {
@@ -70,6 +70,11 @@ describe('Parser', () => {
 
     it("parses NOT IN array value", () => {
       const source = ".MethodDefinition[key NOT IN (foo bar)]"
+      assertParser(source);
+    });
+
+    it("parses :first-child", () => {
+      const source = ".MethodDefinition:first-child"
       assertParser(source);
     });
   });
@@ -185,6 +190,21 @@ describe('Parser', () => {
     it("matches child selectors", () => {
       const expression = parseExpression(".ClassDeclaration > .Constructor")
       expect(expression.queryNodes(node)).toEqual([(node.statements[1] as ts.ClassDeclaration).members[3]]);
+    });
+
+    it("matches multiple nodes", () => {
+      const expression = parseExpression(".ClassDeclaration > .PropertyDeclaration")
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 3));
+    });
+
+    it("matches first node", () => {
+      const expression = parseExpression(".ClassDeclaration > .PropertyDeclaration:first-child")
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 1));
+    });
+
+    it("matches last node", () => {
+      const expression = parseExpression(".ClassDeclaration > .PropertyDeclaration:last-child")
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(2, 1));
     });
   });
 });

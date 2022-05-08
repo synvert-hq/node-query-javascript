@@ -23,7 +23,7 @@ export namespace Compiler {
       return this.queryNodes(node).length !== 0;
     }
 
-    queryNodes(node: Node, descendantMatch: boolean = true): Node[] {
+    queryNodes(node: Node | Node[], descendantMatch: boolean = true): Node[] {
       if (this.relationship) {
         return this.findNodesByRelationship(node);
       }
@@ -53,20 +53,24 @@ export namespace Compiler {
       return result.join(' ');
     }
 
-    private findNodesByRelationship(node: Node): Node[] {
+    private findNodesByRelationship(node: Node | Node[]): Node[] {
+      if (Array.isArray(node)) {
+        return node.flatMap((eachNode) => this.findNodesByRelationship(eachNode));
+      }
+
       switch (this.relationship) {
         case 'child':
           let nodes: Node[] = [];
           node.forEachChild(childNode => {
-            nodes = nodes.concat(this.findNodesByRest(childNode))
+            nodes.push(childNode)
           });
-          return nodes;
+          return this.findNodesByRest(nodes);
         default:
           return [];
       }
     }
 
-    private findNodesByRest(node: Node, descendantMatch: boolean = false): Node[] {
+    private findNodesByRest(node: Node | Node[], descendantMatch: boolean = false): Node[] {
       if (!this.rest) {
         return [];
       }
@@ -75,9 +79,7 @@ export namespace Compiler {
 
     private findNodesWithoutRelationship(node: Node | Node[], descendantMatch: boolean = true): Node[] {
       if (Array.isArray(node)) {
-        return node.flatMap((eachNode) => {
-          return this.findNodesWithoutRelationship(eachNode, descendantMatch)
-        });
+        return this.filter(node.flatMap((eachNode) => this.findNodesWithoutRelationship(eachNode, descendantMatch)));
       }
 
       if (!this.selector) {
@@ -89,7 +91,7 @@ export namespace Compiler {
         nodes.push(node);
       }
       if (descendantMatch) {
-        this.recusriveEachChild(node, (childNode) => {
+        this.handleRecursiveChild(node, (childNode) => {
           if (this.selector && this.selector.match(childNode)) {
             nodes.push(childNode);
           }
@@ -98,26 +100,43 @@ export namespace Compiler {
       return nodes;
     }
 
-    private recusriveEachChild(node: Node, handler: (childNode: Node) => void): void {
+    private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
       node.forEachChild(childNode => {
         handler(childNode);
-        this.recusriveEachChild(childNode, handler);
+        this.handleRecursiveChild(childNode, handler);
       });
+    }
+
+    private filter(nodes: Node[]): Node[] {
+      if (this.selector) {
+        return this.selector.filter(nodes);
+      }
+      return nodes;
     }
   }
 
   interface SelectorParameters {
     nodeType: string;
     attributeList: AttributeList | null;
+    index: number;
   }
 
   export class Selector {
     private nodeType: string;
     private attributeList: AttributeList | null;
+    private index: number;
 
-    constructor({ nodeType, attributeList }: SelectorParameters) {
+    constructor({ nodeType, attributeList, index }: SelectorParameters) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
+      this.index = index;
+    }
+
+    filter(nodes: Node[]): Node[] {
+      if (this.index === undefined) {
+        return nodes;
+      }
+      return nodes[this.index] ? [nodes[this.index]] : [];
     }
 
     // check if the node matches the selector.
@@ -133,6 +152,16 @@ export namespace Compiler {
       }
       if (this.attributeList) {
         result.push(this.attributeList.toString());
+      }
+      switch (this.index) {
+        case 0:
+          result.push(':first-child');
+          break;
+        case -1:
+          result.push(':last-child');
+          break;
+        default:
+          break;
       }
       return result.join('');
     }
@@ -391,7 +420,26 @@ export namespace Compiler {
       super();
     }
 
-    // expected value as string number.
+    match(node: Node, operator: string): boolean {
+      const actual = this.actualValue(node);
+      const expected = this.expectedValue();
+      switch (operator) {
+        case '!=':
+          return actual !== expected;
+        case '>=':
+          return actual >= expected;
+        case '>':
+          return actual > expected;
+        case '<=':
+          return actual <= expected;
+        case '<':
+          return actual < expected;
+        default:
+          return actual === expected;
+      }
+    }
+
+    // expected value returns a number.
     expectedValue(): string {
       return this.value.toString();
     }

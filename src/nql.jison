@@ -11,7 +11,9 @@ expression
   ;
 
 selector
-  : NODE_TYPE attribute_list { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2 }) }
+  : NODE_TYPE attribute_list INDEX { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2, index: $3 }) }
+  | NODE_TYPE INDEX { $$ = new Compiler.Selector({ nodeType: $1, index: $2 }) }
+  | NODE_TYPE attribute_list { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2 }) }
   | NODE_TYPE { $$ = new Compiler.Selector({ nodeType: $1 }) }
   ;
 
