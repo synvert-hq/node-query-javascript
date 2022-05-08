@@ -49,22 +49,22 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('value');
                 return 'EQUAL';
         %}
-<key>("in")
+<key>("in ")
         %{
                 this.begin('value');
                 return 'IN';
         %}
-<key>("IN")
+<key>("IN ")
         %{
                 this.begin('value');
                 return 'IN';
         %}
-<key>("not in")
+<key>("not in ")
         %{
                 this.begin('value');
                 return 'NOT_IN';
         %}
-<key>("NOT IN")
+<key>("NOT IN ")
         %{
                 this.begin('value');
                 return 'NOT_IN';
