@@ -19,7 +19,6 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('key');
                 return 'OPEN_ATTRIBUTE';
         %}
-<key>(\s+)  /% skip whitespace */
 <key>("!=")
         %{
                 this.begin('value');
@@ -71,7 +70,6 @@ IDENTIFIER_VALUE ([\.\w]+)
                 return 'NOT_IN';
         %}
 <key>({IDENTIFIER})       return 'KEY';
-<value>(\s+)  /% skip whitespace */
 <value>("(")
         %{
                 this.begin('array_value');
@@ -119,7 +117,6 @@ IDENTIFIER_VALUE ([\.\w]+)
                 return 'CLOSE_ATTRIBUTE';
         %}
 <value>({IDENTIFIER_VALUE})        return 'IDENTIFIER_VALUE';
-<array_value>(\s+)  /% skip whitespace */
 <array_value>(")")
         %{
                 this.popState();
