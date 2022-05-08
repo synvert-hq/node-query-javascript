@@ -4,6 +4,7 @@ DOUBLE_QUOTE_STRING (\".*?\")
 IDENTIFIER ([\.\w]+)
 IDENTIFIER_VALUE ([\.\w]+)
 %s key value array_value
+%options case-insensitive
 
 %%
 
@@ -54,17 +55,7 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('value');
                 return 'IN';
         %}
-<key>("IN ")
-        %{
-                this.begin('value');
-                return 'IN';
-        %}
 <key>("not in ")
-        %{
-                this.begin('value');
-                return 'NOT_IN';
-        %}
-<key>("NOT IN ")
         %{
                 this.begin('value');
                 return 'NOT_IN';
