@@ -8,13 +8,11 @@ IDENTIFIER_VALUE ([\.\w]+)
 
 %%
 
-\s+        /* skip whitespace */
 "."[a-zA-Z]+
         %{
                 yytext = yytext.substring(1, yytext.length);
                 return 'NODE_TYPE';
         %}
-">"        return 'CHILD';
 "["
         %{
                 this.begin('key');
@@ -23,42 +21,45 @@ IDENTIFIER_VALUE ([\.\w]+)
 <key>("!=")
         %{
                 this.begin('value');
-                return 'NOT_EQUAL';
+                return 'OPERATOR';
         %}
 <key>(">=")
         %{
                 this.begin('value');
-                return 'GREATER_THAN_AND_EQUAL';
+                return 'OPERATOR';
         %}
 <key>("<=")
         %{
                 this.begin('value');
-                return 'LESS_THAN_AND_EQUAL';
+                return 'OPERATOR';
         %}
 <key>(">")
         %{
                 this.begin('value');
-                return 'GREATER_THAN';
+                return 'OPERATOR';
         %}
 <key>("<")
         %{
                 this.begin('value');
-                return 'LESS_THAN';
+                return 'OPERATOR';
         %}
 <key>("=")
         %{
+                yytext = '==';
                 this.begin('value');
-                return 'EQUAL';
+                return 'OPERATOR';
         %}
 <key>("in ")
         %{
+                yytext = 'in';
                 this.begin('value');
-                return 'IN';
+                return 'OPERATOR';
         %}
 <key>("not in ")
         %{
+                yytext = 'not_in';
                 this.begin('value');
-                return 'NOT_IN';
+                return 'OPERATOR';
         %}
 <key>({IDENTIFIER})       return 'KEY';
 <value>("(")
@@ -149,3 +150,5 @@ IDENTIFIER_VALUE ([\.\w]+)
                 return 'STRING';
         %}
 <array_value>({IDENTIFIER_VALUE})        return 'IDENTIFIER_VALUE';
+\s+        /* skip whitespace */
+">"        return 'CHILD';

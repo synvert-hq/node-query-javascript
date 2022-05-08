@@ -195,6 +195,14 @@ export namespace Compiler {
           return `${this.key} IN (${this.value})`;
         case '!=':
           return `${this.key}!=${this.value}`;
+        case '>=':
+          return `${this.key}>=${this.value}`;
+        case '>':
+          return `${this.key}>${this.value}`;
+        case '<=':
+          return `${this.key}<=${this.value}`;
+        case '<':
+          return `${this.key}<${this.value}`;
         default:
           return `${this.key}=${this.value}`;
       }
@@ -227,6 +235,14 @@ export namespace Compiler {
       switch (operator) {
         case '!=':
           return actual !== expected;
+        case '>=':
+          return actual >= expected;
+        case '>':
+          return actual > expected;
+        case '<=':
+          return actual <= expected;
+        case '<':
+          return actual < expected;
         default:
           return actual === expected;
       }
@@ -377,6 +393,10 @@ export namespace Compiler {
 
     // expected value as string number.
     expectedValue(): string {
+      return this.value.toString();
+    }
+
+    toString(): string {
       return this.value.toString();
     }
   }

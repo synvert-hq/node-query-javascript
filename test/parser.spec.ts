@@ -38,6 +38,31 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses != operator", () => {
+      const source = '.NewExpression[arguments.length!=1]';
+      assertParser(source);
+    })
+
+    it("parses >= operator", () => {
+      const source = '.NewExpression[arguments.length>=1]';
+      assertParser(source);
+    })
+
+    it("parses > operator", () => {
+      const source = '.NewExpression[arguments.length>1]';
+      assertParser(source);
+    })
+
+    it("parses <= operator", () => {
+      const source = '.NewExpression[arguments.length<=1]';
+      assertParser(source);
+    })
+
+    it("parses < operator", () => {
+      const source = '.NewExpression[arguments.length<1]';
+      assertParser(source);
+    })
+
     it("parses IN array value", () => {
       const source = ".MethodDefinition[key IN (foo bar)]"
       assertParser(source);
@@ -49,7 +74,7 @@ describe('Parser', () => {
     });
   });
 
-  describe("#query_nodes", () => {
+  describe("#queryNodes", () => {
     const node = parseCode( `
       interface User {
         name: string;
@@ -124,6 +149,26 @@ describe('Parser', () => {
 
     it("matches function", () => {
       const expression = parseExpression('.NewExpression[arguments.length=3]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches >= operator", () => {
+      const expression = parseExpression('.NewExpression[arguments.length>=3]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches > operator", () => {
+      const expression = parseExpression('.NewExpression[arguments.length>2]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches <= operator", () => {
+      const expression = parseExpression('.NewExpression[arguments.length<=3]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches < operator", () => {
+      const expression = parseExpression('.NewExpression[arguments.length<4]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
     });
 
