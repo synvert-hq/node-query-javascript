@@ -5,8 +5,7 @@
 %%
 
 expression
-  : CHILD expression { $$ = new Compiler.Expression({ rest: $2, relationship: 'child' }); yy.parser.yy.result = $$ }
-  | selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
+  : selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
   | selector { $$ = new Compiler.Expression({ selector: $1 }); yy.parser.yy.result = $$ }
   ;
 
@@ -15,6 +14,10 @@ selector
   | NODE_TYPE INDEX { $$ = new Compiler.Selector({ nodeType: $1, index: $2 }) }
   | NODE_TYPE attribute_list { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2 }) }
   | NODE_TYPE { $$ = new Compiler.Selector({ nodeType: $1 }) }
+  | CHILD NODE_TYPE attribute_list INDEX { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, attributeList: $3, index: $4 }) }
+  | CHILD NODE_TYPE INDEX { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, index: $3 }) }
+  | CHILD NODE_TYPE attribute_list { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, attributeList: $3 }) }
+  | CHILD NODE_TYPE { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2 }) }
   ;
 
 attribute_list

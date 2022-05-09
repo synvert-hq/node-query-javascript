@@ -4,18 +4,15 @@ export namespace Compiler {
   interface ExpressionParameters {
     selector: Selector | null;
     rest: Expression | null;
-    relationship: string | null;
   }
 
   export class Expression {
     private selector: Selector | null;
     private rest: Expression | null;
-    private relationship: string | null;
 
-    constructor({ selector, rest, relationship }: ExpressionParameters) {
+    constructor({ selector, rest }: ExpressionParameters) {
       this.selector = selector;
       this.rest = rest;
-      this.relationship = relationship;
     }
 
     // check if the node matches the expression.
@@ -23,11 +20,7 @@ export namespace Compiler {
       return this.queryNodes(node).length !== 0;
     }
 
-    queryNodes(node: Node | Node[], descendantMatch: boolean = true): Node[] {
-      if (this.relationship) {
-        return this.findNodesByRelationship(node);
-      }
-
+    queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
       const matchingNodes = this.findNodesWithoutRelationship(node, descendantMatch);
       if (!this.rest) {
         return matchingNodes;
@@ -41,77 +34,24 @@ export namespace Compiler {
         result.push(this.selector.toString());
       }
       if (this.rest) {
-        switch (this.relationship) {
-          case 'child':
-            result.push(`> ${this.rest.toString()}`);
-            break;
-          default:
-            result.push(this.rest.toString());
-            break;
-        }
+        result.push(this.rest.toString());
       }
       return result.join(' ');
     }
 
-    private findNodesByRelationship(node: Node | Node[]): Node[] {
-      if (Array.isArray(node)) {
-        return node.flatMap((eachNode) => this.findNodesByRelationship(eachNode));
-      }
-
-      switch (this.relationship) {
-        case 'child':
-          let nodes: Node[] = [];
-          node.forEachChild(childNode => {
-            nodes.push(childNode)
-          });
-          return this.findNodesByRest(nodes);
-        default:
-          return [];
-      }
-    }
-
-    private findNodesByRest(node: Node | Node[], descendantMatch: boolean = false): Node[] {
+    private findNodesByRest(node: Node | Node[], descendantMatch = true): Node[] {
       if (!this.rest) {
         return [];
       }
       return this.rest.queryNodes(node, descendantMatch)
     }
 
-    private findNodesWithoutRelationship(node: Node | Node[], descendantMatch: boolean = true): Node[] {
-      if (Array.isArray(node)) {
-        return this.filter(node.flatMap((eachNode) => this.findNodesWithoutRelationship(eachNode, descendantMatch)));
-      }
-
+    private findNodesWithoutRelationship(node: Node | Node[], descendantMatch = true): Node[] {
       if (!this.selector) {
-        return [node];
+        return Array.isArray(node) ? node : [node];
       }
 
-      const nodes = [];
-      if (this.selector.match(node)) {
-        nodes.push(node);
-      }
-      if (descendantMatch) {
-        this.handleRecursiveChild(node, (childNode) => {
-          if (this.selector && this.selector.match(childNode)) {
-            nodes.push(childNode);
-          }
-        });
-      }
-      return nodes;
-    }
-
-    private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
-      node.forEachChild(childNode => {
-        handler(childNode);
-        this.handleRecursiveChild(childNode, handler);
-      });
-    }
-
-    private filter(nodes: Node[]): Node[] {
-      if (this.selector) {
-        return this.selector.filter(nodes);
-      }
-      return nodes;
+      return this.selector.queryNodes(node, descendantMatch);
     }
   }
 
@@ -119,24 +59,43 @@ export namespace Compiler {
     nodeType: string;
     attributeList: AttributeList | null;
     index: number;
+    relationship: string | null;
   }
 
   export class Selector {
     private nodeType: string;
     private attributeList: AttributeList | null;
     private index: number;
+    private relationship: string | null;
 
-    constructor({ nodeType, attributeList, index }: SelectorParameters) {
+    constructor({ nodeType, attributeList, index, relationship }: SelectorParameters) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
       this.index = index;
+      this.relationship = relationship;
     }
 
-    filter(nodes: Node[]): Node[] {
-      if (this.index === undefined) {
-        return nodes;
+    queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
+      if (Array.isArray(node)) {
+        return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
       }
-      return nodes[this.index] ? [nodes[this.index]] : [];
+
+      if (this.relationship) {
+        return this.findNodesByRelationship(node);
+      }
+
+      const nodes: Node[] = [];
+      if (this.match(node)) {
+        nodes.push(node);
+      }
+      if (descendantMatch) {
+        this.handleRecursiveChild(node, (childNode) => {
+          if (this.match(childNode)) {
+            nodes.push(childNode);
+          }
+        });
+      }
+      return this.filter(nodes);
     }
 
     // check if the node matches the selector.
@@ -147,6 +106,9 @@ export namespace Compiler {
 
     toString(): string {
       const result = [];
+      if (this.relationship) {
+        result.push(`${this.relationship} `);
+      }
       if (this.nodeType) {
         result.push(`.${this.nodeType}`);
       }
@@ -164,6 +126,35 @@ export namespace Compiler {
           break;
       }
       return result.join('');
+    }
+
+    private findNodesByRelationship(node: Node): Node[] {
+      switch (this.relationship) {
+        case '>':
+          let nodes: Node[] = [];
+          node.forEachChild(childNode => {
+            if (this.match(childNode)) {
+              nodes.push(childNode);
+            }
+          });
+          return this.filter(nodes);
+        default:
+          return [];
+      }
+    }
+
+    private filter(nodes: Node[]): Node[] {
+      if (this.index === undefined) {
+        return nodes;
+      }
+      return nodes[this.index] ? [nodes[this.index]] : [];
+    }
+
+    private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
+      node.forEachChild(childNode => {
+        handler(childNode);
+        this.handleRecursiveChild(childNode, handler);
+      });
     }
   }
 
