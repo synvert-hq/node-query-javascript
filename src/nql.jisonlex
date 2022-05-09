@@ -28,6 +28,11 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('key');
                 return 'OPEN_ATTRIBUTE';
         %}
+<key>("^=")
+        %{
+                this.begin('value');
+                return 'OPERATOR';
+        %}
 <key>("*=")
         %{
                 this.begin('value');
