@@ -214,6 +214,7 @@ export namespace Compiler {
         case 'in':
           return `${this.key} IN (${this.value})`;
         case '^=':
+        case '$=':
         case '*=':
         case '!=':
         case '>=':
@@ -253,6 +254,8 @@ export namespace Compiler {
       switch (operator) {
         case '^=':
           return actual.startsWith(expected);
+        case '$=':
+          return actual.endsWith(expected);
         case '*=':
           return actual.includes(expected);
         case '!=':

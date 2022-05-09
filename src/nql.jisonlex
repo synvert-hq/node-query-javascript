@@ -33,6 +33,11 @@ IDENTIFIER_VALUE ([\.\w]+)
                 this.begin('value');
                 return 'OPERATOR';
         %}
+<key>("$=")
+        %{
+                this.begin('value');
+                return 'OPERATOR';
+        %}
 <key>("*=")
         %{
                 this.begin('value');

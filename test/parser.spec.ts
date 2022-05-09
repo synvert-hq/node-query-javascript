@@ -43,6 +43,11 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses $= operator", () => {
+      const source = '.NewExpression[expression$=Acc]';
+      assertParser(source);
+    });
+
     it("parses *= operator", () => {
       const source = '.NewExpression[expression*=Acc]';
       assertParser(source);
@@ -144,6 +149,11 @@ describe('Parser', () => {
 
     it("matches start with operator", () => {
       const expression = parseExpression('.NewExpression[expression^=User]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches end with operator", () => {
+      const expression = parseExpression('.NewExpression[expression$=Account]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
     });
 
