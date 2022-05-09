@@ -38,30 +38,35 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses *= operator", () => {
+      const source = '.NewExpression[expression*=Acc]';
+      assertParser(source);
+    });
+
     it("parses != operator", () => {
       const source = '.NewExpression[arguments.length!=1]';
       assertParser(source);
-    })
+    });
 
     it("parses >= operator", () => {
       const source = '.NewExpression[arguments.length>=1]';
       assertParser(source);
-    })
+    });
 
     it("parses > operator", () => {
       const source = '.NewExpression[arguments.length>1]';
       assertParser(source);
-    })
+    });
 
     it("parses <= operator", () => {
       const source = '.NewExpression[arguments.length<=1]';
       assertParser(source);
-    })
+    });
 
     it("parses < operator", () => {
       const source = '.NewExpression[arguments.length<1]';
       assertParser(source);
-    })
+    });
 
     it("parses IN array value", () => {
       const source = ".MethodDefinition[key IN (foo bar)]"
@@ -129,6 +134,11 @@ describe('Parser', () => {
 
     it("matches boolean literal", () => {
       const expression = parseExpression('.NewExpression[arguments.2=true]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches contain operator", () => {
+      const expression = parseExpression('.NewExpression[expression*=Acc]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
     });
 

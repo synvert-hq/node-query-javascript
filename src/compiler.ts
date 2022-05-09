@@ -213,16 +213,13 @@ export namespace Compiler {
           return `${this.key} NOT IN (${this.value})`;
         case 'in':
           return `${this.key} IN (${this.value})`;
+        case '*=':
         case '!=':
-          return `${this.key}!=${this.value}`;
         case '>=':
-          return `${this.key}>=${this.value}`;
         case '>':
-          return `${this.key}>${this.value}`;
         case '<=':
-          return `${this.key}<=${this.value}`;
         case '<':
-          return `${this.key}<${this.value}`;
+          return `${this.key}${this.operator}${this.value}`;
         default:
           return `${this.key}=${this.value}`;
       }
@@ -253,6 +250,8 @@ export namespace Compiler {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
+        case '*=':
+          return actual.includes(expected);
         case '!=':
           return actual !== expected;
         case '>=':
