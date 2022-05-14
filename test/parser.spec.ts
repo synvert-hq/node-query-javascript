@@ -28,6 +28,16 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses next sibling selector", () => {
+      const source = ".MethodDefinition[key=constructor] + .MethodDefinition";
+      assertParser(source);
+    });
+
+    it("parses subsequent sibling selector", () => {
+      const source = ".MethodDefinition[key=constructor] ~ .MethodDefinition";
+      assertParser(source);
+    });
+
     it("parses multiple attributes", () => {
       const source = '.MemberExpression[object=module][property=exports]';
       assertParser(source);
@@ -215,6 +225,16 @@ describe('Parser', () => {
     it("matches child selectors", () => {
       const expression = parseExpression(".ClassDeclaration > .Constructor")
       expect(expression.queryNodes(node)).toEqual([(node.statements[1] as ts.ClassDeclaration).members[3]]);
+    });
+
+    it("matches next sibling node", () => {
+      const expression = parseExpression(".PropertyDeclaration[name=name] + .PropertyDeclaration")
+      expect(expression.queryNodes(node)).toEqual([(node.statements[1] as ts.ClassDeclaration).members[1]]);
+    });
+
+    it("matches subsequent sibling nodes", () => {
+      const expression = parseExpression(".PropertyDeclaration[name=name] ~ .PropertyDeclaration")
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(1, 3));
     });
 
     it("matches multiple nodes", () => {

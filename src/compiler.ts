@@ -101,24 +101,68 @@ export namespace Compiler {
     }
 
     private findNodesByRelationship(node: Node): Node[] {
+      const nodes: Node[] = [];
       switch (this.relationship) {
         case '>':
-          let nodes: Node[] = [];
           node.forEachChild(childNode => {
             if (this.match(childNode)) {
               nodes.push(childNode);
             }
           });
-          return nodes;
+          break;
+        case '+':
+          const nextSibling = this.getNextSibling(node);
+          if (nextSibling && this.match(nextSibling)) {
+            nodes.push(nextSibling);
+          }
+          break;
+        case '~':
+          this.handleSiblings(node, siblingNode => {
+            if (this.match(siblingNode)) {
+              nodes.push(siblingNode);
+            }
+          });
+          break;
         default:
-          return [];
+          break;
       }
+      return nodes;
     }
 
     private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
       node.forEachChild(childNode => {
         handler(childNode);
         this.handleRecursiveChild(childNode, handler);
+      });
+    }
+
+    private getNextSibling(node: Node): Node | null {
+      let matched = false;
+      let nextSibling: Node | null = null;
+      node.parent.forEachChild(childNode => {
+        if (nextSibling) {
+          return;
+        }
+        if (matched) {
+          nextSibling = childNode;
+          return;
+        }
+        if (childNode === node) {
+          matched = true;
+        }
+      });
+      return nextSibling;
+    }
+
+    private handleSiblings(node: Node, handler: (siblingNode: Node) => void): void {
+      let matched = false;
+      node.parent.forEachChild(childNode => {
+        if (matched) {
+          handler(childNode);
+        }
+        if (childNode === node) {
+          matched = true;
+        }
       });
     }
   }

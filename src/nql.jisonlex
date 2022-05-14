@@ -166,4 +166,6 @@ IDENTIFIER_VALUE ([\.\w]+)
         %}
 <array_value>({IDENTIFIER_VALUE})        return 'IDENTIFIER_VALUE';
 \s+        /* skip whitespace */
-">"        return 'CHILD';
+">"        return 'RELATIONSHIP';
+"+"        return 'RELATIONSHIP';
+"~"        return 'RELATIONSHIP';

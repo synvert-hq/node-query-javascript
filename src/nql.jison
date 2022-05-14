@@ -11,7 +11,7 @@ expression
 
 selector
   : simple_selector { $$ = new Compiler.Selector({ simpleSelector: $1 }) }
-  | CHILD simple_selector { $$ = new Compiler.Selector({ relationship: $1, simpleSelector: $2 }) }
+  | RELATIONSHIP simple_selector { $$ = new Compiler.Selector({ relationship: $1, simpleSelector: $2 }) }
   ;
 
 simple_selector
