@@ -58,20 +58,17 @@ export namespace Compiler {
   interface SelectorParameters {
     nodeType: string;
     attributeList: AttributeList | null;
-    index: number;
     relationship: string | null;
   }
 
   export class Selector {
     private nodeType: string;
     private attributeList: AttributeList | null;
-    private index: number;
     private relationship: string | null;
 
-    constructor({ nodeType, attributeList, index, relationship }: SelectorParameters) {
+    constructor({ nodeType, attributeList, relationship }: SelectorParameters) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
-      this.index = index;
       this.relationship = relationship;
     }
 
@@ -95,7 +92,7 @@ export namespace Compiler {
           }
         });
       }
-      return this.filter(nodes);
+      return nodes;
     }
 
     // check if the node matches the selector.
@@ -115,16 +112,6 @@ export namespace Compiler {
       if (this.attributeList) {
         result.push(this.attributeList.toString());
       }
-      switch (this.index) {
-        case 0:
-          result.push(':first-child');
-          break;
-        case -1:
-          result.push(':last-child');
-          break;
-        default:
-          break;
-      }
       return result.join('');
     }
 
@@ -137,17 +124,10 @@ export namespace Compiler {
               nodes.push(childNode);
             }
           });
-          return this.filter(nodes);
+          return nodes;
         default:
           return [];
       }
-    }
-
-    private filter(nodes: Node[]): Node[] {
-      if (this.index === undefined) {
-        return nodes;
-      }
-      return nodes[this.index] ? [nodes[this.index]] : [];
     }
 
     private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
