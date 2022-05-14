@@ -12,6 +12,7 @@ expression
 selector
   : simple_selector { $$ = new Compiler.Selector({ simpleSelector: $1 }) }
   | RELATIONSHIP simple_selector { $$ = new Compiler.Selector({ relationship: $1, simpleSelector: $2 }) }
+  | GOTO_SCOPE selector { $$ = new Compiler.Selector({ gotoScope: $1, rest: $2 }) }
   ;
 
 simple_selector

@@ -1,5 +1,21 @@
 import { Node, SyntaxKind } from "typescript";
 
+const getTargetNode = (node: Node, keys: string): Node => {
+  let target = node as any;
+  keys.split('.').forEach(key => {
+    if (!target) return;
+
+    if (target.hasOwnProperty(key)) {
+      target = target[key];
+    } else if (typeof target[key] === "function") {
+      target = target[key].call(target);
+    } else {
+      target = null;
+    }
+  });
+  return target;
+}
+
 export namespace Compiler {
   interface ExpressionParameters {
     selector: Selector;
@@ -48,15 +64,21 @@ export namespace Compiler {
   }
 
   interface SelectorParameters {
+    gotoScope: string | null;
+    rest: Selector | null;
     simpleSelector: SimpleSelector | null;
     relationship: string | null;
   }
 
   export class Selector {
+    private gotoScope: string | null;
+    private rest: Selector | null;
     private simpleSelector: SimpleSelector | null;
     private relationship: string | null;
 
-    constructor({ simpleSelector, relationship }: SelectorParameters) {
+    constructor({ gotoScope, rest, simpleSelector, relationship }: SelectorParameters) {
+      this.gotoScope = gotoScope;
+      this.rest = rest;
       this.simpleSelector = simpleSelector;
       this.relationship = relationship;
     }
@@ -75,6 +97,13 @@ export namespace Compiler {
         return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
       }
 
+      if (this.gotoScope) {
+        const targetNode = getTargetNode(node, this.gotoScope);
+        if (this.rest) {
+          return this.rest.queryNodes(targetNode, false)
+        }
+      }
+
       const nodes: Node[] = [];
       if (this.match(node)) {
         nodes.push(node);
@@ -91,8 +120,14 @@ export namespace Compiler {
 
     toString(): string {
       const result = [];
+      if (this.gotoScope) {
+        result.push(`${this.gotoScope} `);
+      }
       if (this.relationship) {
         result.push(`${this.relationship} `);
+      }
+      if (this.rest) {
+        result.push(this.rest.toString());
       }
       if (this.simpleSelector) {
         result.push(this.simpleSelector.toString());
@@ -242,7 +277,7 @@ export namespace Compiler {
 
     // check if the node matches the attribute.
     match(node: Node): boolean {
-      return this.value.match(this.getTargetNode(node), this.operator);
+      return this.value.match(getTargetNode(node, this.key), this.operator);
     }
 
     toString(): string {
@@ -263,22 +298,6 @@ export namespace Compiler {
         default:
           return `${this.key}=${this.value}`;
       }
-    }
-
-    private getTargetNode(node: Node): Node {
-      let target = node as any;
-      this.key.split('.').forEach(key => {
-        if (!target) return;
-
-        if (target.hasOwnProperty(key)) {
-          target = target[key];
-        } else if (typeof target[key] === "function") {
-          target = target[key].call(target);
-        } else {
-          target = null;
-        }
-      });
-      return target;
     }
   }
 

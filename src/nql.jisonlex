@@ -169,3 +169,4 @@ IDENTIFIER_VALUE ([\.\w]+)
 ">"        return 'RELATIONSHIP';
 "+"        return 'RELATIONSHIP';
 "~"        return 'RELATIONSHIP';
+{IDENTIFIER}       return 'GOTO_SCOPE';

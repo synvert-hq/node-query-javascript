@@ -97,6 +97,11 @@ describe('Parser', () => {
       const source = ".MethodDefinition[key NOT IN (foo bar)]"
       assertParser(source);
     });
+
+    it("parses goto scope", () => {
+      const source = ".ClassDeclaration members .MethodDefinition"
+      assertParser(source);
+    });
   });
 
   describe("#queryNodes", () => {
@@ -239,6 +244,11 @@ describe('Parser', () => {
 
     it("matches multiple nodes", () => {
       const expression = parseExpression(".ClassDeclaration > .PropertyDeclaration")
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 3));
+    });
+
+    it("matches goto scope", () => {
+      const expression = parseExpression(".ClassDeclaration members .PropertyDeclaration")
       expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 3));
     });
   });
