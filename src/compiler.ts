@@ -2,12 +2,12 @@ import { Node, SyntaxKind } from "typescript";
 
 export namespace Compiler {
   interface ExpressionParameters {
-    selector: Selector | null;
+    selector: Selector;
     rest: Expression | null;
   }
 
   export class Expression {
-    private selector: Selector | null;
+    private selector: Selector;
     private rest: Expression | null;
 
     constructor({ selector, rest }: ExpressionParameters) {
@@ -21,7 +21,7 @@ export namespace Compiler {
     }
 
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
-      const matchingNodes = this.findNodesWithoutRelationship(node, descendantMatch);
+      const matchingNodes = this.selector.queryNodes(node, descendantMatch);
       if (!this.rest) {
         return matchingNodes;
       }
@@ -45,40 +45,34 @@ export namespace Compiler {
       }
       return this.rest.queryNodes(node, descendantMatch)
     }
-
-    private findNodesWithoutRelationship(node: Node | Node[], descendantMatch = true): Node[] {
-      if (!this.selector) {
-        return Array.isArray(node) ? node : [node];
-      }
-
-      return this.selector.queryNodes(node, descendantMatch);
-    }
   }
 
   interface SelectorParameters {
-    nodeType: string;
-    attributeList: AttributeList | null;
+    simpleSelector: SimpleSelector | null;
     relationship: string | null;
   }
 
   export class Selector {
-    private nodeType: string;
-    private attributeList: AttributeList | null;
+    private simpleSelector: SimpleSelector | null;
     private relationship: string | null;
 
-    constructor({ nodeType, attributeList, relationship }: SelectorParameters) {
-      this.nodeType = nodeType;
-      this.attributeList = attributeList;
+    constructor({ simpleSelector, relationship }: SelectorParameters) {
+      this.simpleSelector = simpleSelector;
       this.relationship = relationship;
     }
 
+    // check if the node matches the selector.
+    match(node: Node): boolean {
+      return (!this.simpleSelector || this.simpleSelector.match(node));
+    }
+
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
-      if (Array.isArray(node)) {
-        return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
+      if (this.relationship && !Array.isArray(node)) {
+        return this.findNodesByRelationship(node);
       }
 
-      if (this.relationship) {
-        return this.findNodesByRelationship(node);
+      if (Array.isArray(node)) {
+        return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
       }
 
       const nodes: Node[] = [];
@@ -95,22 +89,13 @@ export namespace Compiler {
       return nodes;
     }
 
-    // check if the node matches the selector.
-    match(node: Node): boolean {
-      return this.nodeType == SyntaxKind[node.kind] &&
-        (!this.attributeList || this.attributeList.match(node));
-    }
-
     toString(): string {
       const result = [];
       if (this.relationship) {
         result.push(`${this.relationship} `);
       }
-      if (this.nodeType) {
-        result.push(`.${this.nodeType}`);
-      }
-      if (this.attributeList) {
-        result.push(this.attributeList.toString());
+      if (this.simpleSelector) {
+        result.push(this.simpleSelector.toString());
       }
       return result.join('');
     }
@@ -135,6 +120,35 @@ export namespace Compiler {
         handler(childNode);
         this.handleRecursiveChild(childNode, handler);
       });
+    }
+  }
+
+  interface SimpleSelectorParameters {
+    nodeType: string;
+    attributeList: AttributeList | null;
+  }
+
+  export class SimpleSelector {
+    private nodeType: string;
+    private attributeList: AttributeList | null;
+
+    constructor({ nodeType, attributeList }: SimpleSelectorParameters) {
+      this.nodeType = nodeType;
+      this.attributeList = attributeList;
+    }
+
+    // check if the node matches the selector.
+    match(node: Node): boolean {
+      return this.nodeType == SyntaxKind[node.kind] &&
+        (!this.attributeList || this.attributeList.match(node));
+    }
+
+    toString(): string {
+      const result = [`.${this.nodeType}`];
+      if (this.attributeList) {
+        result.push(this.attributeList.toString());
+      }
+      return result.join('');
     }
   }
 

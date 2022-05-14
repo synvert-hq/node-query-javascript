@@ -10,14 +10,13 @@ expression
   ;
 
 selector
-  : NODE_TYPE attribute_list INDEX { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2, index: $3 }) }
-  | NODE_TYPE INDEX { $$ = new Compiler.Selector({ nodeType: $1, index: $2 }) }
-  | NODE_TYPE attribute_list { $$ = new Compiler.Selector({ nodeType: $1, attributeList: $2 }) }
-  | NODE_TYPE { $$ = new Compiler.Selector({ nodeType: $1 }) }
-  | CHILD NODE_TYPE attribute_list INDEX { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, attributeList: $3, index: $4 }) }
-  | CHILD NODE_TYPE INDEX { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, index: $3 }) }
-  | CHILD NODE_TYPE attribute_list { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2, attributeList: $3 }) }
-  | CHILD NODE_TYPE { $$ = new Compiler.Selector({ relationship: $1, nodeType: $2 }) }
+  : simple_selector { $$ = new Compiler.Selector({ simpleSelector: $1 }) }
+  | CHILD simple_selector { $$ = new Compiler.Selector({ relationship: $1, simpleSelector: $2 }) }
+  ;
+
+simple_selector
+  : NODE_TYPE attribute_list { $$ = new Compiler.SimpleSelector({ nodeType: $1, attributeList: $2 }) }
+  | NODE_TYPE { $$ = new Compiler.SimpleSelector({ nodeType: $1 }) }
   ;
 
 attribute_list
