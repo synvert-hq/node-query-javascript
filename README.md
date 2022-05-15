@@ -18,8 +18,6 @@ yarn add @xinminlabs/node-query
 
 ## Usage
 
-Here is an example
-
 ```typescript
 import ts from 'typescript';
 import NodeQuery from '@xinminlabs/node-query';
@@ -42,11 +40,10 @@ const source = `
 
   const user: User = new UserAccount("Murphy", 1);
 `
+const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 
-const program = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 // It will get the two nodes of property declaration in the class declaration.
-const query = new NodeQuery('.ClassDeclaration .PropertyDeclaration')
-query.parse(program)
+new NodeQuery('.ClassDeclaration .PropertyDeclaration').parse(node)
 ```
 
 ## Features
