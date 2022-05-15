@@ -1,4 +1,4 @@
-import { Node, SyntaxKind } from "typescript";
+import { Node, adapter } from './typescript-adapter';
 
 const getTargetNode = (node: Node, keys: string): Node => {
   let target = node as any;
@@ -139,20 +139,20 @@ export namespace Compiler {
       const nodes: Node[] = [];
       switch (this.relationship) {
         case '>':
-          node.forEachChild(childNode => {
+          adapter.getChildren(node).forEach(childNode => {
             if (this.match(childNode)) {
               nodes.push(childNode);
             }
           });
           break;
         case '+':
-          const nextSibling = this.getNextSibling(node);
+          const nextSibling = adapter.getSiblings(node)[0];
           if (nextSibling && this.match(nextSibling)) {
             nodes.push(nextSibling);
           }
           break;
         case '~':
-          this.handleSiblings(node, siblingNode => {
+          adapter.getSiblings(node).forEach(siblingNode => {
             if (this.match(siblingNode)) {
               nodes.push(siblingNode);
             }
@@ -165,39 +165,9 @@ export namespace Compiler {
     }
 
     private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
-      node.forEachChild(childNode => {
+      adapter.getChildren(node).forEach(childNode => {
         handler(childNode);
         this.handleRecursiveChild(childNode, handler);
-      });
-    }
-
-    private getNextSibling(node: Node): Node | null {
-      let matched = false;
-      let nextSibling: Node | null = null;
-      node.parent.forEachChild(childNode => {
-        if (nextSibling) {
-          return;
-        }
-        if (matched) {
-          nextSibling = childNode;
-          return;
-        }
-        if (childNode === node) {
-          matched = true;
-        }
-      });
-      return nextSibling;
-    }
-
-    private handleSiblings(node: Node, handler: (siblingNode: Node) => void): void {
-      let matched = false;
-      node.parent.forEachChild(childNode => {
-        if (matched) {
-          handler(childNode);
-        }
-        if (childNode === node) {
-          matched = true;
-        }
       });
     }
   }
@@ -218,7 +188,7 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return this.nodeType == SyntaxKind[node.kind] &&
+      return this.nodeType == adapter.getNodeType(node) &&
         (!this.attributeList || this.attributeList.match(node));
     }
 
@@ -347,7 +317,7 @@ export namespace Compiler {
       if (typeof node === 'boolean') {
         return node.toString();
       }
-      return node.getFullText().trim();
+      return adapter.getSource(node);
     }
 
     abstract expectedValue(): string;
