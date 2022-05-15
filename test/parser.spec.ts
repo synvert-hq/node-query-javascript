@@ -1,5 +1,5 @@
 import ts from 'typescript';
-const { assertParser, parseCode, parseExpression } = require('./helper');
+import { assertParser, parseCode, parseExpression } from './helper';
 
 describe('Parser', () => {
   describe('#toString', () => {
