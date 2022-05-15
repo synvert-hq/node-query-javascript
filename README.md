@@ -1,3 +1,6 @@
+[![npm version](https://badge.fury.io/js/@xinminlabs%2Fnode-query.svg)](https://badge.fury.io/js/@xinminlabs%2Fnode-query)
+[![CI](https://github.com/xinminlabs/node-query-typescript/actions/workflows/main.yml/badge.svg)](https://github.com/xinminlabs/node-query-typescript/actions/workflows/main.yml)
+
 # NodeQuery
 
 NodeQuery defines a Typescript AST node query language, which is a css like syntax for matching nodes.
