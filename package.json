@@ -1,5 +1,5 @@
 {
-  "name": "node-query",
+  "name": "@xinminlabs/node-query",
   "version": "1.0.0",
   "description": "ast node query language",
   "main": "lib/index.js",
