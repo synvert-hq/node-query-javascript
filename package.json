@@ -10,7 +10,7 @@
     "watch:generate": "nodemon --watch 'src' --ext 'jison,jisonlex' --exec 'npm run generate'",
     "test": "jest --detectOpenHandles",
     "watch:test": "jest --watch --detectOpenHandles",
-    "prepublish": "npm run build && cp src/parser.* lib/ && npm run generate"
+    "prepack": "npm run build && cp src/parser.* lib/ && npm run generate"
   },
   "repository": {
     "type": "git",
