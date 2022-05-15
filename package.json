@@ -1,29 +1,33 @@
 {
-  "name": "synvert-core-typescript",
+  "name": "node-query",
   "version": "1.0.0",
-  "description": "write typescript code to change typescript code",
-  "main": "index.js",
+  "description": "ast node query language",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "generate": "jison -o src/parser.js src/nql.jison src/nql.jisonlex",
     "watch:generate": "nodemon --watch 'src' --ext 'jison,jisonlex' --exec 'npm run generate'",
     "test": "jest --detectOpenHandles",
-    "test_watch": "jest --watch --detectOpenHandles"
+    "watch:test": "jest --watch --detectOpenHandles",
+    "prepublish": "npm run build && cp src/parser.* lib/ && npm run generate"
   },
   "repository": {
     "type": "git",
-    "url": "https://git@github.com/xinminlabs/synvert-core-typescript"
+    "url": "https://git@github.com/xinminlabs/node-query-typescript"
   },
   "keywords": [
-    "synvert",
+    "ast",
+    "node",
+    "query",
     "typescript"
   ],
   "author": "Richard Huang",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xinminlabs/synvert-core-typescript/issues"
+    "url": "https://github.com/xinminlabs/node-query-typescript/issues"
   },
-  "homepage": "https://github.com/xinminlabs/synvert-core-typescript#readme",
+  "homepage": "https://github.com/xinminlabs/node-query-typescript#readme",
   "dependencies": {
     "typescript": "^4.6.4"
   },
