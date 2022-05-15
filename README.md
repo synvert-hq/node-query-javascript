@@ -7,13 +7,13 @@ NodeQuery defines a Typescript AST node query language, which is a css like synt
 Install NodeQuery using npm:
 
 ```
-npm install --save node-query
+npm install --save @xinminlabs/node-query
 ```
 
 Or yarn:
 
 ```
-yarn add node-query
+yarn add @xinminlabs/node-query
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ Here is an example
 
 ```typescript
 import ts from 'typescript';
-import NodeQuery from 'node-query';
+import NodeQuery from '@xinminlabs/node-query';
 
 const source = `
   interface User {
@@ -173,7 +173,7 @@ Value of name does not match all of User and Account
 .ClassDeclaration .Constructor
 ```
 
-It matches Constructor node whose ancestor matches the ClassDeclaration node 
+It matches Constructor node whose ancestor matches the ClassDeclaration node
 
 #### Child combinator
 
