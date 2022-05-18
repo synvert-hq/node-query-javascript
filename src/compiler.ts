@@ -19,12 +19,12 @@ const getTargetNode = (node: Node, keys: string): Node => {
 export namespace Compiler {
   interface ExpressionParameters {
     selector: Selector;
-    rest: Expression | null;
+    rest?: Expression;
   }
 
   export class Expression {
     private selector: Selector;
-    private rest: Expression | null;
+    private rest?: Expression;
 
     constructor({ selector, rest }: ExpressionParameters) {
       this.selector = selector;
@@ -64,17 +64,17 @@ export namespace Compiler {
   }
 
   interface SelectorParameters {
-    gotoScope: string | null;
-    rest: Selector | null;
-    simpleSelector: SimpleSelector | null;
-    relationship: string | null;
+    gotoScope?: string;
+    rest?: Selector;
+    simpleSelector?: SimpleSelector;
+    relationship?: string;
   }
 
   export class Selector {
-    private gotoScope: string | null;
-    private rest: Selector | null;
-    private simpleSelector: SimpleSelector | null;
-    private relationship: string | null;
+    private gotoScope?: string;
+    private rest?: Selector;
+    private simpleSelector?: SimpleSelector;
+    private relationship?: string;
 
     constructor({ gotoScope, rest, simpleSelector, relationship }: SelectorParameters) {
       this.gotoScope = gotoScope;
@@ -174,12 +174,12 @@ export namespace Compiler {
 
   interface SimpleSelectorParameters {
     nodeType: string;
-    attributeList: AttributeList | null;
+    attributeList?: AttributeList;
   }
 
   export class SimpleSelector {
     private nodeType: string;
-    private attributeList: AttributeList | null;
+    private attributeList?: AttributeList;
 
     constructor({ nodeType, attributeList }: SimpleSelectorParameters) {
       this.nodeType = nodeType;
@@ -203,12 +203,12 @@ export namespace Compiler {
 
   interface AttributeListParameters {
     attribute: Attribute;
-    rest: AttributeList | null;
+    rest?: AttributeList;
   }
 
   export class AttributeList {
     private attribute: Attribute;
-    private rest: AttributeList | null;
+    private rest?: AttributeList;
 
     constructor({ attribute, rest }: AttributeListParameters) {
       this.attribute = attribute;
