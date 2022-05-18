@@ -10,12 +10,12 @@ expression
   ;
 
 selector
-  : simple_selector { $$ = new Compiler.Selector({ basicSelector: $1 }) }
-  | RELATIONSHIP simple_selector { $$ = new Compiler.Selector({ relationship: $1, basicSelector: $2 }) }
+  : basic_selector { $$ = new Compiler.Selector({ basicSelector: $1 }) }
+  | RELATIONSHIP basic_selector { $$ = new Compiler.Selector({ relationship: $1, basicSelector: $2 }) }
   | GOTO_SCOPE selector { $$ = new Compiler.Selector({ gotoScope: $1, rest: $2 }) }
   ;
 
-simple_selector
+basic_selector
   : NODE_TYPE attribute_list { $$ = new Compiler.BasicSelector({ nodeType: $1, attributeList: $2 }) }
   | NODE_TYPE { $$ = new Compiler.BasicSelector({ nodeType: $1 }) }
   ;
