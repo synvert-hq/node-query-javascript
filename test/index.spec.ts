@@ -1,6 +1,6 @@
-import NodeQuery from '../src/index';
-import { adapter } from '../src/typescript-adapter';
-import { parseCode } from './helper';
+import NodeQuery from "../src/index";
+import { adapter } from "../src/typescript-adapter";
+import { parseCode } from "./helper";
 
 describe("NodeQuery", () => {
   it("configure adapter", () => {
@@ -9,7 +9,7 @@ describe("NodeQuery", () => {
   });
 
   it("parse", () => {
-    const node = parseCode( `
+    const node = parseCode(`
       interface User {
         name: string;
         id: number;
@@ -30,7 +30,9 @@ describe("NodeQuery", () => {
 
       const user: User = new UserAccount("Murphy", 1, true);
     `);
-    const matchingNodes = new NodeQuery('.ClassDeclaration .PropertyDeclaration').parse(node);
-    expect(matchingNodes.length).toEqual(3)
+    const matchingNodes = new NodeQuery(
+      ".ClassDeclaration .PropertyDeclaration"
+    ).parse(node);
+    expect(matchingNodes.length).toEqual(3);
   });
 });

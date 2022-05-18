@@ -1,4 +1,4 @@
-import { Node, SyntaxKind } from 'typescript';
+import { Node, SyntaxKind } from "typescript";
 
 class TypescriptAdapter {
   getNodeType(node: Node): string {
@@ -11,8 +11,8 @@ class TypescriptAdapter {
 
   getChildren(node: Node): Node[] {
     const children: Node[] = [];
-    node.forEachChild(childNode => {
-      children.push(childNode)
+    node.forEachChild((childNode) => {
+      children.push(childNode);
     });
     return children;
   }
@@ -20,7 +20,7 @@ class TypescriptAdapter {
   getSiblings(node: Node): Node[] {
     const siblings: Node[] = [];
     let matched = false;
-    node.parent.forEachChild(childNode => {
+    node.parent.forEachChild((childNode) => {
       if (matched) {
         siblings.push(childNode);
       }
