@@ -1,5 +1,9 @@
+import NodeQuery from '../src/index';
+import { adapter } from '../src/typescript-adapter';
 import ts from 'typescript';
 import { assertParser, parseCode, parseExpression } from './helper';
+
+NodeQuery.configure(adapter);
 
 describe('Parser', () => {
   describe('#toString', () => {

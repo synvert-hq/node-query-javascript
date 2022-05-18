@@ -1,4 +1,5 @@
-import { Node, adapter } from './typescript-adapter';
+import { Node } from 'typescript';
+import NodeQuery from './index';
 
 const getTargetNode = (node: Node, keys: string): Node => {
   let target = node as any;
@@ -139,20 +140,20 @@ export namespace Compiler {
       const nodes: Node[] = [];
       switch (this.relationship) {
         case '>':
-          adapter.getChildren(node).forEach(childNode => {
+          NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
             if (this.match(childNode)) {
               nodes.push(childNode);
             }
           });
           break;
         case '+':
-          const nextSibling = adapter.getSiblings(node)[0];
+          const nextSibling = NodeQuery.getAdapter().getSiblings(node)[0];
           if (nextSibling && this.match(nextSibling)) {
             nodes.push(nextSibling);
           }
           break;
         case '~':
-          adapter.getSiblings(node).forEach(siblingNode => {
+          NodeQuery.getAdapter().getSiblings(node).forEach(siblingNode => {
             if (this.match(siblingNode)) {
               nodes.push(siblingNode);
             }
@@ -165,7 +166,7 @@ export namespace Compiler {
     }
 
     private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
-      adapter.getChildren(node).forEach(childNode => {
+      NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
         handler(childNode);
         this.handleRecursiveChild(childNode, handler);
       });
@@ -188,7 +189,7 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return this.nodeType == adapter.getNodeType(node) &&
+      return this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
         (!this.attributeList || this.attributeList.match(node));
     }
 
@@ -317,7 +318,7 @@ export namespace Compiler {
       if (typeof node === 'boolean') {
         return node.toString();
       }
-      return adapter.getSource(node);
+      return NodeQuery.getAdapter().getSource(node);
     }
 
     abstract expectedValue(): string;
