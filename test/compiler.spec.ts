@@ -1,9 +1,5 @@
-import NodeQuery from '../src/index';
-import { adapter } from '../src/typescript-adapter';
 const Compiler = require('../src/compiler');
 const { parseCode } = require('./helper');
-
-NodeQuery.configure(adapter);
 
 describe("Compiler", () => {
   describe('Boolean', () => {

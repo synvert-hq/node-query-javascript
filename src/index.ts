@@ -1,5 +1,5 @@
 import Adapter from './adapter';
-import { Node } from './typescript-adapter';
+import { Node, adapter as typescriptAdapter } from './typescript-adapter';
 const { parser } = require('./parser');
 const { Expression } = require('./compiler');
 
@@ -13,7 +13,7 @@ class NodeQuery {
   }
 
   static getAdapter(): Adapter {
-    return this.adapter;
+    return this.adapter || typescriptAdapter;
   }
 
   constructor(nql: string) {

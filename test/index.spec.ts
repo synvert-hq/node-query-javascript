@@ -9,7 +9,6 @@ describe("NodeQuery", () => {
   });
 
   it("parse", () => {
-    NodeQuery.configure(adapter);
     const node = parseCode( `
       interface User {
         name: string;
