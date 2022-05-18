@@ -66,26 +66,26 @@ export namespace Compiler {
   interface SelectorParameters {
     gotoScope?: string;
     rest?: Selector;
-    simpleSelector?: SimpleSelector;
+    basicSelector?: BasicSelector;
     relationship?: string;
   }
 
   export class Selector {
     private gotoScope?: string;
     private rest?: Selector;
-    private simpleSelector?: SimpleSelector;
+    private basicSelector?: BasicSelector;
     private relationship?: string;
 
-    constructor({ gotoScope, rest, simpleSelector, relationship }: SelectorParameters) {
+    constructor({ gotoScope, rest, basicSelector, relationship }: SelectorParameters) {
       this.gotoScope = gotoScope;
       this.rest = rest;
-      this.simpleSelector = simpleSelector;
+      this.basicSelector = basicSelector;
       this.relationship = relationship;
     }
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return (!this.simpleSelector || this.simpleSelector.match(node));
+      return (!this.basicSelector || this.basicSelector.match(node));
     }
 
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
@@ -129,8 +129,8 @@ export namespace Compiler {
       if (this.rest) {
         result.push(this.rest.toString());
       }
-      if (this.simpleSelector) {
-        result.push(this.simpleSelector.toString());
+      if (this.basicSelector) {
+        result.push(this.basicSelector.toString());
       }
       return result.join('');
     }
@@ -172,16 +172,16 @@ export namespace Compiler {
     }
   }
 
-  interface SimpleSelectorParameters {
+  interface BasicSelectorParameters {
     nodeType: string;
     attributeList?: AttributeList;
   }
 
-  export class SimpleSelector {
+  export class BasicSelector {
     private nodeType: string;
     private attributeList?: AttributeList;
 
-    constructor({ nodeType, attributeList }: SimpleSelectorParameters) {
+    constructor({ nodeType, attributeList }: BasicSelectorParameters) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
     }
