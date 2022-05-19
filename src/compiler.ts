@@ -1,9 +1,9 @@
-import { Node } from 'typescript';
-import NodeQuery from './index';
+import { Node } from "typescript";
+import NodeQuery from "./index";
 
 const getTargetNode = (node: Node, keys: string): Node => {
   let target = node as any;
-  keys.split('.').forEach(key => {
+  keys.split(".").forEach((key) => {
     if (!target) return;
 
     if (target.hasOwnProperty(key)) {
@@ -15,7 +15,7 @@ const getTargetNode = (node: Node, keys: string): Node => {
     }
   });
   return target;
-}
+};
 
 export namespace Compiler {
   interface ExpressionParameters {
@@ -42,7 +42,9 @@ export namespace Compiler {
       if (!this.rest) {
         return matchingNodes;
       }
-      return matchingNodes.flatMap(matchingNode => this.findNodesByRest(matchingNode, descendantMatch));
+      return matchingNodes.flatMap((matchingNode) =>
+        this.findNodesByRest(matchingNode, descendantMatch)
+      );
     }
 
     toString(): string {
@@ -53,14 +55,17 @@ export namespace Compiler {
       if (this.rest) {
         result.push(this.rest.toString());
       }
-      return result.join(' ');
+      return result.join(" ");
     }
 
-    private findNodesByRest(node: Node | Node[], descendantMatch = true): Node[] {
+    private findNodesByRest(
+      node: Node | Node[],
+      descendantMatch = true
+    ): Node[] {
       if (!this.rest) {
         return [];
       }
-      return this.rest.queryNodes(node, descendantMatch)
+      return this.rest.queryNodes(node, descendantMatch);
     }
   }
 
@@ -77,7 +82,12 @@ export namespace Compiler {
     private basicSelector?: BasicSelector;
     private relationship?: string;
 
-    constructor({ gotoScope, rest, basicSelector, relationship }: SelectorParameters) {
+    constructor({
+      gotoScope,
+      rest,
+      basicSelector,
+      relationship,
+    }: SelectorParameters) {
       this.gotoScope = gotoScope;
       this.rest = rest;
       this.basicSelector = basicSelector;
@@ -86,7 +96,7 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return (!this.basicSelector || this.basicSelector.match(node));
+      return !this.basicSelector || this.basicSelector.match(node);
     }
 
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
@@ -95,13 +105,15 @@ export namespace Compiler {
       }
 
       if (Array.isArray(node)) {
-        return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
+        return node.flatMap((childNode) =>
+          this.queryNodes(childNode, descendantMatch)
+        );
       }
 
       if (this.gotoScope) {
         const targetNode = getTargetNode(node, this.gotoScope);
         if (this.rest) {
-          return this.rest.queryNodes(targetNode, false)
+          return this.rest.queryNodes(targetNode, false);
         }
       }
 
@@ -133,31 +145,35 @@ export namespace Compiler {
       if (this.basicSelector) {
         result.push(this.basicSelector.toString());
       }
-      return result.join('');
+      return result.join("");
     }
 
     private findNodesByRelationship(node: Node): Node[] {
       const nodes: Node[] = [];
       switch (this.relationship) {
-        case '>':
-          NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
-            if (this.match(childNode)) {
-              nodes.push(childNode);
-            }
-          });
+        case ">":
+          NodeQuery.getAdapter()
+            .getChildren(node)
+            .forEach((childNode) => {
+              if (this.match(childNode)) {
+                nodes.push(childNode);
+              }
+            });
           break;
-        case '+':
+        case "+":
           const nextSibling = NodeQuery.getAdapter().getSiblings(node)[0];
           if (nextSibling && this.match(nextSibling)) {
             nodes.push(nextSibling);
           }
           break;
-        case '~':
-          NodeQuery.getAdapter().getSiblings(node).forEach(siblingNode => {
-            if (this.match(siblingNode)) {
-              nodes.push(siblingNode);
-            }
-          });
+        case "~":
+          NodeQuery.getAdapter()
+            .getSiblings(node)
+            .forEach((siblingNode) => {
+              if (this.match(siblingNode)) {
+                nodes.push(siblingNode);
+              }
+            });
           break;
         default:
           break;
@@ -165,11 +181,16 @@ export namespace Compiler {
       return nodes;
     }
 
-    private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
-      NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
-        handler(childNode);
-        this.handleRecursiveChild(childNode, handler);
-      });
+    private handleRecursiveChild(
+      node: Node,
+      handler: (childNode: Node) => void
+    ): void {
+      NodeQuery.getAdapter()
+        .getChildren(node)
+        .forEach((childNode) => {
+          handler(childNode);
+          this.handleRecursiveChild(childNode, handler);
+        });
     }
   }
 
@@ -189,8 +210,10 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
-        (!this.attributeList || this.attributeList.match(node));
+      return (
+        this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
+        (!this.attributeList || this.attributeList.match(node))
+      );
     }
 
     toString(): string {
@@ -198,7 +221,7 @@ export namespace Compiler {
       if (this.attributeList) {
         result.push(this.attributeList.toString());
       }
-      return result.join('');
+      return result.join("");
     }
   }
 
@@ -218,12 +241,14 @@ export namespace Compiler {
 
     // check if the node matches the attribute list.
     match(node: Node): boolean {
-      return this.attribute.match(node) && (!this.rest || this.rest.match(node));
+      return (
+        this.attribute.match(node) && (!this.rest || this.rest.match(node))
+      );
     }
 
     toString(): string {
       if (this.rest) {
-        return `[${this.attribute}]${this.rest.toString()}`
+        return `[${this.attribute}]${this.rest.toString()}`;
       }
       return `[${this.attribute}]`;
     }
@@ -253,18 +278,18 @@ export namespace Compiler {
 
     toString(): string {
       switch (this.operator) {
-        case 'not_in':
+        case "not_in":
           return `${this.key} NOT IN (${this.value})`;
-        case 'in':
+        case "in":
           return `${this.key} IN (${this.value})`;
-        case '^=':
-        case '$=':
-        case '*=':
-        case '!=':
-        case '>=':
-        case '>':
-        case '<=':
-        case '<':
+        case "^=":
+        case "$=":
+        case "*=":
+        case "!=":
+        case ">=":
+        case ">":
+        case "<=":
+        case "<":
           return `${this.key}${this.operator}${this.value}`;
         default:
           return `${this.key}=${this.value}`;
@@ -280,21 +305,21 @@ export namespace Compiler {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
-        case '^=':
+        case "^=":
           return actual.startsWith(expected);
-        case '$=':
+        case "$=":
           return actual.endsWith(expected);
-        case '*=':
+        case "*=":
           return actual.includes(expected);
-        case '!=':
+        case "!=":
           return actual !== expected;
-        case '>=':
+        case ">=":
           return actual >= expected;
-        case '>':
+        case ">":
           return actual > expected;
-        case '<=':
+        case "<=":
           return actual <= expected;
-        case '<':
+        case "<":
           return actual < expected;
         default:
           return actual === expected;
@@ -302,20 +327,22 @@ export namespace Compiler {
     }
 
     // actual value can be a string or the source code of a typescript node.
-    actualValue(node: Node | string | number | boolean | null | undefined): string {
+    actualValue(
+      node: Node | string | number | boolean | null | undefined
+    ): string {
       if (node === null) {
-        return 'null';
+        return "null";
       }
       if (node === undefined) {
-        return 'undefined';
+        return "undefined";
       }
-      if (typeof node === 'string') {
+      if (typeof node === "string") {
         return node;
       }
-      if (typeof node === 'number') {
+      if (typeof node === "number") {
         return node.toString();
       }
-      if (typeof node === 'boolean') {
+      if (typeof node === "boolean") {
         return node.toString();
       }
       return NodeQuery.getAdapter().getSource(node);
@@ -331,8 +358,8 @@ export namespace Compiler {
 
   // ArrayValue is an array of Value.
   export class ArrayValue {
-    private value: Value
-    private rest: ArrayValue
+    private value: Value;
+    private rest: ArrayValue;
 
     constructor({ value, rest }: ArrayValueParameters) {
       this.value = value;
@@ -344,9 +371,15 @@ export namespace Compiler {
       const expected = this.expectedValue();
       switch (operator) {
         case "not_in":
-          return !Array.isArray(node) && expected.every(expectedValue => expectedValue.match(node, "!="));
+          return (
+            !Array.isArray(node) &&
+            expected.every((expectedValue) => expectedValue.match(node, "!="))
+          );
         case "in":
-          return !Array.isArray(node) && expected.some(expectedValue => expectedValue.match(node, "=="));
+          return (
+            !Array.isArray(node) &&
+            expected.some((expectedValue) => expectedValue.match(node, "=="))
+          );
         case "!=":
           return Array.isArray(node) && this.compareNotEqual(node, expected);
         default:
@@ -361,7 +394,7 @@ export namespace Compiler {
         expected.push(this.value);
       }
       if (this.rest) {
-        expected = expected.concat(this.rest.expectedValue())
+        expected = expected.concat(this.rest.expectedValue());
       }
       return expected;
     }
@@ -379,7 +412,7 @@ export namespace Compiler {
       }
 
       for (let index = 0; index < actual.length; index++) {
-        if (expected[index].match(actual[index], '!=')) {
+        if (expected[index].match(actual[index], "!=")) {
           return true;
         }
       }
@@ -393,7 +426,7 @@ export namespace Compiler {
       }
 
       for (let index = 0; index < actual.length; index++) {
-        if (!expected[index].match(actual[index], '==')) {
+        if (!expected[index].match(actual[index], "==")) {
           return false;
         }
       }
@@ -435,7 +468,7 @@ export namespace Compiler {
   export class Null extends Value {
     // expected value is already 'null'
     expectedValue(): string {
-      return 'null';
+      return "null";
     }
   }
 
@@ -448,15 +481,15 @@ export namespace Compiler {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
-        case '!=':
+        case "!=":
           return actual !== expected;
-        case '>=':
+        case ">=":
           return actual >= expected;
-        case '>':
+        case ">":
           return actual > expected;
-        case '<=':
+        case "<=":
           return actual <= expected;
-        case '<':
+        case "<":
           return actual < expected;
         default:
           return actual === expected;
@@ -486,7 +519,7 @@ export namespace Compiler {
 
     // expected value returns the value.
     expectedValue(): string {
-        return this.value;
+      return this.value;
     }
 
     toString(): string {
@@ -497,7 +530,7 @@ export namespace Compiler {
   export class Undefined extends Value {
     // expected value is already 'undefined'
     expectedValue(): string {
-      return 'undefined';
+      return "undefined";
     }
   }
 }
