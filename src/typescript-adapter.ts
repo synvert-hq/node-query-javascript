@@ -1,6 +1,7 @@
+import Adapter from './adapter';
 import { Node, SyntaxKind } from 'typescript';
 
-class TypescriptAdapter {
+class TypescriptAdapter implements Adapter {
   getNodeType(node: Node): string {
     return SyntaxKind[node.kind];
   }

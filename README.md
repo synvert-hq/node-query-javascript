@@ -10,6 +10,7 @@ NodeQuery defines a Typescript AST node query language, which is a css like synt
 - [Installation](#installation)
 - [Usage](#usage)
 - [Node Query Language](#node-query-language)
+- [Write Adapter](#write-adapter)
 - [Contributing Guide](#contributing-guide)
 
 ## Installation
@@ -222,6 +223,20 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 ```
 
 It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node
+
+## Write Adapter
+
+Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
+we define an [Adapter](https://github.com/xinminlabs/node-query-typescript/blob/main/src/adapter.ts) interface,
+if you implement the Adapter interface, you can set it as NodeQuery's adapter.
+
+```
+NodeQuery.configure(new EspreeAdapter())
+```
+
+1. NodeQuery uses [TypescriptAdapter](https://github.com/xinminlabs/node-query-typescript/blob/main/src/typescript-adapter.ts) by default
+
+2. We implements [EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/master/lib/espree-adapter.js) for eslint espree.
 
 ## Contributing Guide
 
