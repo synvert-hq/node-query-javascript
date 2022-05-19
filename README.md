@@ -5,7 +5,14 @@
 
 NodeQuery defines a Typescript AST node query language, which is a css like syntax for matching nodes.
 
-## Install
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Node Query Language](#node-query-language)
+- [Contributing Guide](#contributing-guide)
+
+## Installation
 
 Install NodeQuery using npm:
 
@@ -20,6 +27,15 @@ yarn add @xinminlabs/node-query
 ```
 
 ## Usage
+
+It provides only one api:
+
+```typescript
+new NodeQuery(nodeQueryString: string) // Initialize NodeQuery
+  .parse(node: Node): Node[] // Get the matching nodes.
+```
+
+Here is an example for typescript ast node.
 
 ```typescript
 import ts from 'typescript';
@@ -49,7 +65,7 @@ const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true
 new NodeQuery('.ClassDeclaration .PropertyDeclaration').parse(node)
 ```
 
-## Features
+## Node Query Language
 
 ### matches node type
 
@@ -206,3 +222,17 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 ```
 
 It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node
+
+## Contributing Guide
+
+1. Fork and clone the repo.
+
+2. Run `npm install` to install dependencies.
+
+3. Run `npm run generate` or `npm run watch:generate` to generate `src/parser.js`.
+
+4. Run `npm run test` or `npm run watch:test` to run tests.
+
+5. Do some changes and make tests all passed.
+
+6. Push the changes to the repo.
