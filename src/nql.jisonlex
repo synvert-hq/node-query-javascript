@@ -180,6 +180,11 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 yytext = yytext.substring(1, yytext.length - 1);
                 return 'STRING';
         %}
+<array_value>({REGEXP})
+        %{
+                yytext = yytext.substring(1, yytext.length - 1);
+                return 'REGEXP';
+        %}
 <array_value>({IDENTIFIER_VALUE})        return 'IDENTIFIER_VALUE';
 \s+        /* skip whitespace */
 ">"        return 'RELATIONSHIP';

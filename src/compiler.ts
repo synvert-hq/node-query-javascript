@@ -483,10 +483,10 @@ export namespace Compiler {
     match(node: Node, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = new RegExp(this.expectedValue());
-      if (operator === '=~') {
-        return expected.test(actual);
-      } else {
+      if (operator === '!~') {
         return !expected.test(actual);
+      } else {
+        return expected.test(actual);
       }
     }
 

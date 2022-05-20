@@ -194,6 +194,12 @@ Value of name starts with User
 
 Value of name does not start with User
 
+```
+.ClassDeclaration[name IN (/User/ /Account/)]
+```
+
+Value of name matches any of /User/ and /Account/
+
 ### matches multiple selectors
 
 #### Descendant combinator
