@@ -182,6 +182,18 @@ Value of name matches any of User, Account and UserAccount
 
 Value of name does not match all of User and Account
 
+```
+.ClassDeclaration[name=~/^User/]
+```
+
+Value of name starts with User
+
+```
+.ClassDeclaration[name!=~/^User/]
+```
+
+Value of name does not start with User
+
 ### matches multiple selectors
 
 #### Descendant combinator
