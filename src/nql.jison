@@ -41,6 +41,7 @@ value
   | UNDEFINED { $$ = new Compiler.Undefined() }
   | BOOLEAN { $$ = new Compiler.Boolean($1) }
   | NUMBER { $$ = new Compiler.Number($1) }
+  | REGEXP { $$ = new Compiler.Regexp($1) }
   | STRING { $$ = new Compiler.String($1) }
   | IDENTIFIER_VALUE { $$ = new Compiler.Identifier($1) }
   ;

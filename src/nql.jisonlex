@@ -1,6 +1,7 @@
 NUMBER ([0-9]+("."[0-9]+)?)
 SINGLE_QUOTE_STRING (\'.*?\')
 DOUBLE_QUOTE_STRING (\".*?\")
+REGEXP (\/.*?\/)
 IDENTIFIER ([\.\w]+)
 IDENTIFIER_VALUE ([\$\.\w]+)
 %s key value array_value
@@ -17,6 +18,16 @@ IDENTIFIER_VALUE ([\$\.\w]+)
         %{
                 this.begin('key');
                 return 'OPEN_ATTRIBUTE';
+        %}
+<key>("=~")
+        %{
+                this.begin('value');
+                return 'OPERATOR';
+        %}
+<key>("!~")
+        %{
+                this.begin('value');
+                return 'OPERATOR';
         %}
 <key>("^=")
         %{
@@ -116,6 +127,11 @@ IDENTIFIER_VALUE ([\$\.\w]+)
         %{
                 yytext = yytext.substring(1, yytext.length - 1);
                 return 'STRING';
+        %}
+<value>({REGEXP})
+        %{
+                yytext = yytext.substring(1, yytext.length - 1);
+                return 'REGEXP';
         %}
 <value>("]")
         %{

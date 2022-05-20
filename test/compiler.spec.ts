@@ -64,6 +64,20 @@ describe("Compiler", () => {
     });
   });
 
+  describe('Regexp', () => {
+    it("matches regexp", () => {
+      const value = new Compiler.Regexp(/\$/)
+      const node = parseCode('$(body)').statements[0];
+      expect(value.match(node, '=~')).toBeTruthy();
+    });
+
+    it("does not match regexp", () => {
+      const value = new Compiler.Regexp(/\$/)
+      const node = parseCode('foo bar').statements[0];
+      expect(value.match(node, '!~')).toBeTruthy();
+    });
+  });
+
   describe('String', () => {
     it("matches string", () => {
       const value = new Compiler.String('synvert')

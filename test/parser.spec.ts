@@ -88,6 +88,16 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses =~ operator", () => {
+      const source = '.MemberExpression[object=~/^\$/]';
+      assertParser(source);
+    });
+
+    it("parses !~ operator", () => {
+      const source = '.MemberExpression[object!~/^\$/]';
+      assertParser(source);
+    });
+
     it("parses IN array value", () => {
       const source = ".MethodDefinition[key IN (foo bar $)]"
       assertParser(source);
@@ -174,6 +184,16 @@ describe('Parser', () => {
 
     it("matches not equal operator", () => {
       const expression = parseExpression('.NewExpression[arguments.2!=false]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches =~ operator", () => {
+      const expression = parseExpression('.NewExpression[expression=~/^User/]')
+      expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
+    });
+
+    it("matches !~ operator", () => {
+      const expression = parseExpression('.NewExpression[expression!~/^Account/]')
       expect(expression.queryNodes(node)).toEqual([(node.statements[2] as ts.VariableStatement).declarationList.declarations[0].initializer]);
     });
 

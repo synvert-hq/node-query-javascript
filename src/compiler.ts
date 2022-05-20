@@ -265,6 +265,8 @@ export namespace Compiler {
         case '>':
         case '<=':
         case '<':
+        case '=~':
+        case '!~':
           return `${this.key}${this.operator}${this.value}`;
         default:
           return `${this.key}=${this.value}`;
@@ -473,6 +475,30 @@ export namespace Compiler {
     }
   }
 
+  export class Regexp extends Value {
+    constructor(private value: string) {
+      super();
+    }
+
+    match(node: Node, operator: string): boolean {
+      const actual = this.actualValue(node);
+      const expected = new RegExp(this.expectedValue());
+      if (operator === '=~') {
+        return expected.test(actual);
+      } else {
+        return !expected.test(actual);
+      }
+    }
+
+    expectedValue(): string {
+      return this.value;
+    }
+
+    toString(): string {
+      return `/${this.value}/`;
+    }
+  }
+
   export class String extends Value {
     constructor(private value: string) {
       super();
@@ -486,7 +512,7 @@ export namespace Compiler {
 
     // expected value returns the value.
     expectedValue(): string {
-        return this.value;
+      return this.value;
     }
 
     toString(): string {
