@@ -89,7 +89,7 @@ describe('Parser', () => {
     });
 
     it("parses IN array value", () => {
-      const source = ".MethodDefinition[key IN (foo bar)]"
+      const source = ".MethodDefinition[key IN (foo bar $)]"
       assertParser(source);
     });
 
