@@ -1,4 +1,4 @@
-import { Node } from 'typescript';
+import { Node } from "typescript";
 
 interface Adapter {
   getNodeType(node: Node): string;
