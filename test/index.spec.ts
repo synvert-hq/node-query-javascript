@@ -1,5 +1,6 @@
 import NodeQuery from '../src/index';
 import { adapter } from '../src/typescript-adapter';
+import SyntaxError from '../src/syntax-error';
 import { parseCode } from './helper';
 
 describe("NodeQuery", () => {
@@ -8,7 +9,7 @@ describe("NodeQuery", () => {
     expect(NodeQuery.getAdapter()).toEqual(adapter);
   });
 
-  it("parse", () => {
+  describe("parse", () => {
     const node = parseCode( `
       interface User {
         name: string;
@@ -30,7 +31,14 @@ describe("NodeQuery", () => {
 
       const user: User = new UserAccount("Murphy", 1, true);
     `);
-    const matchingNodes = new NodeQuery('.ClassDeclaration .PropertyDeclaration').parse(node);
-    expect(matchingNodes.length).toEqual(3)
+
+    it("parses nodes", () => {
+      const nodeQuery = new NodeQuery('.ClassDeclaration .PropertyDeclaration');
+      expect(nodeQuery.parse(node).length).toEqual(3)
+    });
+
+    it("raises SyntaxError", () => {
+      expect(() => { new NodeQuery('.ClassDeclaration .') }).toThrow(SyntaxError)
+    });
   });
 });
