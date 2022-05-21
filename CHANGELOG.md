@@ -1,5 +1,12 @@
 # NodeQuery
 
+## 1.3.0 (2022-05-21)
+
+* Support Regexp in array value
+* Support `:has` and `:not_has` pseudo selector
+* Throw `SyntaxError` when query is invalid
+* Check `isNode` for nested selector
+
 ## 1.2.0 (2022-05-20)
 
 * Support Regexp
