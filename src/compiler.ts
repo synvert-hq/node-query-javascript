@@ -1,6 +1,8 @@
 import { Node } from 'typescript';
 import NodeQuery from './index';
 
+type AllType = Node | string | number | boolean | null | undefined;
+
 const getTargetNode = (node: Node, keys: string): Node => {
   let target = node as any;
   keys.split('.').forEach(key => {
@@ -15,6 +17,16 @@ const getTargetNode = (node: Node, keys: string): Node => {
     }
   });
   return target;
+}
+
+const isNode = (node: AllType): boolean => {
+  if (node === null) {
+    return false;
+  }
+  if (['string', 'number', 'boolean', 'undefined'].includes(typeof node)) {
+    return false;
+  }
+  return true;
 }
 
 export namespace Compiler {
@@ -92,7 +104,8 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return (!this.basicSelector || this.basicSelector.match(node)) && this.matchPseudoClass(node);
+      // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
+      return isNode(node) && (!this.basicSelector || this.basicSelector.match(node)) && this.matchPseudoClass(node);
     }
 
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
@@ -324,7 +337,7 @@ export namespace Compiler {
     }
 
     // actual value can be a string or the source code of a typescript node.
-    actualValue(node: Node | string | number | boolean | null | undefined): string {
+    actualValue(node: AllType): string {
       if (node === null) {
         return 'null';
       }

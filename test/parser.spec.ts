@@ -277,7 +277,7 @@ describe('Parser', () => {
       expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(1, 3));
     });
 
-    it.only("matches :has pseudo selector", () => {
+    it("matches :has pseudo selector", () => {
       const expression = parseExpression(".ClassDeclaration:has(.Constructor)");
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
