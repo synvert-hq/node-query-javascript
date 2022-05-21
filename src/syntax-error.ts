@@ -6,4 +6,4 @@ class SyntaxError extends Error {
   }
 }
 
-export default SyntaxError
+export default SyntaxError;

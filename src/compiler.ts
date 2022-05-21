@@ -1,11 +1,11 @@
-import { Node } from 'typescript';
-import NodeQuery from './index';
+import { Node } from "typescript";
+import NodeQuery from "./index";
 
 type AllType = Node | string | number | boolean | null | undefined;
 
 const getTargetNode = (node: Node, keys: string): Node => {
   let target = node as any;
-  keys.split('.').forEach(key => {
+  keys.split(".").forEach((key) => {
     if (!target) return;
 
     if (target.hasOwnProperty(key)) {
@@ -17,17 +17,17 @@ const getTargetNode = (node: Node, keys: string): Node => {
     }
   });
   return target;
-}
+};
 
 const isNode = (node: AllType): boolean => {
   if (node === null) {
     return false;
   }
-  if (['string', 'number', 'boolean', 'undefined'].includes(typeof node)) {
+  if (["string", "number", "boolean", "undefined"].includes(typeof node)) {
     return false;
   }
   return true;
-}
+};
 
 export namespace Compiler {
   interface ExpressionParameters {
@@ -54,7 +54,9 @@ export namespace Compiler {
       if (!this.rest) {
         return matchingNodes;
       }
-      return matchingNodes.flatMap(matchingNode => this.findNodesByRest(matchingNode));
+      return matchingNodes.flatMap((matchingNode) =>
+        this.findNodesByRest(matchingNode)
+      );
     }
 
     toString(): string {
@@ -65,14 +67,14 @@ export namespace Compiler {
       if (this.rest) {
         result.push(this.rest.toString());
       }
-      return result.join(' ');
+      return result.join(" ");
     }
 
     private findNodesByRest(node: Node | Node[]): Node[] {
       if (!this.rest) {
         return [];
       }
-      return this.rest.queryNodes(node)
+      return this.rest.queryNodes(node);
     }
   }
 
@@ -93,7 +95,14 @@ export namespace Compiler {
     private pseudoClass?: string;
     private pseudoSelector?: Selector;
 
-    constructor({ gotoScope, rest, basicSelector, relationship, pseudoClass, pseudoSelector }: SelectorParameters) {
+    constructor({
+      gotoScope,
+      rest,
+      basicSelector,
+      relationship,
+      pseudoClass,
+      pseudoSelector,
+    }: SelectorParameters) {
       this.gotoScope = gotoScope;
       this.rest = rest;
       this.basicSelector = basicSelector;
@@ -105,7 +114,11 @@ export namespace Compiler {
     // check if the node matches the selector.
     match(node: Node): boolean {
       // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
-      return isNode(node) && (!this.basicSelector || this.basicSelector.match(node)) && this.matchPseudoClass(node);
+      return (
+        isNode(node) &&
+        (!this.basicSelector || this.basicSelector.match(node)) &&
+        this.matchPseudoClass(node)
+      );
     }
 
     queryNodes(node: Node | Node[]): Node[] {
@@ -114,13 +127,13 @@ export namespace Compiler {
       }
 
       if (Array.isArray(node)) {
-        return node.flatMap(childNode => this.queryNodes(childNode));
+        return node.flatMap((childNode) => this.queryNodes(childNode));
       }
 
       if (this.gotoScope) {
         const targetNode = getTargetNode(node, this.gotoScope);
         if (this.rest) {
-          return this.rest.queryNodes(targetNode)
+          return this.rest.queryNodes(targetNode);
         }
       }
 
@@ -153,33 +166,37 @@ export namespace Compiler {
         result.push(this.basicSelector.toString());
       }
       if (this.pseudoClass) {
-        result.push(`:${this.pseudoClass}(${this.pseudoSelector})`)
+        result.push(`:${this.pseudoClass}(${this.pseudoSelector})`);
       }
-      return result.join('');
+      return result.join("");
     }
 
     private findNodesByRelationship(node: Node): Node[] {
       const nodes: Node[] = [];
       switch (this.relationship) {
-        case '>':
-          NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
-            if (this.match(childNode)) {
-              nodes.push(childNode);
-            }
-          });
+        case ">":
+          NodeQuery.getAdapter()
+            .getChildren(node)
+            .forEach((childNode) => {
+              if (this.match(childNode)) {
+                nodes.push(childNode);
+              }
+            });
           break;
-        case '+':
+        case "+":
           const nextSibling = NodeQuery.getAdapter().getSiblings(node)[0];
           if (nextSibling && this.match(nextSibling)) {
             nodes.push(nextSibling);
           }
           break;
-        case '~':
-          NodeQuery.getAdapter().getSiblings(node).forEach(siblingNode => {
-            if (this.match(siblingNode)) {
-              nodes.push(siblingNode);
-            }
-          });
+        case "~":
+          NodeQuery.getAdapter()
+            .getSiblings(node)
+            .forEach((siblingNode) => {
+              if (this.match(siblingNode)) {
+                nodes.push(siblingNode);
+              }
+            });
           break;
         default:
           break;
@@ -187,18 +204,23 @@ export namespace Compiler {
       return nodes;
     }
 
-    private handleRecursiveChild(node: Node, handler: (childNode: Node) => void): void {
-      NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
-        handler(childNode);
-        this.handleRecursiveChild(childNode, handler);
-      });
+    private handleRecursiveChild(
+      node: Node,
+      handler: (childNode: Node) => void
+    ): void {
+      NodeQuery.getAdapter()
+        .getChildren(node)
+        .forEach((childNode) => {
+          handler(childNode);
+          this.handleRecursiveChild(childNode, handler);
+        });
     }
 
     private matchPseudoClass(node: Node): boolean {
       switch (this.pseudoClass) {
-        case 'has':
+        case "has":
           return this.pseudoSelector!.queryNodes(node).length !== 0;
-        case 'not_has':
+        case "not_has":
           return this.pseudoSelector!.queryNodes(node).length === 0;
         default:
           return true;
@@ -222,8 +244,10 @@ export namespace Compiler {
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
-        (!this.attributeList || this.attributeList.match(node));
+      return (
+        this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
+        (!this.attributeList || this.attributeList.match(node))
+      );
     }
 
     toString(): string {
@@ -231,7 +255,7 @@ export namespace Compiler {
       if (this.attributeList) {
         result.push(this.attributeList.toString());
       }
-      return result.join('');
+      return result.join("");
     }
   }
 
@@ -251,12 +275,14 @@ export namespace Compiler {
 
     // check if the node matches the attribute list.
     match(node: Node): boolean {
-      return this.attribute.match(node) && (!this.rest || this.rest.match(node));
+      return (
+        this.attribute.match(node) && (!this.rest || this.rest.match(node))
+      );
     }
 
     toString(): string {
       if (this.rest) {
-        return `[${this.attribute}]${this.rest.toString()}`
+        return `[${this.attribute}]${this.rest.toString()}`;
       }
       return `[${this.attribute}]`;
     }
@@ -286,20 +312,20 @@ export namespace Compiler {
 
     toString(): string {
       switch (this.operator) {
-        case 'not_in':
+        case "not_in":
           return `${this.key} NOT IN (${this.value})`;
-        case 'in':
+        case "in":
           return `${this.key} IN (${this.value})`;
-        case '^=':
-        case '$=':
-        case '*=':
-        case '!=':
-        case '>=':
-        case '>':
-        case '<=':
-        case '<':
-        case '=~':
-        case '!~':
+        case "^=":
+        case "$=":
+        case "*=":
+        case "!=":
+        case ">=":
+        case ">":
+        case "<=":
+        case "<":
+        case "=~":
+        case "!~":
           return `${this.key}${this.operator}${this.value}`;
         default:
           return `${this.key}=${this.value}`;
@@ -315,21 +341,21 @@ export namespace Compiler {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
-        case '^=':
+        case "^=":
           return actual.startsWith(expected);
-        case '$=':
+        case "$=":
           return actual.endsWith(expected);
-        case '*=':
+        case "*=":
           return actual.includes(expected);
-        case '!=':
+        case "!=":
           return actual !== expected;
-        case '>=':
+        case ">=":
           return actual >= expected;
-        case '>':
+        case ">":
           return actual > expected;
-        case '<=':
+        case "<=":
           return actual <= expected;
-        case '<':
+        case "<":
           return actual < expected;
         default:
           return actual === expected;
@@ -339,18 +365,18 @@ export namespace Compiler {
     // actual value can be a string or the source code of a typescript node.
     actualValue(node: AllType): string {
       if (node === null) {
-        return 'null';
+        return "null";
       }
       if (node === undefined) {
-        return 'undefined';
+        return "undefined";
       }
-      if (typeof node === 'string') {
+      if (typeof node === "string") {
         return node;
       }
-      if (typeof node === 'number') {
+      if (typeof node === "number") {
         return node.toString();
       }
-      if (typeof node === 'boolean') {
+      if (typeof node === "boolean") {
         return node.toString();
       }
       return NodeQuery.getAdapter().getSource(node);
@@ -366,8 +392,8 @@ export namespace Compiler {
 
   // ArrayValue is an array of Value.
   export class ArrayValue {
-    private value: Value
-    private rest: ArrayValue
+    private value: Value;
+    private rest: ArrayValue;
 
     constructor({ value, rest }: ArrayValueParameters) {
       this.value = value;
@@ -379,9 +405,15 @@ export namespace Compiler {
       const expected = this.expectedValue();
       switch (operator) {
         case "not_in":
-          return !Array.isArray(node) && expected.every(expectedValue => expectedValue.match(node, "!="));
+          return (
+            !Array.isArray(node) &&
+            expected.every((expectedValue) => expectedValue.match(node, "!="))
+          );
         case "in":
-          return !Array.isArray(node) && expected.some(expectedValue => expectedValue.match(node, "=="));
+          return (
+            !Array.isArray(node) &&
+            expected.some((expectedValue) => expectedValue.match(node, "=="))
+          );
         case "!=":
           return Array.isArray(node) && this.compareNotEqual(node, expected);
         default:
@@ -396,7 +428,7 @@ export namespace Compiler {
         expected.push(this.value);
       }
       if (this.rest) {
-        expected = expected.concat(this.rest.expectedValue())
+        expected = expected.concat(this.rest.expectedValue());
       }
       return expected;
     }
@@ -414,7 +446,7 @@ export namespace Compiler {
       }
 
       for (let index = 0; index < actual.length; index++) {
-        if (expected[index].match(actual[index], '!=')) {
+        if (expected[index].match(actual[index], "!=")) {
           return true;
         }
       }
@@ -428,7 +460,7 @@ export namespace Compiler {
       }
 
       for (let index = 0; index < actual.length; index++) {
-        if (!expected[index].match(actual[index], '==')) {
+        if (!expected[index].match(actual[index], "==")) {
           return false;
         }
       }
@@ -470,7 +502,7 @@ export namespace Compiler {
   export class Null extends Value {
     // expected value is already 'null'
     expectedValue(): string {
-      return 'null';
+      return "null";
     }
   }
 
@@ -483,15 +515,15 @@ export namespace Compiler {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
-        case '!=':
+        case "!=":
           return actual !== expected;
-        case '>=':
+        case ">=":
           return actual >= expected;
-        case '>':
+        case ">":
           return actual > expected;
-        case '<=':
+        case "<=":
           return actual <= expected;
-        case '<':
+        case "<":
           return actual < expected;
         default:
           return actual === expected;
@@ -516,7 +548,7 @@ export namespace Compiler {
     match(node: Node, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = new RegExp(this.expectedValue());
-      if (operator === '!~') {
+      if (operator === "!~") {
         return !expected.test(actual);
       } else {
         return expected.test(actual);
@@ -556,7 +588,7 @@ export namespace Compiler {
   export class Undefined extends Value {
     // expected value is already 'undefined'
     expectedValue(): string {
-      return 'undefined';
+      return "undefined";
     }
   }
 }
