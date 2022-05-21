@@ -49,12 +49,12 @@ export namespace Compiler {
       return this.queryNodes(node).length !== 0;
     }
 
-    queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
-      const matchingNodes = this.selector.queryNodes(node, descendantMatch);
+    queryNodes(node: Node | Node[]): Node[] {
+      const matchingNodes = this.selector.queryNodes(node);
       if (!this.rest) {
         return matchingNodes;
       }
-      return matchingNodes.flatMap(matchingNode => this.findNodesByRest(matchingNode, descendantMatch));
+      return matchingNodes.flatMap(matchingNode => this.findNodesByRest(matchingNode));
     }
 
     toString(): string {
@@ -68,11 +68,11 @@ export namespace Compiler {
       return result.join(' ');
     }
 
-    private findNodesByRest(node: Node | Node[], descendantMatch = true): Node[] {
+    private findNodesByRest(node: Node | Node[]): Node[] {
       if (!this.rest) {
         return [];
       }
-      return this.rest.queryNodes(node, descendantMatch)
+      return this.rest.queryNodes(node)
     }
   }
 
@@ -108,19 +108,19 @@ export namespace Compiler {
       return isNode(node) && (!this.basicSelector || this.basicSelector.match(node)) && this.matchPseudoClass(node);
     }
 
-    queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
+    queryNodes(node: Node | Node[]): Node[] {
       if (this.relationship && !Array.isArray(node)) {
         return this.findNodesByRelationship(node);
       }
 
       if (Array.isArray(node)) {
-        return node.flatMap(childNode => this.queryNodes(childNode, descendantMatch));
+        return node.flatMap(childNode => this.queryNodes(childNode));
       }
 
       if (this.gotoScope) {
         const targetNode = getTargetNode(node, this.gotoScope);
         if (this.rest) {
-          return this.rest.queryNodes(targetNode, false)
+          return this.rest.queryNodes(targetNode)
         }
       }
 
@@ -128,7 +128,7 @@ export namespace Compiler {
       if (this.match(node)) {
         nodes.push(node);
       }
-      if (descendantMatch && this.basicSelector) {
+      if (this.basicSelector) {
         this.handleRecursiveChild(node, (childNode) => {
           if (this.match(childNode)) {
             nodes.push(childNode);
