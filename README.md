@@ -242,6 +242,20 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 
 It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node
 
+### matches pseudo selector
+
+```
+.ClassDeclaration:has(.Constructor)
+```
+
+It matches ClassDeclaration node if it has a Constructor node
+
+```
+.ClassDeclaration:not_has(.Constructor)
+```
+
+It matches ClassDeclaration node if it does not have a Constructor node
+
 ## Write Adapter
 
 Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
