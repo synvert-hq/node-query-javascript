@@ -1,7 +1,7 @@
-import NodeQuery from '../src/index';
-import { adapter } from '../src/typescript-adapter';
-import SyntaxError from '../src/syntax-error';
-import { parseCode } from './helper';
+import NodeQuery from "../src/index";
+import { adapter } from "../src/typescript-adapter";
+import SyntaxError from "../src/syntax-error";
+import { parseCode } from "./helper";
 
 describe("NodeQuery", () => {
   it("configure adapter", () => {
@@ -10,7 +10,7 @@ describe("NodeQuery", () => {
   });
 
   describe("parse", () => {
-    const node = parseCode( `
+    const node = parseCode(`
       interface User {
         name: string;
         id: number;
@@ -33,12 +33,14 @@ describe("NodeQuery", () => {
     `);
 
     it("parses nodes", () => {
-      const nodeQuery = new NodeQuery('.ClassDeclaration .PropertyDeclaration');
-      expect(nodeQuery.parse(node).length).toEqual(3)
+      const nodeQuery = new NodeQuery(".ClassDeclaration .PropertyDeclaration");
+      expect(nodeQuery.parse(node).length).toEqual(3);
     });
 
     it("raises SyntaxError", () => {
-      expect(() => { new NodeQuery('.ClassDeclaration .') }).toThrow(SyntaxError)
+      expect(() => {
+        new NodeQuery(".ClassDeclaration .");
+      }).toThrow(SyntaxError);
     });
   });
 });

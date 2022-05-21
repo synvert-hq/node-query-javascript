@@ -1,5 +1,5 @@
-import Adapter from './adapter';
-import { Node, SyntaxKind } from 'typescript';
+import Adapter from "./adapter";
+import { Node, SyntaxKind } from "typescript";
 
 class TypescriptAdapter implements Adapter {
   getNodeType(node: Node): string {
@@ -12,8 +12,8 @@ class TypescriptAdapter implements Adapter {
 
   getChildren(node: Node): Node[] {
     const children: Node[] = [];
-    node.forEachChild(childNode => {
-      children.push(childNode)
+    node.forEachChild((childNode) => {
+      children.push(childNode);
     });
     return children;
   }
@@ -21,7 +21,7 @@ class TypescriptAdapter implements Adapter {
   getSiblings(node: Node): Node[] {
     const siblings: Node[] = [];
     let matched = false;
-    node.parent.forEachChild(childNode => {
+    node.parent.forEachChild((childNode) => {
       if (matched) {
         siblings.push(childNode);
       }
