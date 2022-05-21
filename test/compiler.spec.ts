@@ -180,9 +180,9 @@ describe("Compiler", () => {
     });
   });
 
-  describe("Selector", () => {
+  describe("BasicSelector", () => {
     it("matches node", () => {
-      const selector = new Compiler.Selector({
+      const basicSelector = new Compiler.BasicSelector({
         nodeType: 'NewExpression',
         attributeList: new Compiler.AttributeList({
           attribute: new Compiler.Attribute({ key: 'arguments.0', value: new Compiler.String('Murphy'), operator: '==' }),
@@ -192,6 +192,20 @@ describe("Compiler", () => {
               attribute: new Compiler.Attribute({ key: 'arguments.2', value: new Compiler.Boolean(true), operator: '==' })
             })
           })
+        })
+      });
+      const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0].expression;
+      expect(basicSelector.match(node)).toBeTruthy();
+    });
+  });
+
+  describe("Selector", () => {
+    it("matches node", () => {
+      const selector = new Compiler.Selector({
+        basicSelector: new Compiler.BasicSelector({ nodeType: 'NewExpression' }),
+        pseudoClass: 'has',
+        pseudoSelector: new Compiler.Selector({
+          basicSelector: new Compiler.BasicSelector({ nodeType: 'StringLiteral', text: 'Murphy' })
         })
       });
       const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0].expression;

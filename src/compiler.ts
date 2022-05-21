@@ -69,6 +69,8 @@ export namespace Compiler {
     rest?: Selector;
     basicSelector?: BasicSelector;
     relationship?: string;
+    pseudoClass?: string;
+    pseudoSelector?: Selector;
   }
 
   export class Selector {
@@ -76,17 +78,21 @@ export namespace Compiler {
     private rest?: Selector;
     private basicSelector?: BasicSelector;
     private relationship?: string;
+    private pseudoClass?: string;
+    private pseudoSelector?: Selector;
 
-    constructor({ gotoScope, rest, basicSelector, relationship }: SelectorParameters) {
+    constructor({ gotoScope, rest, basicSelector, relationship, pseudoClass, pseudoSelector }: SelectorParameters) {
       this.gotoScope = gotoScope;
       this.rest = rest;
       this.basicSelector = basicSelector;
       this.relationship = relationship;
+      this.pseudoClass = pseudoClass;
+      this.pseudoSelector = pseudoSelector;
     }
 
     // check if the node matches the selector.
     match(node: Node): boolean {
-      return (!this.basicSelector || this.basicSelector.match(node));
+      return (!this.basicSelector || this.basicSelector.match(node)) && this.matchPseudoClass(node);
     }
 
     queryNodes(node: Node | Node[], descendantMatch = true): Node[] {
@@ -109,7 +115,7 @@ export namespace Compiler {
       if (this.match(node)) {
         nodes.push(node);
       }
-      if (descendantMatch) {
+      if (descendantMatch && this.basicSelector) {
         this.handleRecursiveChild(node, (childNode) => {
           if (this.match(childNode)) {
             nodes.push(childNode);
@@ -132,6 +138,9 @@ export namespace Compiler {
       }
       if (this.basicSelector) {
         result.push(this.basicSelector.toString());
+      }
+      if (this.pseudoClass) {
+        result.push(`:${this.pseudoClass}(${this.pseudoSelector})`)
       }
       return result.join('');
     }
@@ -170,6 +179,17 @@ export namespace Compiler {
         handler(childNode);
         this.handleRecursiveChild(childNode, handler);
       });
+    }
+
+    private matchPseudoClass(node: Node): boolean {
+      switch (this.pseudoClass) {
+        case 'has':
+          return this.pseudoSelector!.queryNodes(node).length !== 0;
+        case 'not_has':
+          return this.pseudoSelector!.queryNodes(node).length === 0;
+        default:
+          return true;
+      }
     }
   }
 

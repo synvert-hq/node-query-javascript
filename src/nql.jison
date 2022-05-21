@@ -11,6 +11,7 @@ expression
 
 selector
   : basic_selector { $$ = new Compiler.Selector({ basicSelector: $1 }) }
+  | PSEUDO_CLASS OPEN_SELECTOR selector CLOSE_SELECTOR { $$ = new Compiler.Selector({ pseudoClass: $1, pseudoSelector: $3 }) }
   | RELATIONSHIP basic_selector { $$ = new Compiler.Selector({ relationship: $1, basicSelector: $2 }) }
   | GOTO_SCOPE selector { $$ = new Compiler.Selector({ gotoScope: $1, rest: $2 }) }
   ;

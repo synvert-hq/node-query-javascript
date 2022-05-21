@@ -38,6 +38,16 @@ describe('Parser', () => {
       assertParser(source);
     });
 
+    it("parses has pseudo class selector", () => {
+      const source = ".ClassDeclaration :has(.MethodDefinition[key=constructor])";
+      assertParser(source);
+    });
+
+    it("parses not_has pseudo class selector", () => {
+      const source = ".ClassDeclaration :has(.MethodDefinition[key=constructor])";
+      assertParser(source);
+    });
+
     it("parses multiple attributes", () => {
       const source = '.MemberExpression[object=module][property=exports]';
       assertParser(source);
@@ -265,6 +275,16 @@ describe('Parser', () => {
     it("matches subsequent sibling nodes", () => {
       const expression = parseExpression(".PropertyDeclaration[name=name] ~ .PropertyDeclaration")
       expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(1, 3));
+    });
+
+    it.only("matches :has pseudo selector", () => {
+      const expression = parseExpression(".ClassDeclaration:has(.Constructor)");
+      expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
+    });
+
+    it("matches :not_has pseudo selector", () => {
+      const expression = parseExpression(".ClassDeclaration:not_has(.Constructor)");
+      expect(expression.queryNodes(node)).toEqual([]);
     });
 
     it("matches multiple nodes", () => {

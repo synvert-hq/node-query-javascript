@@ -11,7 +11,7 @@ IDENTIFIER_VALUE ([\$\.\w]+)
 
 "."[a-zA-Z]+
         %{
-                yytext = yytext.substring(1, yytext.length);
+                yytext = yytext.substring(1);
                 return 'NODE_TYPE';
         %}
 "["
@@ -190,4 +190,16 @@ IDENTIFIER_VALUE ([\$\.\w]+)
 ">"        return 'RELATIONSHIP';
 "+"        return 'RELATIONSHIP';
 "~"        return 'RELATIONSHIP';
+":has"
+        %{
+                yytext = yytext.substring(1);
+                return 'PSEUDO_CLASS';
+        %}
+":not_has"
+        %{
+                yytext = yytext.substring(1);
+                return 'PSEUDO_CLASS';
+        %}
+"("        return 'OPEN_SELECTOR';
+")"        return 'CLOSE_SELECTOR';
 {IDENTIFIER}       return 'GOTO_SCOPE';
