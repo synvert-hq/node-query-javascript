@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git@github.com/xinminlabs/node-query-typescript"
+    "url": "https://git@github.com/xinminlabs/node-query-javascript"
   },
   "keywords": [
     "ast",
@@ -25,9 +25,9 @@
   "author": "Richard Huang",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xinminlabs/node-query-typescript/issues"
+    "url": "https://github.com/xinminlabs/node-query-javascript/issues"
   },
-  "homepage": "https://github.com/xinminlabs/node-query-typescript#readme",
+  "homepage": "https://github.com/xinminlabs/node-query-javascript#readme",
   "dependencies": {
     "typescript": "^4.6.4"
   },

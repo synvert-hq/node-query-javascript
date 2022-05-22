@@ -1,5 +1,5 @@
 [![npm version](https://badge.fury.io/js/@xinminlabs%2Fnode-query.svg)](https://badge.fury.io/js/@xinminlabs%2Fnode-query)
-[![CI](https://github.com/xinminlabs/node-query-typescript/actions/workflows/main.yml/badge.svg)](https://github.com/xinminlabs/node-query-typescript/actions/workflows/main.yml)
+[![CI](https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml/badge.svg)](https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml)
 
 # NodeQuery
 
@@ -260,14 +260,14 @@ It matches ClassDeclaration node if it does not have a Constructor node
 ## Write Adapter
 
 Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
-we define an [Adapter](https://github.com/xinminlabs/node-query-typescript/blob/main/src/adapter.ts) interface,
+we define an [Adapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/adapter.ts) interface,
 if you implement the Adapter interface, you can set it as NodeQuery's adapter.
 
 ```
 NodeQuery.configure(new EspreeAdapter())
 ```
 
-1. NodeQuery uses [TypescriptAdapter](https://github.com/xinminlabs/node-query-typescript/blob/main/src/typescript-adapter.ts) by default
+1. NodeQuery uses [TypescriptAdapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/typescript-adapter.ts) by default
 
 2. We implements [EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/master/lib/espree-adapter.js) for eslint espree.
 
