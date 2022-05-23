@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.4.0 (2022-05-22)
+
+* Make Node generic
+
 ## 1.3.0 (2022-05-21)
 
 * Support Regexp in array value
