@@ -17,7 +17,7 @@ function getTargetNode<T>(node: T, keys: string): T {
     }
   });
   return target;
-};
+}
 
 function isNode<T>(node: T | PrimitiveTypes): boolean {
   if (node === null) {
@@ -27,7 +27,7 @@ function isNode<T>(node: T | PrimitiveTypes): boolean {
     return false;
   }
   return true;
-};
+}
 
 function getAdapter<T>(): Adapter<T> {
   return NodeQuery.getAdapter();
