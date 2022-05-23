@@ -1,12 +1,12 @@
 import NodeQuery from "../src/index";
-import { adapter } from "../src/typescript-adapter";
+import typescriptAdapter from "../src/typescript-adapter";
 import SyntaxError from "../src/syntax-error";
 import { parseCode } from "./helper";
 
 describe("NodeQuery", () => {
   it("configure adapter", () => {
-    NodeQuery.configure(adapter);
-    expect(NodeQuery.getAdapter()).toEqual(adapter);
+    NodeQuery.configure(typescriptAdapter);
+    expect(NodeQuery.getAdapter()).toEqual(typescriptAdapter);
   });
 
   describe("parse", () => {

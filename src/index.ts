@@ -1,19 +1,19 @@
 import Adapter from "./adapter";
-import { Node, adapter as typescriptAdapter } from "./typescript-adapter";
+import typescriptAdapter from "./typescript-adapter";
 import SyntaxError from "./syntax-error";
 const { parser } = require("./parser");
 const { Expression } = require("./compiler");
 
-class NodeQuery {
+class NodeQuery<T> {
   private expression: InstanceType<typeof Expression>;
 
-  private static adapter: Adapter;
+  private static adapter?: Adapter<any>;
 
-  static configure(adapter: Adapter) {
+  static configure(adapter: Adapter<any>) {
     this.adapter = adapter;
   }
 
-  static getAdapter(): Adapter {
+  static getAdapter(): Adapter<any> {
     return this.adapter || typescriptAdapter;
   }
 
@@ -30,7 +30,7 @@ class NodeQuery {
     }
   }
 
-  parse(node: Node): Node[] {
+  parse(node: T): T[] {
     return this.expression.queryNodes(node);
   }
 }

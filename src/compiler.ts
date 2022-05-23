@@ -1,9 +1,9 @@
-import { Node } from "typescript";
+import Adapter from "./adapter";
 import NodeQuery from "./index";
 
-type AllType = Node | string | number | boolean | null | undefined;
+type PrimitiveTypes = string | number | boolean | null | undefined;
 
-const getTargetNode = (node: Node, keys: string): Node => {
+function getTargetNode<T>(node: T, keys: string): T {
   let target = node as any;
   keys.split(".").forEach((key) => {
     if (!target) return;
@@ -19,7 +19,7 @@ const getTargetNode = (node: Node, keys: string): Node => {
   return target;
 };
 
-const isNode = (node: AllType): boolean => {
+function isNode<T>(node: T | PrimitiveTypes): boolean {
   if (node === null) {
     return false;
   }
@@ -29,27 +29,31 @@ const isNode = (node: AllType): boolean => {
   return true;
 };
 
+function getAdapter<T>(): Adapter<T> {
+  return NodeQuery.getAdapter();
+}
+
 export namespace Compiler {
-  interface ExpressionParameters {
-    selector: Selector;
-    rest?: Expression;
+  interface ExpressionParameters<T> {
+    selector: Selector<T>;
+    rest?: Expression<T>;
   }
 
-  export class Expression {
-    private selector: Selector;
-    private rest?: Expression;
+  export class Expression<T> {
+    private selector: Selector<T>;
+    private rest?: Expression<T>;
 
-    constructor({ selector, rest }: ExpressionParameters) {
+    constructor({ selector, rest }: ExpressionParameters<T>) {
       this.selector = selector;
       this.rest = rest;
     }
 
     // check if the node matches the expression.
-    match(node: Node) {
+    match(node: T) {
       return this.queryNodes(node).length !== 0;
     }
 
-    queryNodes(node: Node | Node[]): Node[] {
+    queryNodes(node: T | T[]): T[] {
       const matchingNodes = this.selector.queryNodes(node);
       if (!this.rest) {
         return matchingNodes;
@@ -70,7 +74,7 @@ export namespace Compiler {
       return result.join(" ");
     }
 
-    private findNodesByRest(node: Node | Node[]): Node[] {
+    private findNodesByRest(node: T | T[]): T[] {
       if (!this.rest) {
         return [];
       }
@@ -78,22 +82,22 @@ export namespace Compiler {
     }
   }
 
-  interface SelectorParameters {
+  interface SelectorParameters<T> {
     gotoScope?: string;
-    rest?: Selector;
-    basicSelector?: BasicSelector;
+    rest?: Selector<T>;
+    basicSelector?: BasicSelector<T>;
     relationship?: string;
     pseudoClass?: string;
-    pseudoSelector?: Selector;
+    pseudoSelector?: Selector<T>;
   }
 
-  export class Selector {
+  export class Selector<T> {
     private gotoScope?: string;
-    private rest?: Selector;
-    private basicSelector?: BasicSelector;
+    private rest?: Selector<T>;
+    private basicSelector?: BasicSelector<T>;
     private relationship?: string;
     private pseudoClass?: string;
-    private pseudoSelector?: Selector;
+    private pseudoSelector?: Selector<T>;
 
     constructor({
       gotoScope,
@@ -102,7 +106,7 @@ export namespace Compiler {
       relationship,
       pseudoClass,
       pseudoSelector,
-    }: SelectorParameters) {
+    }: SelectorParameters<T>) {
       this.gotoScope = gotoScope;
       this.rest = rest;
       this.basicSelector = basicSelector;
@@ -112,7 +116,7 @@ export namespace Compiler {
     }
 
     // check if the node matches the selector.
-    match(node: Node): boolean {
+    match(node: T): boolean {
       // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
       return (
         isNode(node) &&
@@ -121,7 +125,7 @@ export namespace Compiler {
       );
     }
 
-    queryNodes(node: Node | Node[]): Node[] {
+    queryNodes(node: T | T[]): T[] {
       if (this.relationship && !Array.isArray(node)) {
         return this.findNodesByRelationship(node);
       }
@@ -137,7 +141,7 @@ export namespace Compiler {
         }
       }
 
-      const nodes: Node[] = [];
+      const nodes: T[] = [];
       if (this.match(node)) {
         nodes.push(node);
       }
@@ -171,11 +175,11 @@ export namespace Compiler {
       return result.join("");
     }
 
-    private findNodesByRelationship(node: Node): Node[] {
-      const nodes: Node[] = [];
+    private findNodesByRelationship(node: T): T[] {
+      const nodes: T[] = [];
       switch (this.relationship) {
         case ">":
-          NodeQuery.getAdapter()
+          getAdapter<T>()
             .getChildren(node)
             .forEach((childNode) => {
               if (this.match(childNode)) {
@@ -184,13 +188,13 @@ export namespace Compiler {
             });
           break;
         case "+":
-          const nextSibling = NodeQuery.getAdapter().getSiblings(node)[0];
+          const nextSibling = getAdapter<T>().getSiblings(node)[0];
           if (nextSibling && this.match(nextSibling)) {
             nodes.push(nextSibling);
           }
           break;
         case "~":
-          NodeQuery.getAdapter()
+          getAdapter<T>()
             .getSiblings(node)
             .forEach((siblingNode) => {
               if (this.match(siblingNode)) {
@@ -205,10 +209,10 @@ export namespace Compiler {
     }
 
     private handleRecursiveChild(
-      node: Node,
-      handler: (childNode: Node) => void
+      node: T,
+      handler: (childNode: T) => void
     ): void {
-      NodeQuery.getAdapter()
+      getAdapter<T>()
         .getChildren(node)
         .forEach((childNode) => {
           handler(childNode);
@@ -216,7 +220,7 @@ export namespace Compiler {
         });
     }
 
-    private matchPseudoClass(node: Node): boolean {
+    private matchPseudoClass(node: T): boolean {
       switch (this.pseudoClass) {
         case "has":
           return this.pseudoSelector!.queryNodes(node).length !== 0;
@@ -228,24 +232,24 @@ export namespace Compiler {
     }
   }
 
-  interface BasicSelectorParameters {
+  interface BasicSelectorParameters<T> {
     nodeType: string;
-    attributeList?: AttributeList;
+    attributeList?: AttributeList<T>;
   }
 
-  export class BasicSelector {
+  export class BasicSelector<T> {
     private nodeType: string;
-    private attributeList?: AttributeList;
+    private attributeList?: AttributeList<T>;
 
-    constructor({ nodeType, attributeList }: BasicSelectorParameters) {
+    constructor({ nodeType, attributeList }: BasicSelectorParameters<T>) {
       this.nodeType = nodeType;
       this.attributeList = attributeList;
     }
 
     // check if the node matches the selector.
-    match(node: Node): boolean {
+    match(node: T): boolean {
       return (
-        this.nodeType == NodeQuery.getAdapter().getNodeType(node) &&
+        this.nodeType == getAdapter<T>().getNodeType(node) &&
         (!this.attributeList || this.attributeList.match(node))
       );
     }
@@ -259,22 +263,22 @@ export namespace Compiler {
     }
   }
 
-  interface AttributeListParameters {
-    attribute: Attribute;
-    rest?: AttributeList;
+  interface AttributeListParameters<T> {
+    attribute: Attribute<T>;
+    rest?: AttributeList<T>;
   }
 
-  export class AttributeList {
-    private attribute: Attribute;
-    private rest?: AttributeList;
+  export class AttributeList<T> {
+    private attribute: Attribute<T>;
+    private rest?: AttributeList<T>;
 
-    constructor({ attribute, rest }: AttributeListParameters) {
+    constructor({ attribute, rest }: AttributeListParameters<T>) {
       this.attribute = attribute;
       this.rest = rest;
     }
 
     // check if the node matches the attribute list.
-    match(node: Node): boolean {
+    match(node: T): boolean {
       return (
         this.attribute.match(node) && (!this.rest || this.rest.match(node))
       );
@@ -288,25 +292,25 @@ export namespace Compiler {
     }
   }
 
-  interface AttributeParameters {
+  interface AttributeParameters<T> {
     key: string;
-    value: Value | ArrayValue | Selector;
+    value: Value<T> | ArrayValue<T> | Selector<T>;
     operator: string;
   }
 
-  export class Attribute {
+  export class Attribute<T> {
     private key: string;
-    private value: Value | ArrayValue | Selector;
+    private value: Value<T> | ArrayValue<T> | Selector<T>;
     private operator: string;
 
-    constructor({ key, value, operator }: AttributeParameters) {
+    constructor({ key, value, operator }: AttributeParameters<T>) {
       this.key = key;
       this.value = value;
       this.operator = operator;
     }
 
     // check if the node matches the attribute.
-    match(node: Node): boolean {
+    match(node: T): boolean {
       return this.value.match(getTargetNode(node, this.key), this.operator);
     }
 
@@ -335,9 +339,9 @@ export namespace Compiler {
 
   // Value is an atom value,
   // it can be a Boolean, Null, Number, Undefined, String or Identifier.
-  abstract class Value {
+  abstract class Value<T> {
     // check if the actual value matches the expected value.
-    match(node: Node, operator: string): boolean {
+    match(node: T, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
@@ -363,7 +367,7 @@ export namespace Compiler {
     }
 
     // actual value can be a string or the source code of a typescript node.
-    actualValue(node: AllType): string {
+    actualValue(node: T | PrimitiveTypes): string {
       if (node === null) {
         return "null";
       }
@@ -379,29 +383,29 @@ export namespace Compiler {
       if (typeof node === "boolean") {
         return node.toString();
       }
-      return NodeQuery.getAdapter().getSource(node);
+      return getAdapter<T>().getSource(node);
     }
 
     abstract expectedValue(): string;
   }
 
-  interface ArrayValueParameters {
-    value: Value;
-    rest: ArrayValue;
+  interface ArrayValueParameters<T> {
+    value: Value<T>;
+    rest: ArrayValue<T>;
   }
 
   // ArrayValue is an array of Value.
-  export class ArrayValue {
-    private value: Value;
-    private rest: ArrayValue;
+  export class ArrayValue<T> {
+    private value: Value<T>;
+    private rest: ArrayValue<T>;
 
-    constructor({ value, rest }: ArrayValueParameters) {
+    constructor({ value, rest }: ArrayValueParameters<T>) {
       this.value = value;
       this.rest = rest;
     }
 
     // check if the actual value matches the expected value.
-    match(node: Node | Node[], operator: string): boolean {
+    match(node: T | T[], operator: string): boolean {
       const expected = this.expectedValue();
       switch (operator) {
         case "not_in":
@@ -422,8 +426,8 @@ export namespace Compiler {
     }
 
     // expected value is an array of Value.
-    expectedValue(): Value[] {
-      let expected: Value[] = [];
+    expectedValue(): Value<T>[] {
+      let expected: Value<T>[] = [];
       if (this.value) {
         expected.push(this.value);
       }
@@ -440,7 +444,7 @@ export namespace Compiler {
       return this.value.toString();
     }
 
-    private compareNotEqual(actual: Node[], expected: Value[]) {
+    private compareNotEqual(actual: T[], expected: Value<T>[]) {
       if (expected.length !== actual.length) {
         return true;
       }
@@ -454,7 +458,7 @@ export namespace Compiler {
       return false;
     }
 
-    private compareEqual(actual: Node[], expected: Value[]) {
+    private compareEqual(actual: T[], expected: Value<T>[]) {
       if (expected.length !== actual.length) {
         return false;
       }
@@ -469,7 +473,7 @@ export namespace Compiler {
     }
   }
 
-  export class Boolean extends Value {
+  export class Boolean<T> extends Value<T> {
     constructor(private value: boolean) {
       super();
     }
@@ -484,7 +488,7 @@ export namespace Compiler {
     }
   }
 
-  export class Identifier extends Value {
+  export class Identifier<T> extends Value<T> {
     constructor(private value: string) {
       super();
     }
@@ -499,19 +503,19 @@ export namespace Compiler {
     }
   }
 
-  export class Null extends Value {
+  export class Null<T> extends Value<T> {
     // expected value is already 'null'
     expectedValue(): string {
       return "null";
     }
   }
 
-  export class Number extends Value {
+  export class Number<T> extends Value<T> {
     constructor(private value: number) {
       super();
     }
 
-    match(node: Node, operator: string): boolean {
+    match(node: T, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
@@ -540,12 +544,12 @@ export namespace Compiler {
     }
   }
 
-  export class Regexp extends Value {
+  export class Regexp<T> extends Value<T> {
     constructor(private value: string) {
       super();
     }
 
-    match(node: Node, operator: string): boolean {
+    match(node: T, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = new RegExp(this.expectedValue());
       if (operator === "!~") {
@@ -564,13 +568,13 @@ export namespace Compiler {
     }
   }
 
-  export class String extends Value {
+  export class String<T> extends Value<T> {
     constructor(private value: string) {
       super();
     }
 
     // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
-    actualValue(node: string | Node): string {
+    actualValue(node: T | string): string {
       const value = super.actualValue(node);
       return value.substring(1, value.length - 1);
     }
@@ -585,7 +589,7 @@ export namespace Compiler {
     }
   }
 
-  export class Undefined extends Value {
+  export class Undefined<T> extends Value<T> {
     // expected value is already 'undefined'
     expectedValue(): string {
       return "undefined";

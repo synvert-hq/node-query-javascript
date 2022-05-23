@@ -1,7 +1,7 @@
 import Adapter from "./adapter";
 import { Node, SyntaxKind } from "typescript";
 
-class TypescriptAdapter implements Adapter {
+class TypescriptAdapter implements Adapter<Node> {
   getNodeType(node: Node): string {
     return SyntaxKind[node.kind];
   }
@@ -35,4 +35,4 @@ class TypescriptAdapter implements Adapter {
 
 const adapter = new TypescriptAdapter();
 
-export { Node, adapter };
+export default adapter;

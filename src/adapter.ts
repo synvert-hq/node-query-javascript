@@ -1,10 +1,8 @@
-import { Node } from "typescript";
-
-interface Adapter {
-  getNodeType(node: Node): string;
-  getSource(node: Node): string;
-  getChildren(node: Node): Node[];
-  getSiblings(node: Node): Node[];
+interface Adapter<T> {
+  getNodeType(node: T): string;
+  getSource(node: T): string;
+  getChildren(node: T): T[];
+  getSiblings(node: T): T[];
 }
 
 export default Adapter;
