@@ -1,4 +1,5 @@
 src/
 test/
+.github/
 tsconfig.*
 jest.config.js
