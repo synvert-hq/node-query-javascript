@@ -267,9 +267,14 @@ if you implement the Adapter interface, you can set it as NodeQuery's adapter.
 NodeQuery.configure(new EspreeAdapter())
 ```
 
-1. NodeQuery uses [TypescriptAdapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/typescript-adapter.ts) by default
+Here are some examples:
 
-2. We implements [EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/master/lib/espree-adapter.js) for eslint espree.
+1. [javascript version EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/javascript/lib/espree-adapter.js)
+
+2. [typescript version EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/master/src/espree-adapter.ts)
+
+3. [TypescriptAdapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/typescript-adapter.ts)
+
 
 ## Contributing Guide
 
