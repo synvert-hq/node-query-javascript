@@ -33,6 +33,4 @@ class TypescriptAdapter implements Adapter<Node> {
   }
 }
 
-const adapter = new TypescriptAdapter();
-
-export default adapter;
+export default TypescriptAdapter;

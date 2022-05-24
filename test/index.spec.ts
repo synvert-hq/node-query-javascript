@@ -1,10 +1,11 @@
 import NodeQuery from "../src/index";
-import typescriptAdapter from "../src/typescript-adapter";
+import TypescriptAdapter from "../src/typescript-adapter";
 import SyntaxError from "../src/syntax-error";
 import { parseCode } from "./helper";
 
 describe("NodeQuery", () => {
   it("configure adapter", () => {
+    const typescriptAdapter = new TypescriptAdapter();
     NodeQuery.configure(typescriptAdapter);
     expect(NodeQuery.getAdapter()).toEqual(typescriptAdapter);
   });
