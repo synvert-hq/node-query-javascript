@@ -576,7 +576,10 @@ export namespace Compiler {
     // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
     actualValue(node: T | string): string {
       const value = super.actualValue(node);
-      return value.substring(1, value.length - 1);
+      if (value[0] === '"' || value[0] === '"') {
+        return value.substring(1, value.length - 1);
+      }
+      return value;
     }
 
     // expected value returns the value.
