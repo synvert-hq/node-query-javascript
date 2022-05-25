@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.4.1 (2022-05-25)
+
+* String can match without or without quotes
+
 ## 1.4.0 (2022-05-22)
 
 * Make Node generic
