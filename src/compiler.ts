@@ -3,7 +3,7 @@ import NodeQuery from "./index";
 
 type PrimitiveTypes = string | number | boolean | null | undefined;
 
-function getTargetNode<T>(node: T, keys: string): T {
+function getTargetNode<T>(node: T, keys: string): T | PrimitiveTypes {
   let target = node as any;
   keys.split(".").forEach((key) => {
     if (!target) return;
@@ -18,6 +18,22 @@ function getTargetNode<T>(node: T, keys: string): T {
   });
   return target;
 };
+
+function toString<T>(node: T | PrimitiveTypes): string {
+  if (node === null) {
+    return "null";
+  }
+  switch (typeof node) {
+    case "undefined":
+      return "undefined";
+    case "string":
+    case "number":
+    case "boolean":
+      return node.toString();
+    default:
+      return getAdapter<T>().getSource(node);
+  }
+}
 
 function isNode<T>(node: T | PrimitiveTypes): boolean {
   if (node === null) {
@@ -136,8 +152,12 @@ export namespace Compiler {
 
       if (this.gotoScope) {
         const targetNode = getTargetNode(node, this.gotoScope);
+        // TODO: handle if this.rest is undefined
         if (this.rest) {
-          return this.rest.queryNodes(targetNode);
+          if (isNode(targetNode)) {
+            // targetNode is Node or Node[]
+            return this.rest.queryNodes(targetNode as T | T[]);
+          }
         }
       }
 
@@ -311,7 +331,11 @@ export namespace Compiler {
 
     // check if the node matches the attribute.
     match(node: T): boolean {
-      return this.value.match(getTargetNode(node, this.key), this.operator);
+      if (this.value instanceof DynamicAttribute) {
+        this.value.baseNode = node;
+      }
+      const actualValue = getTargetNode(node, this.key);
+      return this.value.match(actualValue as T, this.operator);
     }
 
     toString(): string {
@@ -341,7 +365,7 @@ export namespace Compiler {
   // it can be a Boolean, Null, Number, Undefined, String or Identifier.
   abstract class Value<T> {
     // check if the actual value matches the expected value.
-    match(node: T, operator: string): boolean {
+    match(node: T | PrimitiveTypes, operator: string): boolean {
       const actual = this.actualValue(node);
       const expected = this.expectedValue();
       switch (operator) {
@@ -368,22 +392,7 @@ export namespace Compiler {
 
     // actual value can be a string or the source code of a typescript node.
     actualValue(node: T | PrimitiveTypes): string {
-      if (node === null) {
-        return "null";
-      }
-      if (node === undefined) {
-        return "undefined";
-      }
-      if (typeof node === "string") {
-        return node;
-      }
-      if (typeof node === "number") {
-        return node.toString();
-      }
-      if (typeof node === "boolean") {
-        return node.toString();
-      }
-      return getAdapter<T>().getSource(node);
+      return toString(node);
     }
 
     abstract expectedValue(): string;
@@ -405,7 +414,7 @@ export namespace Compiler {
     }
 
     // check if the actual value matches the expected value.
-    match(node: T | T[], operator: string): boolean {
+    match(node: T | PrimitiveTypes | T[] | PrimitiveTypes[], operator: string): boolean {
       const expected = this.expectedValue();
       switch (operator) {
         case "not_in":
@@ -444,7 +453,7 @@ export namespace Compiler {
       return this.value.toString();
     }
 
-    private compareNotEqual(actual: T[], expected: Value<T>[]) {
+    private compareNotEqual(actual: T[] | PrimitiveTypes[], expected: Value<T>[]) {
       if (expected.length !== actual.length) {
         return true;
       }
@@ -458,7 +467,7 @@ export namespace Compiler {
       return false;
     }
 
-    private compareEqual(actual: T[], expected: Value<T>[]) {
+    private compareEqual(actual: T[] | PrimitiveTypes[], expected: Value<T>[]) {
       if (expected.length !== actual.length) {
         return false;
       }
@@ -470,6 +479,29 @@ export namespace Compiler {
       }
 
       return true;
+    }
+  }
+
+  export class DynamicAttribute<T> extends Value<T> {
+    public baseNode!: T;
+
+    constructor(private value: string) {
+      super();
+    }
+
+    actualValue(node: T): string {
+      if (node === null) {
+        return "null";
+      }
+      if (typeof node === "string") {
+        return node;
+      }
+      return getAdapter<T>().getSource(node);
+    }
+
+    expectedValue(): string {
+      const node = getTargetNode(this.baseNode, this.value);
+      return toString<T>(node);
     }
   }
 
@@ -574,7 +606,7 @@ export namespace Compiler {
     }
 
     // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
-    actualValue(node: T | string): string {
+    actualValue(node: T | PrimitiveTypes): string {
       const value = super.actualValue(node);
       if (value[0] === '"' || value[0] === '"') {
         return value.substring(1, value.length - 1);

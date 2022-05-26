@@ -1,6 +1,7 @@
 NUMBER ([0-9]+("."[0-9]+)?)
 SINGLE_QUOTE_STRING (\'.*?\')
 DOUBLE_QUOTE_STRING (\".*?\")
+DYNAMIC_ATTRIBUTE (\{\{[\.\w]+\}\})
 REGEXP (\/.*?\/)
 IDENTIFIER ([\.\w]+)
 IDENTIFIER_VALUE ([\$\.\w]+)
@@ -88,6 +89,11 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 return 'OPERATOR';
         %}
 <key>({IDENTIFIER})       return 'KEY';
+<value>({DYNAMIC_ATTRIBUTE})
+        %{
+                yytext = yytext.substring(2, yytext.length - 2);
+                return 'DYNAMIC_ATTRIBUTE';
+        %}
 <value>("(")
         %{
                 this.begin('array_value');

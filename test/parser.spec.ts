@@ -323,6 +323,13 @@ describe("Parser", () => {
       ]);
     });
 
+    it("matches dynamic attribute", () => {
+      const expression = parseExpression(".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]");
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList.declarations[0],
+      ]);
+    });
+
     it("matches multiple attributes", () => {
       const expression = parseExpression(
         '.NewExpression[arguments.0="Murphy"][arguments.1=1]'

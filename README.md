@@ -201,6 +201,12 @@ Value of name does not start with User
 
 Value of name matches any of /User/ and /Account/
 
+```
+.PropertyAssignment[name={{initializer}}]
+```
+
+Value of name matches value of intiailizer
+
 ### matches multiple selectors
 
 #### Descendant combinator

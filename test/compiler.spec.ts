@@ -1,3 +1,5 @@
+import { SyntaxKind } from "typescript";
+
 const Compiler = require("../src/compiler");
 const { parseCode } = require("./helper");
 
@@ -103,6 +105,16 @@ describe("Compiler", () => {
       const value = new Compiler.Undefined();
       const node = parseCode("synvert").statements[0];
       expect(value.match(node, "!=")).toBeTruthy();
+    });
+  });
+
+  describe("DynamicAttribute", () => {
+    it("matches dynamic attribute", () => {
+      const value = new Compiler.DynamicAttribute("initializer.text");
+      const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0].declarationList.declarations[0].initializer.properties[0];
+      value.baseNode = baseNode
+      const node = baseNode.name;
+      expect(value.match(node, "==")).toBeTruthy();
     });
   });
 
