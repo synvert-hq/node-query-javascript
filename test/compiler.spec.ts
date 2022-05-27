@@ -1,5 +1,3 @@
-import { SyntaxKind } from "typescript";
-
 const Compiler = require("../src/compiler");
 const { parseCode } = require("./helper");
 
