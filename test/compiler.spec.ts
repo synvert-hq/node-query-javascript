@@ -109,8 +109,9 @@ describe("Compiler", () => {
   describe("DynamicAttribute", () => {
     it("matches dynamic attribute", () => {
       const value = new Compiler.DynamicAttribute("initializer.text");
-      const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0].declarationList.declarations[0].initializer.properties[0];
-      value.baseNode = baseNode
+      const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0]
+        .declarationList.declarations[0].initializer.properties[0];
+      value.baseNode = baseNode;
       const node = baseNode.name;
       expect(value.match(node, "==")).toBeTruthy();
     });

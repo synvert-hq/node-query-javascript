@@ -131,10 +131,7 @@ class Selector<T> {
     return nodes;
   }
 
-  private handleRecursiveChild(
-    node: T,
-    handler: (childNode: T) => void
-  ): void {
+  private handleRecursiveChild(node: T, handler: (childNode: T) => void): void {
     getAdapter<T>()
       .getChildren(node)
       .forEach((childNode) => {

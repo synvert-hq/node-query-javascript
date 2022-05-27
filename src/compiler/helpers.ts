@@ -20,7 +20,7 @@ export function getTargetNode<T>(node: T, keys: string): T | PrimitiveTypes {
     }
   });
   return target;
-};
+}
 
 export function isNode<T>(node: T | PrimitiveTypes): boolean {
   if (node === null) {
@@ -30,7 +30,7 @@ export function isNode<T>(node: T | PrimitiveTypes): boolean {
     return false;
   }
   return true;
-};
+}
 
 export function toString<T>(node: T | PrimitiveTypes): string {
   if (node === null) {

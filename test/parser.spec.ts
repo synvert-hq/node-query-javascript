@@ -324,9 +324,12 @@ describe("Parser", () => {
     });
 
     it("matches dynamic attribute", () => {
-      const expression = parseExpression(".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]");
+      const expression = parseExpression(
+        ".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]"
+      );
       expect(expression.queryNodes(node)).toEqual([
-        (node.statements[2] as ts.VariableStatement).declarationList.declarations[0],
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0],
       ]);
     });
 
