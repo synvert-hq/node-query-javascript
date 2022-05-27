@@ -99,6 +99,14 @@ It matches NewExpression node whose first argument is "Murphy" and second argume
 
 It matches NewExpression node whose escapedText of expression is UserAccount
 
+### matches dynamic attribute
+
+```
+.PropertyAssignment[name={{initializer}}]
+```
+
+It matches PropertyAssignement node whose node value of name matches node value of intiailizer
+
 ### matches nested selector
 
 ```
@@ -200,12 +208,6 @@ Value of name does not start with User
 ```
 
 Value of name matches any of /User/ and /Account/
-
-```
-.PropertyAssignment[name={{initializer}}]
-```
-
-Value of name matches value of intiailizer
 
 ### matches multiple selectors
 

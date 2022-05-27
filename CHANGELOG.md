@@ -1,7 +1,8 @@
 # NodeQuery
 
-## 1.4.1 (2022-05-25)
+## 1.5.0 (2022-05-27)
 
+* Support dynamic attribute
 * String can match without or without quotes
 
 ## 1.4.0 (2022-05-22)
