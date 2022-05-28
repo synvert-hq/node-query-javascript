@@ -1,3 +1,5 @@
+import debug from "debug";
+
 import AttributeList from "./attribute-list";
 import { getAdapter } from "./helpers";
 
@@ -17,10 +19,10 @@ class BasicSelector<T> {
 
   // check if the node matches the selector.
   match(node: T): boolean {
-    return (
-      this.nodeType == getAdapter<T>().getNodeType(node) &&
-      (!this.attributeList || this.attributeList.match(node))
-    );
+    const expectedNodeType = this.nodeType;
+    const actualNodeType = getAdapter<T>().getNodeType(node);
+    debug("node-query:node-type")(`${actualNodeType} == ${expectedNodeType}`);
+    return expectedNodeType == actualNodeType && (!this.attributeList || this.attributeList.match(node));
   }
 
   toString(): string {

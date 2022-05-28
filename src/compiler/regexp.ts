@@ -1,3 +1,4 @@
+import debug from "debug";
 import Value from "./value";
 
 class Regexp<T> extends Value<T> {
@@ -8,6 +9,7 @@ class Regexp<T> extends Value<T> {
   match(node: T, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = new RegExp(this.expectedValue());
+    debug("node-query:attribute")(`${actual} ${operator} ${expected}`);
     if (operator === "!~") {
       return !expected.test(actual);
     } else {

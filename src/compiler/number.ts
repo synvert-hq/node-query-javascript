@@ -1,3 +1,5 @@
+import debug from "debug";
+
 import Value from "./value";
 
 class Number<T> extends Value<T> {
@@ -8,6 +10,7 @@ class Number<T> extends Value<T> {
   match(node: T, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = this.expectedValue();
+    debug("node-query:attribute")(`${actual} ${operator} ${expected}`);
     switch (operator) {
       case "!=":
         return actual !== expected;

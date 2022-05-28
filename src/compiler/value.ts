@@ -1,3 +1,5 @@
+import debug from "debug";
+
 import { type PrimitiveTypes } from "./types";
 import { toSource } from "./helpers";
 
@@ -8,6 +10,7 @@ abstract class Value<T> {
   match(node: T | PrimitiveTypes, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = this.expectedValue();
+    debug("node-query:attribute")(`${actual} ${operator} ${expected}`);
     switch (operator) {
       case "^=":
         return actual.startsWith(expected);

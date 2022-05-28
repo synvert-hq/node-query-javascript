@@ -1,3 +1,5 @@
+import debug from "debug";
+
 import type { PrimitiveTypes } from "./types";
 import Value from "./value";
 
@@ -19,6 +21,7 @@ class ArrayValue<T> {
   // check if the actual value matches the expected value.
   match(node: T | PrimitiveTypes | T[] | PrimitiveTypes[], operator: string): boolean {
     const expected = this.expectedValue();
+    debug("node-query:array-value")(`${operator} ${expected}`)
     switch (operator) {
       case "not_in":
         return (
