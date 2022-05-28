@@ -278,6 +278,16 @@ describe("Parser", () => {
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
+    it("matches multiple nodes", () => {
+      const expression = parseExpression(
+        '.NewExpression[arguments=("Murphy" 1 true)]'
+      );
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
     it("matches nested selector", () => {
       const expression = parseExpression(
         ".VariableDeclaration[initializer=.NewExpression[expression=UserAccount]]"

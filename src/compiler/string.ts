@@ -1,4 +1,4 @@
-import { PrimitiveTypes } from "./types";
+import type { Node } from "./types";
 import Value from "./value";
 
 class String<T> extends Value<T> {
@@ -7,7 +7,7 @@ class String<T> extends Value<T> {
   }
 
   // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
-  actualValue(node: T | PrimitiveTypes): string {
+  actualValue(node: Node<T>): string {
     const value = super.actualValue(node);
     if (value[0] === '"' || value[0] === '"') {
       return value.substring(1, value.length - 1);

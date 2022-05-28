@@ -1,12 +1,12 @@
 import Adapter from "../adapter";
 import NodeQuery from "../index";
-import { PrimitiveTypes } from "./types";
+import type { Node } from "./types";
 
 export function getAdapter<T>(): Adapter<T> {
   return NodeQuery.getAdapter();
 }
 
-export function getTargetNode<T>(node: T, keys: string): T | PrimitiveTypes {
+export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
   let target = node as any;
   keys.split(".").forEach((key) => {
     if (!target) return;
@@ -22,7 +22,11 @@ export function getTargetNode<T>(node: T, keys: string): T | PrimitiveTypes {
   return target;
 };
 
-export function isNode<T>(node: T | PrimitiveTypes): boolean {
+export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
+  if (Array.isArray(node)) {
+    return node.every(n => isNode(n));
+  }
+
   if (node === null) {
     return false;
   }
@@ -32,7 +36,11 @@ export function isNode<T>(node: T | PrimitiveTypes): boolean {
   return true;
 };
 
-export function toString<T>(node: T | PrimitiveTypes): string {
+export function toString<T>(node: Node<T> | Node<T>[]): string {
+  if (Array.isArray(node)) {
+    return `[${node.map(n => toString<T>(n)).join(", ")}]`;
+  }
+
   if (node === null) {
     return "null";
   }

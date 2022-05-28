@@ -1,6 +1,6 @@
 import debug from "debug";
 
-import type { PrimitiveTypes } from "./types";
+import type { Node } from "./types";
 import Value from "./value";
 
 interface ArrayValueParameters<T> {
@@ -19,7 +19,7 @@ class ArrayValue<T> {
   }
 
   // check if the actual value matches the expected value.
-  match(node: T | PrimitiveTypes | T[] | PrimitiveTypes[], operator: string): boolean {
+  match(node: Node<T> | Node<T>[], operator: string): boolean {
     const expected = this.expectedValue();
     debug("node-query:array-value")(`${operator} ${expected}`)
     switch (operator) {
@@ -59,7 +59,7 @@ class ArrayValue<T> {
     return this.value.toString();
   }
 
-  private compareNotEqual(actual: T[] | PrimitiveTypes[], expected: Value<T>[]) {
+  private compareNotEqual(actual: Node<T>[], expected: Value<T>[]) {
     if (expected.length !== actual.length) {
       return true;
     }
@@ -73,7 +73,7 @@ class ArrayValue<T> {
     return false;
   }
 
-  private compareEqual(actual: T[] | PrimitiveTypes[], expected: Value<T>[]) {
+  private compareEqual(actual: Node<T>[], expected: Value<T>[]) {
     if (expected.length !== actual.length) {
       return false;
     }
