@@ -131,6 +131,11 @@ describe("Parser", () => {
       const source = ".ClassDeclaration members .MethodDefinition";
       assertParser(source);
     });
+
+    it("parses * in key", () => {
+      const source = ".ObjectPattern[properties.*.key=.Identifier]";
+      assertParser(source);
+    });
   });
 
   describe("#queryNodes", () => {

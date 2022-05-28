@@ -1,9 +1,9 @@
 NUMBER ([0-9]+("."[0-9]+)?)
 SINGLE_QUOTE_STRING (\'.*?\')
 DOUBLE_QUOTE_STRING (\".*?\")
-DYNAMIC_ATTRIBUTE (\{\{[\.\w]+\}\})
+DYNAMIC_ATTRIBUTE (\{\{[\*\.\w]*\w\}\})
 REGEXP (\/.*?\/)
-IDENTIFIER ([\.\w]+)
+IDENTIFIER ([\*\.\w]*\w)
 IDENTIFIER_VALUE ([\$\.\w]+)
 %s key value array_value
 %options case-insensitive

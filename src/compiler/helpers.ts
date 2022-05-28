@@ -1,3 +1,4 @@
+import debug from "debug";
 import Adapter from "../adapter";
 import NodeQuery from "../index";
 import type { Node } from "./types";
@@ -16,6 +17,8 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
     } else if (typeof target[key] === "function") {
       target = target[key].call(target);
     } else {
+      debug("node-query:get-target-node")(`${getAdapter<T>().getNodeType(target)} ${key} not found`);
+
       target = null;
     }
   });
