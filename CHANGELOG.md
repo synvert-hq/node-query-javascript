@@ -1,7 +1,8 @@
 # NodeQuery
 
-## 1.5.1 (2022-05-28)
+## 1.6.0 (2022-05-28)
 
+* Matches multiple nodes attribute
 * Fix dynamic attribute in jison
 * Add debug
 
