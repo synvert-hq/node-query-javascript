@@ -20,11 +20,11 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
     }
   });
   return target;
-};
+}
 
 export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
   if (Array.isArray(node)) {
-    return node.every(n => isNode(n));
+    return node.every((n) => isNode(n));
   }
 
   if (node === null) {
@@ -34,11 +34,11 @@ export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
     return false;
   }
   return true;
-};
+}
 
 export function toString<T>(node: Node<T> | Node<T>[]): string {
   if (Array.isArray(node)) {
-    return `[${node.map(n => toString<T>(n)).join(", ")}]`;
+    return `[${node.map((n) => toString<T>(n)).join(", ")}]`;
   }
 
   if (node === null) {

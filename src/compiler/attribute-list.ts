@@ -16,9 +16,7 @@ class AttributeList<T> {
 
   // check if the node matches the attribute list.
   match(node: T): boolean {
-    return (
-      this.attribute.match(node) && (!this.rest || this.rest.match(node))
-    );
+    return this.attribute.match(node) && (!this.rest || this.rest.match(node));
   }
 
   toString(): string {
