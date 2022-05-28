@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.6.1 (2022-05-28)
+
+* Make dynamic attribute work with multiple nodes
+
 ## 1.6.0 (2022-05-28)
 
 * Matches multiple nodes attribute
