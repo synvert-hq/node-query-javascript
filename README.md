@@ -11,6 +11,17 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
 - [Installation](#installation)
 - [Usage](#usage)
 - [Node Query Language](#node-query-language)
+  - [matches node type](#matches-node-type)
+  - [matches attribute](#matches-attribute)
+  - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
+  - [matches nested attribute](#matches-nested-attribute)
+  - [matches dynamic attribute](#matches-dynamic-attribute)
+  - [matches nested selector](#matches-nested-selector)
+  - [matches function](#matches-function)
+  - [matches operators](#matches-operators)
+  - [matches multiple selectors](#matches-multiple-selectors)
+  - [matches goto scope](#matches-goto-scope)
+  - [matches pseudo selector](#matches-pseudo-selector)
 - [Write Adapter](#write-adapter)
 - [Contributing Guide](#contributing-guide)
 
@@ -98,6 +109,14 @@ It matches NewExpression node whose first argument is "Murphy" and second argume
 ```
 
 It matches NewExpression node whose escapedText of expression is UserAccount
+
+### matches multiple nodes attribute
+
+```
+.NewExpression[arguments=("Murphy" 1)]
+```
+
+It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
 ### matches dynamic attribute
 
