@@ -1,5 +1,10 @@
 # NodeQuery
 
+## 1.5.1 (2022-05-28)
+
+* Fix dynamic attribute in jison
+* Add debug
+
 ## 1.5.0 (2022-05-27)
 
 * Support dynamic attribute
