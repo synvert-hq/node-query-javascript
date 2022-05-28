@@ -122,6 +122,11 @@ describe("Parser", () => {
       assertParser(source);
     });
 
+    it("parsers dynamic attribte", () => {
+      const source = ".VariableDeclaration[name!={{type.typeName.escapedText.toLowerCase}}]";
+      assertParser(source);
+    });
+
     it("parses goto scope", () => {
       const source = ".ClassDeclaration members .MethodDefinition";
       assertParser(source);

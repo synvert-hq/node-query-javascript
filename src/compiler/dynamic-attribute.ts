@@ -22,6 +22,10 @@ class DynamicAttribute<T> extends Value<T> {
     const node = getTargetNode(this.baseNode, this.value);
     return toString<T>(node);
   }
+
+  toString(): string {
+    return `{{${this.value}}}`;
+  }
 }
 
 export default DynamicAttribute;
