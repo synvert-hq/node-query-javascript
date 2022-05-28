@@ -32,7 +32,7 @@ export function isNode<T>(node: T | PrimitiveTypes): boolean {
   return true;
 };
 
-export function toSource<T>(node: T | PrimitiveTypes): string {
+export function toString<T>(node: T | PrimitiveTypes): string {
   if (node === null) {
     return "null";
   }
