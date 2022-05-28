@@ -21,7 +21,7 @@ class ArrayValue<T> {
   // check if the actual value matches the expected value.
   match(node: Node<T> | Node<T>[], operator: string): boolean {
     const expected = this.expectedValue();
-    debug("node-query:array-value")(`${operator} ${expected}`)
+    debug("node-query:array-value")(`${operator} ${expected}`);
     switch (operator) {
       case "not_in":
         return (
