@@ -1,5 +1,5 @@
 import { type PrimitiveTypes } from "./types";
-import { toString } from "./helpers";
+import { toSource } from "./helpers";
 
 // Value is an atom value,
 // it can be a Boolean, Null, Number, Undefined, String or Identifier.
@@ -32,7 +32,7 @@ abstract class Value<T> {
 
   // actual value can be a string or the source code of a typescript node.
   actualValue(node: T | PrimitiveTypes): string {
-    return toString(node);
+    return toSource<T>(node);
   }
 
   abstract expectedValue(): string;

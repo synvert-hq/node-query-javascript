@@ -1,5 +1,5 @@
 import Value from "./value";
-import { getAdapter, getTargetNode, toString } from "./helpers";
+import { getAdapter, getTargetNode, toSource } from "./helpers";
 
 class DynamicAttribute<T> extends Value<T> {
   public baseNode!: T;
@@ -20,7 +20,7 @@ class DynamicAttribute<T> extends Value<T> {
 
   expectedValue(): string {
     const node = getTargetNode(this.baseNode, this.value);
-    return toString<T>(node);
+    return toSource<T>(node);
   }
 
   toString(): string {
