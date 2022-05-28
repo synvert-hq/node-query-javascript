@@ -19,9 +19,12 @@ class ArrayValue<T> {
   }
 
   // check if the actual value matches the expected value.
-  match(node: T | PrimitiveTypes | T[] | PrimitiveTypes[], operator: string): boolean {
+  match(
+    node: T | PrimitiveTypes | T[] | PrimitiveTypes[],
+    operator: string
+  ): boolean {
     const expected = this.expectedValue();
-    debug("node-query:array-value")(`${operator} ${expected}`)
+    debug("node-query:array-value")(`${operator} ${expected}`);
     switch (operator) {
       case "not_in":
         return (
@@ -59,7 +62,10 @@ class ArrayValue<T> {
     return this.value.toString();
   }
 
-  private compareNotEqual(actual: T[] | PrimitiveTypes[], expected: Value<T>[]) {
+  private compareNotEqual(
+    actual: T[] | PrimitiveTypes[],
+    expected: Value<T>[]
+  ) {
     if (expected.length !== actual.length) {
       return true;
     }
