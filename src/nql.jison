@@ -38,7 +38,7 @@ array_value
 
 value
   : selector
-  | DYNAMIC_ATTRIBUTE { $$ = new Compiler.DynamicAttribute($1) }
+  | EVALUATED_VALUE { $$ = new Compiler.EvaluatedValue($1) }
   | NULL { $$ = new Compiler.Null() }
   | UNDEFINED { $$ = new Compiler.Undefined() }
   | BOOLEAN { $$ = new Compiler.Boolean($1) }

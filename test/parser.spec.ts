@@ -302,7 +302,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches multiple nodes and  dynamic attribute", () => {
+    it("matches multiple nodes and  evaluated value", () => {
       const expression = parseExpression('.NewExpression[arguments={{arguments}}]');
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
@@ -360,7 +360,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches dynamic attribute", () => {
+    it("matches evaluated value", () => {
       const expression = parseExpression(".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList.declarations[0],

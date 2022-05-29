@@ -1,6 +1,6 @@
 import Value from "./value";
 import ArrayValue from "./array-value";
-import DynamicAttribute from "./dynamic-attribute";
+import EvaluatedValue from "./evaluated-value";
 import Selector from "./selector";
 import { getTargetNode } from "./helpers";
 
@@ -23,7 +23,7 @@ class Attribute<T> {
 
   // check if the node matches the attribute.
   match(node: T): boolean {
-    if (this.value instanceof DynamicAttribute) {
+    if (this.value instanceof EvaluatedValue) {
       this.value.baseNode = node;
     }
     const actualValue = getTargetNode(node, this.key);

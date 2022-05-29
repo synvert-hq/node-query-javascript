@@ -15,7 +15,7 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
   - [matches attribute](#matches-attribute)
   - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
   - [matches nested attribute](#matches-nested-attribute)
-  - [matches dynamic attribute](#matches-dynamic-attribute)
+  - [matches evaluated value](#matches-evaluated-value)
   - [matches nested selector](#matches-nested-selector)
   - [matches function](#matches-function)
   - [matches operators](#matches-operators)
@@ -126,7 +126,7 @@ It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
 It matches Constructor whose parameters' names are all in [name id]
 
-### matches dynamic attribute
+### matches evaluated value
 
 ```
 .PropertyAssignment[name={{initializer}}]

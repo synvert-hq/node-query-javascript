@@ -1,9 +1,9 @@
 import debug from "debug";
 
 import Value from "./value";
-import { getAdapter, getTargetNode, toString } from "./helpers";
+import { getTargetNode, toString } from "./helpers";
 
-class DynamicAttribute<T> extends Value<T> {
+class EvaluatedValue<T> extends Value<T> {
   public baseNode!: T;
 
   constructor(private value: string) {
@@ -11,7 +11,7 @@ class DynamicAttribute<T> extends Value<T> {
   }
 
   expectedValue(): string {
-    debug("node-query:dynamic-attribute")(this.value);
+    debug("node-query:evaluated-value")(this.value);
     const node = getTargetNode(this.baseNode, this.value);
     return toString<T>(node);
   }
@@ -21,4 +21,4 @@ class DynamicAttribute<T> extends Value<T> {
   }
 }
 
-export default DynamicAttribute;
+export default EvaluatedValue;
