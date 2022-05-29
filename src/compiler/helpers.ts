@@ -13,7 +13,7 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
 
   const [firstKey, ...restKeys] = keys.split(".");
   if (Array.isArray(target) && firstKey === "*") {
-    return target.map(t => getTargetNode(t, restKeys.join(".")));
+    return target.map((t) => getTargetNode(t, restKeys.join(".")));
   }
 
   if (target.hasOwnProperty(firstKey)) {
@@ -21,18 +21,20 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
   } else if (typeof target[firstKey] === "function") {
     target = target[firstKey].call(target);
   } else {
-    debug("node-query:get-target-node")(`${getAdapter<T>().getNodeType(target)} ${firstKey} not found`);
+    debug("node-query:get-target-node")(
+      `${getAdapter<T>().getNodeType(target)} ${firstKey} not found`
+    );
     target = null;
   }
   if (restKeys.length === 0) {
     return target;
   }
   return getTargetNode<T>(target, restKeys.join("."));
-};
+}
 
 export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
   if (Array.isArray(node)) {
-    return node.every(n => isNode(n));
+    return node.every((n) => isNode(n));
   }
 
   if (node === null) {
@@ -42,11 +44,11 @@ export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
     return false;
   }
   return true;
-};
+}
 
 export function toString<T>(node: Node<T> | Node<T>[]): string {
   if (Array.isArray(node)) {
-    return `[${node.map(n => toString<T>(n)).join(", ")}]`;
+    return `[${node.map((n) => toString<T>(n)).join(", ")}]`;
   }
 
   if (node === null) {

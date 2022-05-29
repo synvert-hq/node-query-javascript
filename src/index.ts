@@ -24,7 +24,11 @@ class NodeQuery<T> {
       parser.parse(nql);
       this.expression = parser.yy.result;
     } catch (error) {
-      if (error instanceof Error && (error.message.startsWith("Lexical error") || error.message.startsWith("Parse error"))) {
+      if (
+        error instanceof Error &&
+        (error.message.startsWith("Lexical error") ||
+          error.message.startsWith("Parse error"))
+      ) {
         throw new SyntaxError(error.message.split("\n").slice(0, 3).join("\n"));
       } else {
         throw error;

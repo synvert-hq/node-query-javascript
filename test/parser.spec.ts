@@ -123,7 +123,8 @@ describe("Parser", () => {
     });
 
     it("parsers dynamic attribte", () => {
-      const source = ".VariableDeclaration[name!={{type.typeName.escapedText.toLowerCase}}]";
+      const source =
+        ".VariableDeclaration[name!={{type.typeName.escapedText.toLowerCase}}]";
       assertParser(source);
     });
 
@@ -303,7 +304,9 @@ describe("Parser", () => {
     });
 
     it("matches multiple nodes and  evaluated value", () => {
-      const expression = parseExpression('.NewExpression[arguments={{arguments}}]');
+      const expression = parseExpression(
+        ".NewExpression[arguments={{arguments}}]"
+      );
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -361,9 +364,12 @@ describe("Parser", () => {
     });
 
     it("matches evaluated value", () => {
-      const expression = parseExpression(".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]");
+      const expression = parseExpression(
+        ".VariableDeclaration[name={{type.typeName.escapedText.toLowerCase}}]"
+      );
       expect(expression.queryNodes(node)).toEqual([
-        (node.statements[2] as ts.VariableStatement).declarationList.declarations[0],
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0],
       ]);
     });
 
