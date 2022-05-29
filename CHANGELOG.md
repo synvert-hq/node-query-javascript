@@ -1,8 +1,10 @@
 # NodeQuery
 
-## 1.6.1 (2022-05-28)
+## 1.7.0 (2022-05-29)
 
 * Make dynamic attribute work with multiple nodes
+* Support * in attribute key
+* Rename dynamic attribute to evaluated value
 
 ## 1.6.0 (2022-05-28)
 
