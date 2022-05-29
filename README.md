@@ -118,6 +118,14 @@ It matches NewExpression node whose escapedText of expression is UserAccount
 
 It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
+### matches * in attribute key
+
+```
+.Constructor[parameters.*.name IN (name id)]
+```
+
+It matches Constructor whose parameters' names are all in [name id]
+
 ### matches dynamic attribute
 
 ```

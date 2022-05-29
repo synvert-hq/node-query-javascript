@@ -9,20 +9,25 @@ export function getAdapter<T>(): Adapter<T> {
 
 export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
   let target = node as any;
-  keys.split(".").forEach((key) => {
-    if (!target) return;
+  if (!target) return;
 
-    if (target.hasOwnProperty(key)) {
-      target = target[key];
-    } else if (typeof target[key] === "function") {
-      target = target[key].call(target);
-    } else {
-      debug("node-query:get-target-node")(`${getAdapter<T>().getNodeType(target)} ${key} not found`);
+  const [firstKey, ...restKeys] = keys.split(".");
+  if (Array.isArray(target) && firstKey === "*") {
+    return target.map(t => getTargetNode(t, restKeys.join(".")));
+  }
 
-      target = null;
-    }
-  });
-  return target;
+  if (target.hasOwnProperty(firstKey)) {
+    target = target[firstKey];
+  } else if (typeof target[firstKey] === "function") {
+    target = target[firstKey].call(target);
+  } else {
+    debug("node-query:get-target-node")(`${getAdapter<T>().getNodeType(target)} ${firstKey} not found`);
+    target = null;
+  }
+  if (restKeys.length === 0) {
+    return target;
+  }
+  return getTargetNode<T>(target, restKeys.join("."));
 };
 
 export function isNode<T>(node: Node<T> | Node<T>[]): boolean {

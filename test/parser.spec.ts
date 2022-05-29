@@ -293,6 +293,15 @@ describe("Parser", () => {
       ]);
     });
 
+    it("matches * in attribute key", () => {
+      const expression = parseExpression(
+        `.Constructor[parameters.*.name IN (name id active)]`
+      );
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[1] as ts.ClassDeclaration).members[3],
+      ]);
+    });
+
     it("matches multiple nodes and  dynamic attribute", () => {
       const expression = parseExpression('.NewExpression[arguments={{arguments}}]');
       expect(expression.queryNodes(node)).toEqual([

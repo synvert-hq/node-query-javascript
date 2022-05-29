@@ -25,12 +25,14 @@ class ArrayValue<T> {
     switch (operator) {
       case "not_in":
         return (
-          !Array.isArray(node) &&
+          Array.isArray(node) ?
+          node.every(n => expected.every((expectedValue) => expectedValue.match(n, "!="))) :
           expected.every((expectedValue) => expectedValue.match(node, "!="))
         );
       case "in":
         return (
-          !Array.isArray(node) &&
+          Array.isArray(node) ?
+          node.every(n => expected.some((expectedValue) => expectedValue.match(n, "=="))) :
           expected.some((expectedValue) => expectedValue.match(node, "=="))
         );
       case "!=":
