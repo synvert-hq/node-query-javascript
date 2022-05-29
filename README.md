@@ -13,12 +13,12 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
 - [Node Query Language](#node-query-language)
   - [matches node type](#matches-node-type)
   - [matches attribute](#matches-attribute)
-  - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
-  - [matches nested attribute](#matches-nested-attribute)
   - [matches evaluated value](#matches-evaluated-value)
   - [matches nested selector](#matches-nested-selector)
   - [matches function](#matches-function)
   - [matches operators](#matches-operators)
+  - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
+  - [matches nested attribute](#matches-nested-attribute)
   - [matches multiple selectors](#matches-multiple-selectors)
   - [matches goto scope](#matches-goto-scope)
   - [matches pseudo selector](#matches-pseudo-selector)
@@ -109,22 +109,6 @@ It matches NewExpression node whose first argument is "Murphy" and second argume
 ```
 
 It matches NewExpression node whose escapedText of expression is UserAccount
-
-### matches multiple nodes attribute
-
-```
-.NewExpression[arguments=("Murphy" 1)]
-```
-
-It matches NewExpressioin node whose arguments are ["Murphy", 1]
-
-### matches * in attribute key
-
-```
-.Constructor[parameters.*.name IN (name id)]
-```
-
-It matches Constructor whose parameters' names are all in [name id]
 
 ### matches evaluated value
 
@@ -235,6 +219,22 @@ Value of name does not start with User
 ```
 
 Value of name matches any of /User/ and /Account/
+
+### matches multiple nodes attribute
+
+```
+.NewExpression[arguments=("Murphy" 1)]
+```
+
+It matches NewExpressioin node whose arguments are ["Murphy", 1]
+
+### matches * in attribute key
+
+```
+.Constructor[parameters.*.name IN (name id)]
+```
+
+It matches Constructor whose parameters' names are all in [name id]
 
 ### matches multiple selectors
 
