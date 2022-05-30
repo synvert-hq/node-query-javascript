@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.7.1 (2022-05-30)
+
+* Make typescript a devDependency
+
 ## 1.7.0 (2022-05-29)
 
 * Make dynamic attribute work with multiple nodes
