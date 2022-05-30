@@ -33,4 +33,5 @@ class TypescriptAdapter implements Adapter<Node> {
   }
 }
 
+module.exports = TypescriptAdapter;
 export default TypescriptAdapter;

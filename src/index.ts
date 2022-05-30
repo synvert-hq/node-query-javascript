@@ -1,10 +1,7 @@
 import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
-import TypescriptAdapter from "./typescript-adapter";
 const { parser } = require("./parser");
 const { Expression } = require("./compiler");
-
-const typescriptAdapter = new TypescriptAdapter();
 
 class NodeQuery<T> {
   private expression: InstanceType<typeof Expression>;
@@ -16,7 +13,11 @@ class NodeQuery<T> {
   }
 
   static getAdapter(): Adapter<any> {
-    return this.adapter || typescriptAdapter;
+    if (!this.adapter) {
+      const TypescriptAdapter = require("./typescript-adapter");
+      this.adapter = new TypescriptAdapter();
+    }
+    return this.adapter!;
   }
 
   constructor(nql: string) {
