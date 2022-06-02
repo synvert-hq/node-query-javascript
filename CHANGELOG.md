@@ -1,8 +1,9 @@
 # NodeQuery
 
-## 1.7.1 (2022-05-30)
+## 1.8.0 (2022-06-02)
 
 * Make typescript a devDependency
+* Support comma in nql
 
 ## 1.7.0 (2022-05-29)
 
