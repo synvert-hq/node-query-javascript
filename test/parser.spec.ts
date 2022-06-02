@@ -141,7 +141,7 @@ describe("Parser", () => {
     it("parses ,", () => {
       const source = ".JSXOpeningElement, .JSXClosingElement";
       assertParser(source);
-    })
+    });
   });
 
   describe("#queryNodes", () => {
@@ -173,9 +173,7 @@ describe("Parser", () => {
     });
 
     it("matches node type and one attribute", () => {
-      const expression = parseNql(
-        ".NewExpression[expression=UserAccount]"
-      );
+      const expression = parseNql(".NewExpression[expression=UserAccount]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -193,9 +191,7 @@ describe("Parser", () => {
     });
 
     it("matches string literal", () => {
-      const expression = parseNql(
-        '.NewExpression[arguments.0="Murphy"]'
-      );
+      const expression = parseNql('.NewExpression[arguments.0="Murphy"]');
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -259,9 +255,7 @@ describe("Parser", () => {
     });
 
     it("matches !~ operator", () => {
-      const expression = parseNql(
-        ".NewExpression[expression!~/^Account/]"
-      );
+      const expression = parseNql(".NewExpression[expression!~/^Account/]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -309,9 +303,7 @@ describe("Parser", () => {
     });
 
     it("matches multiple nodes and  evaluated value", () => {
-      const expression = parseNql(
-        ".NewExpression[arguments={{arguments}}]"
-      );
+      const expression = parseNql(".NewExpression[arguments={{arguments}}]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -426,16 +418,12 @@ describe("Parser", () => {
     });
 
     it("matches :not_has pseudo selector", () => {
-      const expression = parseNql(
-        ".ClassDeclaration:not_has(.Constructor)"
-      );
+      const expression = parseNql(".ClassDeclaration:not_has(.Constructor)");
       expect(expression.queryNodes(node)).toEqual([]);
     });
 
     it("matches multiple nodes", () => {
-      const expression = parseNql(
-        ".ClassDeclaration > .PropertyDeclaration"
-      );
+      const expression = parseNql(".ClassDeclaration > .PropertyDeclaration");
       expect(expression.queryNodes(node)).toEqual(
         (node.statements[1] as ts.ClassDeclaration).members.slice(0, 3)
       );
