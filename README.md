@@ -22,6 +22,7 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
   - [matches multiple selectors](#matches-multiple-selectors)
   - [matches goto scope](#matches-goto-scope)
   - [matches pseudo selector](#matches-pseudo-selector)
+  - [matches multiple expressions](#matches-multiple-expressions)
 - [Write Adapter](#write-adapter)
 - [Contributing Guide](#contributing-guide)
 
@@ -291,6 +292,14 @@ It matches ClassDeclaration node if it has a Constructor node
 ```
 
 It matches ClassDeclaration node if it does not have a Constructor node
+
+### matches multiple expressions
+
+```
+.JSXOpeningElement[name=Fragment], .JSXClosingElement[name=Fragment]
+```
+
+It matches JSXOpeningElement node whose name is Fragment or JSXClosingElement node whose name is Fragment
 
 ## Write Adapter
 
