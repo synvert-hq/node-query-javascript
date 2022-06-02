@@ -1,10 +1,10 @@
 import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
 const { parser } = require("./parser");
-const { Expression } = require("./compiler");
+const { ExpressionList } = require("./compiler");
 
 class NodeQuery<T> {
-  private expression: InstanceType<typeof Expression>;
+  private expression: InstanceType<typeof ExpressionList>;
 
   private static adapter?: Adapter<any>;
 

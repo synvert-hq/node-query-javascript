@@ -1,3 +1,4 @@
+import ExpressionList from "./compiler/expression-list";
 import Expression from "./compiler/expression";
 import Selector from "./compiler/selector";
 import BasicSelector from "./compiler/basic-selector";
@@ -15,6 +16,7 @@ import Undefined from "./compiler/undefined";
 
 // use module.exports as we need them in nql.jison
 module.exports = {
+  ExpressionList,
   Expression,
   Selector,
   BasicSelector,

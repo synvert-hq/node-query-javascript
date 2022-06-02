@@ -4,9 +4,14 @@
 
 %%
 
+expression_list
+  : expression COMMA expression_list { $$ = new Compiler.ExpressionList({ expression: $1, rest: $3 }); yy.parser.yy.result = $$ }
+  | expression { $$ = new Compiler.ExpressionList({ expression: $1 }); yy.parser.yy.result = $$ }
+  ;
+
 expression
-  : selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }); yy.parser.yy.result = $$ }
-  | selector { $$ = new Compiler.Expression({ selector: $1 }); yy.parser.yy.result = $$ }
+  : selector expression { $$ = new Compiler.Expression({ selector: $1, rest: $2 }) }
+  | selector { $$ = new Compiler.Expression({ selector: $1 }) }
   ;
 
 selector
