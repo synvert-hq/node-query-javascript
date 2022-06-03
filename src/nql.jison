@@ -33,6 +33,7 @@ attribute_list
 
 attribute
   : KEY $OPERATOR OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: $2 }) }
+  | KEY $OPERATOR OPEN_ARRAY CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: new Compiler.ArrayValue({}), operator: $2 }) }
   | KEY OPERATOR value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: $2 }) }
   ;
 

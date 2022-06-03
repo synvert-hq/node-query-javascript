@@ -122,6 +122,11 @@ describe("Parser", () => {
       assertParser(source);
     });
 
+    it("parses empty array", () => {
+      const source = ".MethodDefinition[key NOT IN ()]";
+      assertParser(source);
+    });
+
     it("parsers dynamic attribte", () => {
       const source =
         ".VariableDeclaration[name!={{type.typeName.escapedText.toLowerCase}}]";

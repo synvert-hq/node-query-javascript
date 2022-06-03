@@ -4,14 +4,14 @@ import type { Node } from "./types";
 import Value from "./value";
 
 interface ArrayValueParameters<T> {
-  value: Value<T>;
-  rest: ArrayValue<T>;
+  value?: Value<T>;
+  rest?: ArrayValue<T>;
 }
 
 // ArrayValue is an array of Value.
 class ArrayValue<T> {
-  private value: Value<T>;
-  private rest: ArrayValue<T>;
+  private value?: Value<T>;
+  private rest?: ArrayValue<T>;
 
   constructor({ value, rest }: ArrayValueParameters<T>) {
     this.value = value;
@@ -58,7 +58,10 @@ class ArrayValue<T> {
     if (this.rest) {
       return `${this.value} ${this.rest}`;
     }
-    return this.value.toString();
+    if (this.value) {
+      return this.value.toString();
+    }
+    return "";
   }
 
   private compareNotEqual(actual: Node<T>[], expected: Value<T>[]) {
