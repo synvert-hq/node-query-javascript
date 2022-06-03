@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.8.1 (2022-06-03)
+
+* Support empty array
+
 ## 1.8.0 (2022-06-02)
 
 * Make typescript a devDependency
