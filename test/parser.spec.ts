@@ -333,7 +333,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches function", () => {
+    it("matches property", () => {
       const expression = parseNql(".NewExpression[arguments.length=3]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList

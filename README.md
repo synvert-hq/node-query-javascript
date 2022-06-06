@@ -15,7 +15,7 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
   - [matches attribute](#matches-attribute)
   - [matches evaluated value](#matches-evaluated-value)
   - [matches nested selector](#matches-nested-selector)
-  - [matches function](#matches-function)
+  - [matches property](#matches-property)
   - [matches operators](#matches-operators)
   - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
   - [matches nested attribute](#matches-nested-attribute)
@@ -127,7 +127,7 @@ It matches PropertyAssignement node whose node value of name matches node value 
 
 It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount
 
-### matches function
+### matches property
 
 ```
 .NewExpression[arguments.length=2]
