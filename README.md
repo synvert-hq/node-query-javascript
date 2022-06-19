@@ -330,6 +330,6 @@ Here are some examples:
 
 4. Run `npm run test` or `npm run watch:test` to run tests.
 
-5. Do some changes and make tests all passed.
+5. Make some changes and make tests all passed.
 
 6. Push the changes to the repo.
