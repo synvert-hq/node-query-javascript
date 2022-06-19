@@ -1,5 +1,10 @@
 # NodeQuery
 
+## 1.8.2 (2022-06-19)
+
+* Move `NodeQuery` from `index.ts` to `node-query.ts`
+* Export `Adapter` and `SyntaxError`
+
 ## 1.8.1 (2022-06-03)
 
 * Support empty array
