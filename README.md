@@ -45,14 +45,14 @@ yarn add @xinminlabs/node-query
 It provides only one api:
 
 ```typescript
-new NodeQuery(nodeQueryString: string) // Initialize NodeQuery
+new NodeQuery<Node>(nodeQueryString: string) // Initialize NodeQuery
   .parse(node: Node): Node[] // Get the matching nodes.
 ```
 
 Here is an example for typescript ast node.
 
 ```typescript
-import ts from 'typescript';
+import ts, { Node } from 'typescript';
 import NodeQuery from '@xinminlabs/node-query';
 
 const source = `
@@ -76,7 +76,7 @@ const source = `
 const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 
 // It will get the two nodes of property declaration in the class declaration.
-new NodeQuery('.ClassDeclaration .PropertyDeclaration').parse(node)
+new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
 ```
 
 ## Node Query Language
