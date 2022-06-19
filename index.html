@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NodeQuery.html">NodeQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#.configure">configure</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#parse">parse</a></span></li>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><p><a href="https://badge.fury.io/js/@xinminlabs%2Fnode-query"><img src="https://badge.fury.io/js/@xinminlabs%2Fnode-query.svg" alt="npm version"></a>
+<a href="https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml"><img src="https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml/badge.svg" alt="CI"></a></p>
+<h1>NodeQuery</h1>
+<p>NodeQuery defines a Typescript AST node query language, which is a css like syntax for matching nodes,
+it supports other ast parsers, like espree, if it implements <code>NodeQuery.Adapter</code>.</p>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#node-query-language">Node Query Language</a>
+<ul>
+<li><a href="#matches-node-type">matches node type</a></li>
+<li><a href="#matches-attribute">matches attribute</a></li>
+<li><a href="#matches-evaluated-value">matches evaluated value</a></li>
+<li><a href="#matches-nested-selector">matches nested selector</a></li>
+<li><a href="#matches-property">matches property</a></li>
+<li><a href="#matches-operators">matches operators</a></li>
+<li><a href="#matches-multiple-nodes-attribute">matches multiple nodes attribute</a></li>
+<li><a href="#matches-nested-attribute">matches nested attribute</a></li>
+<li><a href="#matches-multiple-selectors">matches multiple selectors</a></li>
+<li><a href="#matches-goto-scope">matches goto scope</a></li>
+<li><a href="#matches-pseudo-selector">matches pseudo selector</a></li>
+<li><a href="#matches-multiple-expressions">matches multiple expressions</a></li>
+</ul>
+</li>
+<li><a href="#write-adapter">Write Adapter</a></li>
+<li><a href="#contributing-guide">Contributing Guide</a></li>
+</ul>
+<h2>Installation</h2>
+<p>Install NodeQuery using npm:</p>
+<pre class="prettyprint source"><code>npm install --save @xinminlabs/node-query
+</code></pre>
+<p>Or yarn:</p>
+<pre class="prettyprint source"><code>yarn add @xinminlabs/node-query
+</code></pre>
+<h2>Usage</h2>
+<p>It provides only one api:</p>
+<pre class="prettyprint source lang-typescript"><code>new NodeQuery&lt;Node>(nodeQueryString: string) // Initialize NodeQuery
+  .parse(node: Node): Node[] // Get the matching nodes.
+</code></pre>
+<p>Here is an example for typescript ast node.</p>
+<pre class="prettyprint source lang-typescript"><code>import ts, { Node } from 'typescript';
+import NodeQuery from '@xinminlabs/node-query';
+
+const source = `
+  interface User {
+    name: string;
+    id: number;
+  }
+
+  class UserAccount {
+    name: string;
+    id: number;
+
+    constructor(name: string, id: number) {
+      this.name = name;
+      this.id = id;
+    }
+  }
+
+  const user: User = new UserAccount(&quot;Murphy&quot;, 1);
+`
+const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
+
+// It will get the two nodes of property declaration in the class declaration.
+new NodeQuery&lt;Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
+</code></pre>
+<h2>Node Query Language</h2>
+<h3>matches node type</h3>
+<pre class="prettyprint source"><code>.ClassDeclaration
+</code></pre>
+<p>It matches ClassDeclaration node</p>
+<h3>matches attribute</h3>
+<pre class="prettyprint source"><code>.NewExpression[expression=UserAccount]
+</code></pre>
+<p>It matches NewExpression node whose expression value is UserAccount</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.0=&quot;Murphy&quot;][arguments.1=1]
+</code></pre>
+<p>It matches NewExpression node whose first argument is &quot;Murphy&quot; and second argument is 1</p>
+<h3>matches nested attribute</h3>
+<pre class="prettyprint source"><code>.NewExpression[expression.escapedText=UserAccount]
+</code></pre>
+<p>It matches NewExpression node whose escapedText of expression is UserAccount</p>
+<h3>matches evaluated value</h3>
+<pre class="prettyprint source"><code>.PropertyAssignment[name={{initializer}}]
+</code></pre>
+<p>It matches PropertyAssignement node whose node value of name matches node value of intiailizer</p>
+<h3>matches nested selector</h3>
+<pre class="prettyprint source"><code>.VariableDeclaration[initializer=.NewExpression[expression=UserAccount]]
+</code></pre>
+<p>It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount</p>
+<h3>matches property</h3>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length=2]
+</code></pre>
+<p>It matches NewExpression node whose arguments length is 2</p>
+<h3>matches operators</h3>
+<pre class="prettyprint source"><code>.NewExpression[expression=UserAccount]
+</code></pre>
+<p>Value of expression is equal to UserAccount</p>
+<pre class="prettyprint source"><code>.NewExpression[expression^=User]
+</code></pre>
+<p>Value of expression starts with User</p>
+<pre class="prettyprint source"><code>.NewExpression[expression$=Account]
+</code></pre>
+<p>Value of expression ends with Account</p>
+<pre class="prettyprint source"><code>.NewExpression[expression*=Acc]
+</code></pre>
+<p>Value of expression contains Account</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length!=0]
+</code></pre>
+<p>Length of arguments is not equal to 0</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length>=2]
+</code></pre>
+<p>Length of arguments is greater than or equal to 2</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length>1]
+</code></pre>
+<p>Length of arguments is greater than 1</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length&lt;=2]
+</code></pre>
+<p>Length of arguments is less than or equal to 2</p>
+<pre class="prettyprint source"><code>.NewExpression[arguments.length&lt;3]
+</code></pre>
+<p>Length of arguments is less than 3</p>
+<pre class="prettyprint source"><code>.ClassDeclaration[name IN (User Account UserAccount)]
+</code></pre>
+<p>Value of name matches any of User, Account and UserAccount</p>
+<pre class="prettyprint source"><code>.ClassDeclaration[name NOT IN (User Account)]
+</code></pre>
+<p>Value of name does not match all of User and Account</p>
+<pre class="prettyprint source"><code>.ClassDeclaration[name=~/^User/]
+</code></pre>
+<p>Value of name starts with User</p>
+<pre class="prettyprint source"><code>.ClassDeclaration[name!=~/^User/]
+</code></pre>
+<p>Value of name does not start with User</p>
+<pre class="prettyprint source"><code>.ClassDeclaration[name IN (/User/ /Account/)]
+</code></pre>
+<p>Value of name matches any of /User/ and /Account/</p>
+<h3>matches multiple nodes attribute</h3>
+<pre class="prettyprint source"><code>.NewExpression[arguments=(&quot;Murphy&quot; 1)]
+</code></pre>
+<p>It matches NewExpressioin node whose arguments are [&quot;Murphy&quot;, 1]</p>
+<h3>matches * in attribute key</h3>
+<pre class="prettyprint source"><code>.Constructor[parameters.*.name IN (name id)]
+</code></pre>
+<p>It matches Constructor whose parameters' names are all in [name id]</p>
+<h3>matches multiple selectors</h3>
+<h4>Descendant combinator</h4>
+<pre class="prettyprint source"><code>.ClassDeclaration .Constructor
+</code></pre>
+<p>It matches Constructor node whose ancestor matches the ClassDeclaration node</p>
+<h4>Child combinator</h4>
+<pre class="prettyprint source"><code>.ClassDeclaration > .PropertyDeclaration
+</code></pre>
+<p>It matches PropertyDeclaration node whose parent matches the ClassDeclartion node</p>
+<h4>Adjacent sibling combinator</h4>
+<pre class="prettyprint source"><code>.PropertyDeclaration[name=name] + .PropertyDeclaration
+</code></pre>
+<p>It matches PropertyDeclaration node only if it immediately follows the PropertyDeclaration whose name is name</p>
+<h4>General sibling combinator</h4>
+<pre class="prettyprint source"><code>.PropertyDeclaration[name=name] ~ .PropertyDeclaration
+</code></pre>
+<p>It matches PropertyDeclaration node only if it follows the PropertyDeclaration whose name is name</p>
+<h3>matches goto scope</h3>
+<pre class="prettyprint source"><code>.ClassDeclaration members .PropertyDeclaration
+</code></pre>
+<p>It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node</p>
+<h3>matches pseudo selector</h3>
+<pre class="prettyprint source"><code>.ClassDeclaration:has(.Constructor)
+</code></pre>
+<p>It matches ClassDeclaration node if it has a Constructor node</p>
+<pre class="prettyprint source"><code>.ClassDeclaration:not_has(.Constructor)
+</code></pre>
+<p>It matches ClassDeclaration node if it does not have a Constructor node</p>
+<h3>matches multiple expressions</h3>
+<pre class="prettyprint source"><code>.JSXOpeningElement[name=Fragment], .JSXClosingElement[name=Fragment]
+</code></pre>
+<p>It matches JSXOpeningElement node whose name is Fragment or JSXClosingElement node whose name is Fragment</p>
+<h2>Write Adapter</h2>
+<p>Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
+we define an <a href="https://github.com/xinminlabs/node-query-javascript/blob/main/src/adapter.ts">Adapter</a> interface,
+if you implement the Adapter interface, you can set it as NodeQuery's adapter.</p>
+<pre class="prettyprint source lang-typescript"><code>NodeQuery.configure({ adapter: new EspreeAdapter() })
+</code></pre>
+<p>Here are some examples:</p>
+<ol>
+<li>
+<p><a href="https://github.com/xinminlabs/synvert-core-javascript/blob/javascript/lib/espree-adapter.js">javascript version EspreeAdapter</a></p>
+</li>
+<li>
+<p><a href="https://github.com/xinminlabs/synvert-core-javascript/blob/master/src/espree-adapter.ts">typescript version EspreeAdapter</a></p>
+</li>
+<li>
+<p><a href="https://github.com/xinminlabs/node-query-javascript/blob/main/src/typescript-adapter.ts">TypescriptAdapter</a></p>
+</li>
+</ol>
+<h2>Contributing Guide</h2>
+<ol>
+<li>
+<p>Fork and clone the repo.</p>
+</li>
+<li>
+<p>Run <code>npm install</code> to install dependencies.</p>
+</li>
+<li>
+<p>Run <code>npm run generate</code> or <code>npm run watch:generate</code> to generate <code>src/parser.js</code>.</p>
+</li>
+<li>
+<p>Run <code>npm run test</code> or <code>npm run watch:test</code> to run tests.</p>
+</li>
+<li>
+<p>Make some changes and make tests all passed.</p>
+</li>
+<li>
+<p>Push the changes to the repo.</p>
+</li>
+</ol></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Jun 19 2022 12:37:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
