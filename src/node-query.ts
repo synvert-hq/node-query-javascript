@@ -8,6 +8,12 @@ class NodeQuery<T> {
 
   private static adapter?: Adapter<any>;
 
+  /**
+   * Configure NodeQuery
+   * @static
+   * @param options {Object}
+   * @param options.adapter {Adapter} - adapter, default is TypescriptAdapter
+   */
   static configure(options: { adapter: Adapter<any> }) {
     this.adapter = options.adapter;
   }
@@ -20,6 +26,10 @@ class NodeQuery<T> {
     return this.adapter!;
   }
 
+  /**
+   * Create a NodeQuery
+   * @param nql {string} Node query language string
+   */
   constructor(nql: string) {
     try {
       parser.parse(nql);
@@ -37,6 +47,11 @@ class NodeQuery<T> {
     }
   }
 
+  /**
+   * Parse an ast node with initialized node query language string
+   * @param node {T} ast node
+   * @returns {T[]} matching ast nodes
+   */
   parse(node: T): T[] {
     return this.expression.queryNodes(node);
   }
