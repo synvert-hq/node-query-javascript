@@ -1,10 +1,10 @@
 import debug from "debug";
 import Adapter from "../adapter";
-import NodeQuery from "../index";
+import NodeQuery from "../node-query";
 import type { Node } from "./types";
 
 export function getAdapter<T>(): Adapter<T> {
-  return NodeQuery.getAdapter();
+  return NodeQuery<T>.getAdapter();
 }
 
 export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {

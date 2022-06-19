@@ -1,4 +1,5 @@
-import NodeQuery from "../src/index";
+import { Node } from "typescript";
+import NodeQuery from "../src/node-query";
 import TypescriptAdapter from "../src/typescript-adapter";
 import SyntaxError from "../src/syntax-error";
 import { parseCode } from "./helper";
@@ -7,7 +8,7 @@ describe("NodeQuery", () => {
   it("configure adapter", () => {
     const typescriptAdapter = new TypescriptAdapter();
     NodeQuery.configure(typescriptAdapter);
-    expect(NodeQuery.getAdapter()).toEqual(typescriptAdapter);
+    expect(NodeQuery<Node>.getAdapter()).toEqual(typescriptAdapter);
   });
 
   describe("parse", () => {
@@ -34,13 +35,13 @@ describe("NodeQuery", () => {
     `);
 
     it("parses nodes", () => {
-      const nodeQuery = new NodeQuery(".ClassDeclaration .PropertyDeclaration");
+      const nodeQuery = new NodeQuery<Node>(".ClassDeclaration .PropertyDeclaration");
       expect(nodeQuery.parse(node).length).toEqual(3);
     });
 
     it("raises SyntaxError", () => {
       expect(() => {
-        new NodeQuery(".ClassDeclaration .");
+        new NodeQuery<Node>(".ClassDeclaration .");
       }).toThrow(SyntaxError);
     });
   });
