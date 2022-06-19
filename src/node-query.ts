@@ -8,8 +8,8 @@ class NodeQuery<T> {
 
   private static adapter?: Adapter<any>;
 
-  static configure(adapter: Adapter<any>) {
-    this.adapter = adapter;
+  static configure(options: { adapter: Adapter<any> }) {
+    this.adapter = options.adapter;
   }
 
   static getAdapter(): Adapter<any> {

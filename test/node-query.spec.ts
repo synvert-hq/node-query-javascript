@@ -7,7 +7,7 @@ import { parseCode } from "./helper";
 describe("NodeQuery", () => {
   it("configure adapter", () => {
     const typescriptAdapter = new TypescriptAdapter();
-    NodeQuery.configure(typescriptAdapter);
+    NodeQuery.configure({ adapter: typescriptAdapter });
     expect(NodeQuery<Node>.getAdapter()).toEqual(typescriptAdapter);
   });
 
