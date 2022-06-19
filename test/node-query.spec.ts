@@ -35,7 +35,9 @@ describe("NodeQuery", () => {
     `);
 
     it("parses nodes", () => {
-      const nodeQuery = new NodeQuery<Node>(".ClassDeclaration .PropertyDeclaration");
+      const nodeQuery = new NodeQuery<Node>(
+        ".ClassDeclaration .PropertyDeclaration"
+      );
       expect(nodeQuery.parse(node).length).toEqual(3);
     });
 
