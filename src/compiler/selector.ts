@@ -1,5 +1,10 @@
 import BasicSelector from "./basic-selector";
-import { getAdapter, handleRecursiveChild, getTargetNode, isNode } from "./helpers";
+import {
+  getAdapter,
+  handleRecursiveChild,
+  getTargetNode,
+  isNode,
+} from "./helpers";
 
 interface SelectorParameters<T> {
   gotoScope?: string;
