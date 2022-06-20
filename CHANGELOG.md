@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.8.3 (2022-06-20)
+
+* Export `handleRecursiveChild` and `getTargetNode`
+
 ## 1.8.2 (2022-06-19)
 
 * Move `NodeQuery` from `index.ts` to `node-query.ts`
