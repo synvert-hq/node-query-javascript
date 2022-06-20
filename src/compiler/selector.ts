@@ -1,5 +1,5 @@
 import BasicSelector from "./basic-selector";
-import { getAdapter, getTargetNode, isNode } from "./helpers";
+import { getAdapter, handleRecursiveChild, getTargetNode, isNode } from "./helpers";
 
 interface SelectorParameters<T> {
   gotoScope?: string;
@@ -69,7 +69,7 @@ class Selector<T> {
       nodes.push(node);
     }
     if (this.basicSelector) {
-      this.handleRecursiveChild(node, (childNode) => {
+      handleRecursiveChild(node, (childNode) => {
         if (this.match(childNode)) {
           nodes.push(childNode);
         }
@@ -129,15 +129,6 @@ class Selector<T> {
         break;
     }
     return nodes;
-  }
-
-  private handleRecursiveChild(node: T, handler: (childNode: T) => void): void {
-    getAdapter<T>()
-      .getChildren(node)
-      .forEach((childNode) => {
-        handler(childNode);
-        this.handleRecursiveChild(childNode, handler);
-      });
   }
 
   private matchPseudoClass(node: T): boolean {

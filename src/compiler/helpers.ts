@@ -32,6 +32,15 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
   return getTargetNode<T>(target, restKeys.join("."));
 }
 
+export function handleRecursiveChild<T>(node: T, handler: (childNode: T) => void): void {
+  getAdapter<T>()
+    .getChildren(node)
+    .forEach((childNode: T) => {
+      handler(childNode);
+      handleRecursiveChild(childNode, handler);
+    });
+}
+
 export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
   if (Array.isArray(node)) {
     return node.every((n) => isNode(n));
