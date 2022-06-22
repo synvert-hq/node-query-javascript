@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.8.4 (2022-06-22)
+
+* Import `TypescriptAdapter`
+
 ## 1.8.3 (2022-06-20)
 
 * Export `handleRecursiveChild` and `getTargetNode`
