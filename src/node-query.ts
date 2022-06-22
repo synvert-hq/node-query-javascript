@@ -1,5 +1,6 @@
 import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
+import TypescriptAdapter from "./typescript-adapter";
 const { parser } = require("./parser");
 const { ExpressionList } = require("./compiler");
 
@@ -20,7 +21,6 @@ class NodeQuery<T> {
 
   static getAdapter(): Adapter<any> {
     if (!this.adapter) {
-      const TypescriptAdapter = require("./typescript-adapter");
       this.adapter = new TypescriptAdapter();
     }
     return this.adapter!;
