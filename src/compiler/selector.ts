@@ -1,5 +1,10 @@
 import BasicSelector from "./basic-selector";
-import { getAdapter, handleRecursiveChild, getTargetNode, isNode } from "./helpers";
+import {
+  getAdapter,
+  handleRecursiveChild,
+  getTargetNode,
+  isNode,
+} from "./helpers";
 
 interface SelectorParameters<T> {
   gotoScope?: string;
@@ -39,7 +44,10 @@ class Selector<T> {
     // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
     return (
       isNode(node) &&
-      (!this.basicSelector || (operator === "!=" ? !this.basicSelector.match(node) : this.basicSelector.match(node))) &&
+      (!this.basicSelector ||
+        (operator === "!="
+          ? !this.basicSelector.match(node)
+          : this.basicSelector.match(node))) &&
       this.matchPseudoClass(node)
     );
   }
