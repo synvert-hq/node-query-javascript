@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.8.5 (2022-06-23)
+
+* Match not equal nested selector
+
 ## 1.8.4 (2022-06-22)
 
 * Import `TypescriptAdapter`
