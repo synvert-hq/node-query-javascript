@@ -255,6 +255,12 @@ describe("Parser", () => {
       ]);
     });
 
+    it("matches not equal nested selector", () => {
+      const node = parseCode(`const z: Array<string | number> = ['a', 'b']`);
+      const expression = parseNql(".TypeReference[typeName.escapedText=Array][typeArguments.0!=.UnionType]");
+      expect(expression.queryNodes(node)).toEqual([]);
+    });
+
     it("matches =~ operator", () => {
       const expression = parseNql(".NewExpression[expression=~/^User/]");
       expect(expression.queryNodes(node)).toEqual([

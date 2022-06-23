@@ -35,11 +35,11 @@ class Selector<T> {
   }
 
   // check if the node matches the selector.
-  match(node: T): boolean {
+  match(node: T, operator: string = "="): boolean {
     // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
     return (
       isNode(node) &&
-      (!this.basicSelector || this.basicSelector.match(node)) &&
+      (!this.basicSelector || (operator === "!=" ? !this.basicSelector.match(node) : this.basicSelector.match(node))) &&
       this.matchPseudoClass(node)
     );
   }
