@@ -3,7 +3,7 @@
 
 # NodeQuery
 
-NodeQuery defines a Typescript AST node query language, which is a css like syntax for matching nodes,
+NodeQuery defines an AST node query language, which is a css like syntax for matching nodes,
 it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`.
 
 ## Table of Contents

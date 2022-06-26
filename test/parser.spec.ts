@@ -172,7 +172,7 @@ describe("Parser", () => {
       const user: User = new UserAccount("Murphy", 1, true);
     `);
 
-    it("matches by node type", () => {
+    it("matches node type", () => {
       const expression = parseNql(".ClassDeclaration");
       expect(expression.queryNodes(node)).toEqual([node.statements[1]]);
     });
@@ -219,7 +219,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches start with operator", () => {
+    it("matches ^= operator", () => {
       const expression = parseNql(".NewExpression[expression^=User]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
@@ -227,7 +227,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches end with operator", () => {
+    it("matches $= operator", () => {
       const expression = parseNql(".NewExpression[expression$=Account]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
@@ -235,7 +235,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches contain operator", () => {
+    it("matches *= operator", () => {
       const expression = parseNql(".NewExpression[expression*=Acc]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
@@ -243,7 +243,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches not equal operator", () => {
+    it("matches != operator", () => {
       const expression = parseNql(".NewExpression[arguments.2!=false]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
@@ -251,7 +251,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches not equal nested selector", () => {
+    it("matches != nested selector", () => {
       const node = parseCode(`const z: Array<string | number> = ['a', 'b']`);
       const expression = parseNql(
         ".TypeReference[typeName.escapedText=Array][typeArguments.0!=.UnionType]"
@@ -315,7 +315,7 @@ describe("Parser", () => {
       ]);
     });
 
-    it("matches multiple nodes and  evaluated value", () => {
+    it("matches multiple nodes and evaluated value", () => {
       const expression = parseNql(".NewExpression[arguments={{arguments}}]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
