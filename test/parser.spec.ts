@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { assertParser, parseCode, parseNql } from "./helper";
+import { assertParser, parseCode, parseNql } from "./test-helper";
 
 describe("Parser", () => {
   describe("#toString", () => {

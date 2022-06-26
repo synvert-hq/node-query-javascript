@@ -1,5 +1,5 @@
 const Compiler = require("../src/compiler");
-const { parseCode } = require("./helper");
+const { parseCode } = require("./test-helper");
 
 describe("Compiler", () => {
   describe("Boolean", () => {

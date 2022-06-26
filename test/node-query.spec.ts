@@ -2,7 +2,7 @@ import { Node } from "typescript";
 import NodeQuery from "../src/node-query";
 import TypescriptAdapter from "../src/typescript-adapter";
 import SyntaxError from "../src/syntax-error";
-import { parseCode } from "./helper";
+import { parseCode } from "./test-helper";
 
 describe("NodeQuery", () => {
   it("configure adapter", () => {
