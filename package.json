@@ -33,7 +33,9 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
+    "@types/dedent": "^0.7.0",
     "@types/jest": "^27.5.0",
+    "dedent": "^0.7.0",
     "jest": "^28.0.3",
     "jison": "^0.4.18",
     "nodemon": "^2.0.16",
