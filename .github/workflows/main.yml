@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  build:
+  test:
     name: test
     runs-on: ubuntu-latest
     strategy:
@@ -16,9 +16,11 @@ jobs:
         with:
           node-version: ${{ matrix.node  }}
       - run: npm ci
+      - run: npm run test
 
   deploy:
     name: deploy
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
