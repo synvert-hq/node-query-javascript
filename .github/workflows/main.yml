@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node  }}
       - run: npm ci
+      - run: npm run generate
       - run: npm run test
 
   deploy:
