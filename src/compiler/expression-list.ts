@@ -14,6 +14,11 @@ class ExpressionList<T> {
     this.rest = rest;
   }
 
+  // check if the node matches the expression.
+  match(node: T): boolean {
+    return this.queryNodes(node).length !== 0;
+  }
+
   queryNodes(node: T | T[]): T[] {
     const matchingNodes = this.expression.queryNodes(node);
     if (this.rest) {
