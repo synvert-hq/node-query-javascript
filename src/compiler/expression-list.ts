@@ -15,7 +15,7 @@ class ExpressionList<T> {
   }
 
   // check if the node matches the expression.
-  match(node: T): boolean {
+  matchNode(node: T): boolean {
     return this.queryNodes(node).length !== 0;
   }
 
