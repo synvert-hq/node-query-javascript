@@ -52,7 +52,7 @@ class Selector<T> {
     );
   }
 
-  queryNodes(node: T | T[]): T[] {
+  queryNodes(node: T | T[], includingSelf = true): T[] {
     if (this.relationship && !Array.isArray(node)) {
       return this.findNodesByRelationship(node);
     }
@@ -73,7 +73,7 @@ class Selector<T> {
     }
 
     const nodes: T[] = [];
-    if (this.match(node)) {
+    if (includingSelf && this.match(node)) {
       nodes.push(node);
     }
     if (this.basicSelector) {

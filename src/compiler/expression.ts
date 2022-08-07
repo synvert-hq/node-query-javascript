@@ -14,13 +14,13 @@ class Expression<T> {
     this.rest = rest;
   }
 
-  queryNodes(node: T | T[]): T[] {
-    const matchingNodes = this.selector.queryNodes(node);
+  queryNodes(node: T | T[], includingSelf = true): T[] {
+    const matchingNodes = this.selector.queryNodes(node, includingSelf);
     if (!this.rest) {
       return matchingNodes;
     }
     return matchingNodes.flatMap((matchingNode) =>
-      this.findNodesByRest(matchingNode)
+      this.findNodesByRest(matchingNode, includingSelf)
     );
   }
 
@@ -35,11 +35,11 @@ class Expression<T> {
     return result.join(" ");
   }
 
-  private findNodesByRest(node: T | T[]): T[] {
+  private findNodesByRest(node: T | T[], includingSelf = true): T[] {
     if (!this.rest) {
       return [];
     }
-    return this.rest.queryNodes(node);
+    return this.rest.queryNodes(node, includingSelf);
   }
 }
 
