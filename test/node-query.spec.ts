@@ -11,7 +11,7 @@ describe("NodeQuery", () => {
     expect(NodeQuery<Node>.getAdapter()).toEqual(typescriptAdapter);
   });
 
-  describe("parse", () => {
+  describe("#queryNodes", () => {
     const node = parseCode(`
       interface User {
         name: string;
@@ -34,17 +34,28 @@ describe("NodeQuery", () => {
       const user: User = new UserAccount("Murphy", 1, true);
     `);
 
-    it("parses nodes", () => {
-      const nodeQuery = new NodeQuery<Node>(
-        ".ClassDeclaration .PropertyDeclaration"
-      );
-      expect(nodeQuery.parse(node).length).toEqual(3);
+    describe("nql", () => {
+      it("queries nodes", () => {
+        const nodeQuery = new NodeQuery<Node>(
+          ".ClassDeclaration .PropertyDeclaration"
+        );
+        expect(nodeQuery.queryNodes(node).length).toEqual(3);
+      });
+
+      it("raises SyntaxError", () => {
+        expect(() => {
+          new NodeQuery<Node>(".ClassDeclaration .");
+        }).toThrow(SyntaxError);
+      });
     });
 
-    it("raises SyntaxError", () => {
-      expect(() => {
-        new NodeQuery<Node>(".ClassDeclaration .");
-      }).toThrow(SyntaxError);
+    describe("rules", () => {
+      it("queries nodes", () => {
+        const nodeQuery = new NodeQuery<Node>(
+          { nodeType: "PropertyDeclaration", type: { nodeType: 'StringKeyword' } }
+        );
+        expect(nodeQuery.queryNodes(node).length).toEqual(1);
+      });
     });
   });
 });
