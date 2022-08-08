@@ -58,6 +58,21 @@ class NodeQuery<T> {
   }
 
   /**
+   * check if the node matches the nql or rules.
+   * @param node {T} ast node
+   * @returns {boolean} if the node matches the nql or rules.
+   */
+  matchNode(node: T): boolean {
+    if (this.expression) {
+      return this.expression.matchNode(node);
+    } else if (this.rules) {
+      return this.rules.matchNode(node);
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Query matching nodes.
    * @param node {T} ast node
    * @param includingSelf {boolean} if check the node itself
