@@ -29,11 +29,14 @@
   },
   "homepage": "https://github.com/xinminlabs/node-query-javascript#readme",
   "dependencies": {
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "flat": "^5.0.2",
+    "typy": "^3.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/dedent": "^0.7.0",
+    "@types/flat": "^5.0.2",
     "@types/jest": "^27.5.0",
     "dedent": "^0.7.0",
     "jest": "^28.0.3",

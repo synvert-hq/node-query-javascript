@@ -20,6 +20,8 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
     target = target[firstKey];
   } else if (typeof target[firstKey] === "function") {
     target = target[firstKey].call(target);
+  } else if (firstKey === "nodeType") {
+    target = getAdapter<T>().getNodeType(target);
   } else {
     debug("node-query:get-target-node")(
       `${getAdapter<T>().getNodeType(target)} ${firstKey} not found`
