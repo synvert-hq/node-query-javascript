@@ -47,7 +47,9 @@ class NodeQuery<T> {
           (error.message.startsWith("Lexical error") ||
             error.message.startsWith("Parse error"))
         ) {
-          throw new SyntaxError(error.message.split("\n").slice(0, 3).join("\n"));
+          throw new SyntaxError(
+            error.message.split("\n").slice(0, 3).join("\n")
+          );
         } else {
           throw error;
         }
