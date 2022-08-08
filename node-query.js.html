@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NodeQuery.html">NodeQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#.configure">configure</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#parse">parse</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="NodeQuery.html">NodeQuery</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#.configure">configure</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#.getAdapter">getAdapter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#matchNode">matchNode</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="NodeQuery.html#queryNodes">queryNodes</a></span></li>
 </nav>
 
 <div id="main">
@@ -46,27 +46,33 @@ var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const syntax_error_1 = __importDefault(require("./syntax-error"));
 const typescript_adapter_1 = __importDefault(require("./typescript-adapter"));
+const node_rules_1 = __importDefault(require("./node-rules"));
 const { parser } = require("./parser");
 const { ExpressionList } = require("./compiler");
 class NodeQuery {
     /**
      * Create a NodeQuery
-     * @param nql {string} Node query language string
+     * @param nqlOrRules {string | object} Node query language string or node rules
      */
-    constructor(nql) {
-        try {
-            parser.parse(nql);
-            this.expression = parser.yy.result;
+    constructor(nqlOrRules) {
+        if (typeof nqlOrRules === "string") {
+            try {
+                parser.parse(nqlOrRules);
+                this.expression = parser.yy.result;
+            }
+            catch (error) {
+                if (error instanceof Error &amp;&amp;
+                    (error.message.startsWith("Lexical error") ||
+                        error.message.startsWith("Parse error"))) {
+                    throw new syntax_error_1.default(error.message.split("\n").slice(0, 3).join("\n"));
+                }
+                else {
+                    throw error;
+                }
+            }
         }
-        catch (error) {
-            if (error instanceof Error &amp;&amp;
-                (error.message.startsWith("Lexical error") ||
-                    error.message.startsWith("Parse error"))) {
-                throw new syntax_error_1.default(error.message.split("\n").slice(0, 3).join("\n"));
-            }
-            else {
-                throw error;
-            }
+        else {
+            this.rules = new node_rules_1.default(nqlOrRules);
         }
     }
     /**
@@ -78,6 +84,10 @@ class NodeQuery {
     static configure(options) {
         this.adapter = options.adapter;
     }
+    /**
+     * Get the adapter.
+     * @returns {Aapter} the adapter
+     */
     static getAdapter() {
         if (!this.adapter) {
             this.adapter = new typescript_adapter_1.default();
@@ -85,12 +95,37 @@ class NodeQuery {
         return this.adapter;
     }
     /**
-     * Parse an ast node with initialized node query language string
+     * check if the node matches the nql or rules.
      * @param node {T} ast node
+     * @returns {boolean} if the node matches the nql or rules.
+     */
+    matchNode(node) {
+        if (this.expression) {
+            return this.expression.matchNode(node);
+        }
+        else if (this.rules) {
+            return this.rules.matchNode(node);
+        }
+        else {
+            return false;
+        }
+    }
+    /**
+     * Query matching nodes.
+     * @param node {T} ast node
+     * @param includingSelf {boolean} if check the node itself
      * @returns {T[]} matching ast nodes
      */
-    parse(node) {
-        return this.expression.queryNodes(node);
+    queryNodes(node, includingSelf = true) {
+        if (this.expression) {
+            return this.expression.queryNodes(node, includingSelf);
+        }
+        else if (this.rules) {
+            return this.rules.queryNodes(node, includingSelf);
+        }
+        else {
+            return [];
+        }
     }
 }
 exports.default = NodeQuery;
@@ -106,7 +141,7 @@ exports.default = NodeQuery;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Aug 02 2022 12:42:50 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 08 2022 12:29:31 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
