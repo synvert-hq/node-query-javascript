@@ -55,26 +55,51 @@
 it supports other ast parsers, like espree, if it implements <code>NodeQuery.Adapter</code>.</p>
 <h2>Table of Contents</h2>
 <ul>
+<li><a href="#nodequery">NodeQuery</a>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#node-query-language">Node Query Language</a>
 <ul>
-<li><a href="#matches-node-type">matches node type</a></li>
-<li><a href="#matches-attribute">matches attribute</a></li>
-<li><a href="#matches-evaluated-value">matches evaluated value</a></li>
-<li><a href="#matches-nested-selector">matches nested selector</a></li>
-<li><a href="#matches-property">matches property</a></li>
-<li><a href="#matches-operators">matches operators</a></li>
-<li><a href="#matches-multiple-nodes-attribute">matches multiple nodes attribute</a></li>
-<li><a href="#matches-nested-attribute">matches nested attribute</a></li>
-<li><a href="#matches-multiple-selectors">matches multiple selectors</a></li>
-<li><a href="#matches-goto-scope">matches goto scope</a></li>
-<li><a href="#matches-pseudo-selector">matches pseudo selector</a></li>
-<li><a href="#matches-multiple-expressions">matches multiple expressions</a></li>
+<li><a href="#nql-matches-node-type">nql matches node type</a></li>
+<li><a href="#nql-matches-attribute">nql matches attribute</a></li>
+<li><a href="#nql-matches-nested-attribute">nql matches nested attribute</a></li>
+<li><a href="#nql-matches-evaluated-value">nql matches evaluated value</a></li>
+<li><a href="#nql-matches-nested-selector">nql matches nested selector</a></li>
+<li><a href="#nql-matches-property">nql matches property</a></li>
+<li><a href="#nql-matches-operators">nql matches operators</a></li>
+<li><a href="#nql-matches-multiple-nodes-attribute">nql matches multiple nodes attribute</a></li>
+<li><a href="#nql-matches--in-attribute-key">nql matches * in attribute key</a></li>
+<li><a href="#nql-matches-multiple-selectors">nql matches multiple selectors</a>
+<ul>
+<li><a href="#descendant-combinator">Descendant combinator</a></li>
+<li><a href="#child-combinator">Child combinator</a></li>
+<li><a href="#adjacent-sibling-combinator">Adjacent sibling combinator</a></li>
+<li><a href="#general-sibling-combinator">General sibling combinator</a></li>
+</ul>
+</li>
+<li><a href="#nql-matches-goto-scope">nql matches goto scope</a></li>
+<li><a href="#nql-matches-pseudo-selector">nql matches pseudo selector</a></li>
+<li><a href="#nql-matches-multiple-expressions">nql matches multiple expressions</a></li>
+</ul>
+</li>
+<li><a href="#node-rules">Node Rules</a>
+<ul>
+<li><a href="#rules-matches-node-type">rules matches node type</a></li>
+<li><a href="#rules-matches-attribute">rules matches attribute</a></li>
+<li><a href="#rules-matches-nested-attribute">rules matches nested attribute</a></li>
+<li><a href="#rules-matches-evaluated-value">rules matches evaluated value</a></li>
+<li><a href="#rules-matches-nested-selector">rules matches nested selector</a></li>
+<li><a href="#rules-matches-property">rules matches property</a></li>
+<li><a href="#rules-matches-operators">rules matches operators</a></li>
+<li><a href="#rules-matches-multiple-nodes-attribute">rules matches multiple nodes attribute</a></li>
 </ul>
 </li>
 <li><a href="#write-adapter">Write Adapter</a></li>
 <li><a href="#contributing-guide">Contributing Guide</a></li>
+</ul>
+</li>
 </ul>
 <h2>Installation</h2>
 <p>Install NodeQuery using npm:</p>
@@ -84,9 +109,10 @@ it supports other ast parsers, like espree, if it implements <code>NodeQuery.Ada
 <pre class="prettyprint source"><code>yarn add @xinminlabs/node-query
 </code></pre>
 <h2>Usage</h2>
-<p>It provides only one api:</p>
-<pre class="prettyprint source lang-typescript"><code>new NodeQuery&lt;Node>(nodeQueryString: string) // Initialize NodeQuery
-  .parse(node: Node): Node[] // Get the matching nodes.
+<p>It provides two apis: <code>queryNodes</code> and <code>matchNode</code></p>
+<pre class="prettyprint source lang-typescript"><code>const nodeQuery = new NodeQuery&lt;Node>(nqlOrRules: string | object) // Initialize NodeQuery
+nodeQuery.queryNodes(node: Node): Node[] // Get the matching nodes.
+nodeQuery.matchNode(node: Node): boolean // Check if the node matches nql or rules.
 </code></pre>
 <p>Here is an example for typescript ast node.</p>
 <pre class="prettyprint source lang-typescript"><code>import ts, { Node } from 'typescript';
@@ -113,37 +139,37 @@ const source = `
 const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 
 // It will get the two nodes of property declaration in the class declaration.
-new NodeQuery&lt;Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
+new NodeQuery&lt;Node>('.ClassDeclaration .PropertyDeclaration').queryNodes(node)
 </code></pre>
 <h2>Node Query Language</h2>
-<h3>matches node type</h3>
+<h3>nql matches node type</h3>
 <pre class="prettyprint source"><code>.ClassDeclaration
 </code></pre>
 <p>It matches ClassDeclaration node</p>
-<h3>matches attribute</h3>
+<h3>nql matches attribute</h3>
 <pre class="prettyprint source"><code>.NewExpression[expression=UserAccount]
 </code></pre>
 <p>It matches NewExpression node whose expression value is UserAccount</p>
 <pre class="prettyprint source"><code>.NewExpression[arguments.0=&quot;Murphy&quot;][arguments.1=1]
 </code></pre>
 <p>It matches NewExpression node whose first argument is &quot;Murphy&quot; and second argument is 1</p>
-<h3>matches nested attribute</h3>
+<h3>nql matches nested attribute</h3>
 <pre class="prettyprint source"><code>.NewExpression[expression.escapedText=UserAccount]
 </code></pre>
 <p>It matches NewExpression node whose escapedText of expression is UserAccount</p>
-<h3>matches evaluated value</h3>
+<h3>nql matches evaluated value</h3>
 <pre class="prettyprint source"><code>.PropertyAssignment[name={{initializer}}]
 </code></pre>
 <p>It matches PropertyAssignement node whose node value of name matches node value of intiailizer</p>
-<h3>matches nested selector</h3>
+<h3>nql matches nested selector</h3>
 <pre class="prettyprint source"><code>.VariableDeclaration[initializer=.NewExpression[expression=UserAccount]]
 </code></pre>
 <p>It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount</p>
-<h3>matches property</h3>
+<h3>nql matches property</h3>
 <pre class="prettyprint source"><code>.NewExpression[arguments.length=2]
 </code></pre>
 <p>It matches NewExpression node whose arguments length is 2</p>
-<h3>matches operators</h3>
+<h3>nql matches operators</h3>
 <pre class="prettyprint source"><code>.NewExpression[expression=UserAccount]
 </code></pre>
 <p>Value of expression is equal to UserAccount</p>
@@ -186,15 +212,15 @@ new NodeQuery&lt;Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
 <pre class="prettyprint source"><code>.ClassDeclaration[name IN (/User/ /Account/)]
 </code></pre>
 <p>Value of name matches any of /User/ and /Account/</p>
-<h3>matches multiple nodes attribute</h3>
+<h3>nql matches multiple nodes attribute</h3>
 <pre class="prettyprint source"><code>.NewExpression[arguments=(&quot;Murphy&quot; 1)]
 </code></pre>
 <p>It matches NewExpressioin node whose arguments are [&quot;Murphy&quot;, 1]</p>
-<h3>matches * in attribute key</h3>
+<h3>nql matches * in attribute key</h3>
 <pre class="prettyprint source"><code>.Constructor[parameters.*.name IN (name id)]
 </code></pre>
 <p>It matches Constructor whose parameters' names are all in [name id]</p>
-<h3>matches multiple selectors</h3>
+<h3>nql matches multiple selectors</h3>
 <h4>Descendant combinator</h4>
 <pre class="prettyprint source"><code>.ClassDeclaration .Constructor
 </code></pre>
@@ -211,21 +237,87 @@ new NodeQuery&lt;Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
 <pre class="prettyprint source"><code>.PropertyDeclaration[name=name] ~ .PropertyDeclaration
 </code></pre>
 <p>It matches PropertyDeclaration node only if it follows the PropertyDeclaration whose name is name</p>
-<h3>matches goto scope</h3>
+<h3>nql matches goto scope</h3>
 <pre class="prettyprint source"><code>.ClassDeclaration members .PropertyDeclaration
 </code></pre>
 <p>It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node</p>
-<h3>matches pseudo selector</h3>
+<h3>nql matches pseudo selector</h3>
 <pre class="prettyprint source"><code>.ClassDeclaration:has(.Constructor)
 </code></pre>
 <p>It matches ClassDeclaration node if it has a Constructor node</p>
 <pre class="prettyprint source"><code>.ClassDeclaration:not_has(.Constructor)
 </code></pre>
 <p>It matches ClassDeclaration node if it does not have a Constructor node</p>
-<h3>matches multiple expressions</h3>
+<h3>nql matches multiple expressions</h3>
 <pre class="prettyprint source"><code>.JSXOpeningElement[name=Fragment], .JSXClosingElement[name=Fragment]
 </code></pre>
 <p>It matches JSXOpeningElement node whose name is Fragment or JSXClosingElement node whose name is Fragment</p>
+<h2>Node Rules</h2>
+<h3>rules matches node type</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot; }
+</code></pre>
+<p>It matches ClassDeclaration node</p>
+<h3>rules matches attribute</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, expression: &quot;UserAccount&quot; }
+</code></pre>
+<p>It matches NewExpression node whose expression value is UserAccount</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { 0: &quot;Murphy&quot;, 1: 1 } }
+</code></pre>
+<p>It matches NewExpression node whose first argument is &quot;Murphy&quot; and second argument is 1</p>
+<h3>rules matches nested attribute</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, expression: { escapedText: &quot;UserAccount&quot; } }
+</code></pre>
+<p>It matches NewExpression node whose escapedText of expression is UserAccount</p>
+<h3>rules matches evaluated value</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;PropertyAssignment&quot;, name: &quot;{{initializer}}&quot; }
+</code></pre>
+<p>It matches PropertyAssignement node whose node value of name matches node value of intiailizer</p>
+<h3>rules matches nested selector</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;VariableDeclaration&quot;, initializer: { nodeType: &quot;NewExpression&quot;, expression: &quot;UserAccount&quot; } }
+</code></pre>
+<p>It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount</p>
+<h3>rules matches property</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: 2 } }
+</code></pre>
+<p>It matches NewExpression node whose arguments length is 2</p>
+<h3>rules matches operators</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, expression: &quot;UserAccount&quot; }
+</code></pre>
+<p>Value of expression is equal to UserAccount</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: { not: 0 } } }
+</code></pre>
+<p>Length of arguments is not equal to 0</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: { gte: 2 } } }
+</code></pre>
+<p>Length of arguments is greater than or equal to 2</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: { gt: 1 } } }
+</code></pre>
+<p>Length of arguments is greater than 1</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: { lte: 2 } } }
+</code></pre>
+<p>Length of arguments is less than or equal to 2</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: { length: { lt: 3 } } }
+</code></pre>
+<p>Length of arguments is less than 3</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot;, name: { in: [User Account UserAccount] } }
+</code></pre>
+<p>Value of name matches any of User, Account and UserAccount</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot;, name: { notIn: [User Account] } }
+</code></pre>
+<p>Value of name does not match all of User and Account</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot;, name: /^User/ }
+</code></pre>
+<p>Value of name starts with User</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot;, name: { not: /^User/ } }
+</code></pre>
+<p>Value of name does not start with User</p>
+<pre class="prettyprint source"><code>{ nodeType: &quot;ClassDeclaration&quot;, name: { in: [/User/, /Account/] } }
+</code></pre>
+<p>Value of name matches any of /User/ and /Account/</p>
+<h3>rules matches multiple nodes attribute</h3>
+<pre class="prettyprint source"><code>{ nodeType: &quot;NewExpression&quot;, arguments: [&quot;Murphy&quot;, 1] }
+</code></pre>
+<p>It matches NewExpressioin node whose arguments are [&quot;Murphy&quot;, 1]</p>
 <h2>Write Adapter</h2>
 <p>Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
 we define an <a href="https://github.com/xinminlabs/node-query-javascript/blob/main/src/adapter.ts">Adapter</a> interface,
@@ -277,7 +369,7 @@ if you implement the Adapter interface, you can set it as NodeQuery's adapter.</
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 08 2022 12:29:31 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 08 2022 12:53:48 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
