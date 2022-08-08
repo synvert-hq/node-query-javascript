@@ -17,51 +17,58 @@ class NodeRules<T> {
       if (this.matchNode(childNode)) {
         matchingNodes.push(childNode);
       }
-    })
+    });
     return matchingNodes;
   }
 
   matchNode(node: T): boolean {
-    return Object.keys(flatten(this.rules, { safe: true })).every((multiKey) => {
-      const keys = multiKey.split(".");
-      const lastKey = keys[keys.length - 1];
-      const actual = KEYWORDS.includes(lastKey)
-        ? getTargetNode(node, keys.slice(0, -1).join("."))
-        : getTargetNode(node, multiKey);
-      let expected = t(this.rules, multiKey).safeObject;
-      if (typeof expected === "string") {
-        const found = expected.match(/{{(.*)}}/);
-        if (found) {
-          expected = getTargetNode(node, found[1]);
+    return Object.keys(flatten(this.rules, { safe: true })).every(
+      (multiKey) => {
+        const keys = multiKey.split(".");
+        const lastKey = keys[keys.length - 1];
+        const actual = KEYWORDS.includes(lastKey)
+          ? getTargetNode(node, keys.slice(0, -1).join("."))
+          : getTargetNode(node, multiKey);
+        let expected = t(this.rules, multiKey).safeObject;
+        if (typeof expected === "string") {
+          const found = expected.match(/{{(.*)}}/);
+          if (found) {
+            expected = getTargetNode(node, found[1]);
+          }
+        }
+        if (Array.isArray(actual) && Array.isArray(expected)) {
+          return (
+            actual.length === expected.length &&
+            expected.every((expectedItem, index) =>
+              this.matchValue(actual[index], expectedItem)
+            )
+          );
+        }
+        switch (lastKey) {
+          case "not":
+            return !this.matchValue(actual, expected);
+          case "in":
+            return expected.some((expectedItem: any) =>
+              this.matchValue(actual, expectedItem)
+            );
+          case "notIn":
+            return expected.every(
+              (expectedItem: any) => !this.matchValue(actual, expectedItem)
+            );
+          case "gt":
+            return (actual as any) > expected;
+          case "gte":
+            return (actual as any) >= expected;
+          case "lt":
+            return (actual as any) < expected;
+          case "lte":
+            return (actual as any) <= expected;
+          default:
+            return this.matchValue(actual, expected);
         }
       }
-      if (Array.isArray(actual) && Array.isArray(expected)) {
-        return actual.length === expected.length && expected.every((expectedItem, index) => this.matchValue(actual[index], expectedItem));
-      }
-      switch (lastKey) {
-        case "not":
-          return !this.matchValue(actual, expected);
-        case "in":
-          return expected.some((expectedItem: any) =>
-            this.matchValue(actual, expectedItem)
-          );
-        case "notIn":
-          return expected.every(
-            (expectedItem: any) => !this.matchValue(actual, expectedItem)
-          );
-        case "gt":
-          return (actual as any) > expected;
-        case "gte":
-          return (actual as any) >= expected;
-        case "lt":
-          return (actual as any) < expected;
-        case "lte":
-          return (actual as any) <= expected;
-        default:
-          return this.matchValue(actual, expected);
-      }
-    });
-  };
+    );
+  }
 
   matchValue(actual: any, expected: any): boolean {
     if (actual === expected) return true;
@@ -77,7 +84,7 @@ class NodeRules<T> {
       return expected.toString() === source || `"${expected}"` === source;
     }
     return false;
-  };
+  }
 }
 
 export default NodeRules;
