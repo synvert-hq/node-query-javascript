@@ -51,9 +51,10 @@ describe("NodeQuery", () => {
 
     describe("rules", () => {
       it("queries nodes", () => {
-        const nodeQuery = new NodeQuery<Node>(
-          { nodeType: "PropertyDeclaration", type: { nodeType: 'StringKeyword' } }
-        );
+        const nodeQuery = new NodeQuery<Node>({
+          nodeType: "PropertyDeclaration",
+          type: { nodeType: "StringKeyword" },
+        });
         expect(nodeQuery.queryNodes(node).length).toEqual(1);
       });
     });
