@@ -94,6 +94,7 @@ const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true
 
 // It will get the two nodes of property declaration in the class declaration.
 new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').queryNodes(node)
+new NodeQuery<Node>({ nodeType: "PropertyDeclaration" }).queryNodes(node)
 ```
 
 ## Node Query Language
