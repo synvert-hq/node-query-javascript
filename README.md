@@ -8,23 +8,39 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Node Query Language](#node-query-language)
-  - [matches node type](#matches-node-type)
-  - [matches attribute](#matches-attribute)
-  - [matches evaluated value](#matches-evaluated-value)
-  - [matches nested selector](#matches-nested-selector)
-  - [matches property](#matches-property)
-  - [matches operators](#matches-operators)
-  - [matches multiple nodes attribute](#matches-multiple-nodes-attribute)
-  - [matches nested attribute](#matches-nested-attribute)
-  - [matches multiple selectors](#matches-multiple-selectors)
-  - [matches goto scope](#matches-goto-scope)
-  - [matches pseudo selector](#matches-pseudo-selector)
-  - [matches multiple expressions](#matches-multiple-expressions)
-- [Write Adapter](#write-adapter)
-- [Contributing Guide](#contributing-guide)
+- [NodeQuery](#nodequery)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Node Query Language](#node-query-language)
+    - [nql matches node type](#nql-matches-node-type)
+    - [nql matches attribute](#nql-matches-attribute)
+    - [nql matches nested attribute](#nql-matches-nested-attribute)
+    - [nql matches evaluated value](#nql-matches-evaluated-value)
+    - [nql matches nested selector](#nql-matches-nested-selector)
+    - [nql matches property](#nql-matches-property)
+    - [nql matches operators](#nql-matches-operators)
+    - [nql matches multiple nodes attribute](#nql-matches-multiple-nodes-attribute)
+    - [nql matches * in attribute key](#nql-matches--in-attribute-key)
+    - [nql matches multiple selectors](#nql-matches-multiple-selectors)
+      - [Descendant combinator](#descendant-combinator)
+      - [Child combinator](#child-combinator)
+      - [Adjacent sibling combinator](#adjacent-sibling-combinator)
+      - [General sibling combinator](#general-sibling-combinator)
+    - [nql matches goto scope](#nql-matches-goto-scope)
+    - [nql matches pseudo selector](#nql-matches-pseudo-selector)
+    - [nql matches multiple expressions](#nql-matches-multiple-expressions)
+  - [Node Rules](#node-rules)
+    - [rules matches node type](#rules-matches-node-type)
+    - [rules matches attribute](#rules-matches-attribute)
+    - [rules matches nested attribute](#rules-matches-nested-attribute)
+    - [rules matches evaluated value](#rules-matches-evaluated-value)
+    - [rules matches nested selector](#rules-matches-nested-selector)
+    - [rules matches property](#rules-matches-property)
+    - [rules matches operators](#rules-matches-operators)
+    - [rules matches multiple nodes attribute](#rules-matches-multiple-nodes-attribute)
+  - [Write Adapter](#write-adapter)
+  - [Contributing Guide](#contributing-guide)
 
 ## Installation
 
@@ -42,11 +58,12 @@ yarn add @xinminlabs/node-query
 
 ## Usage
 
-It provides only one api:
+It provides two apis: `queryNodes` and `matchNode`
 
 ```typescript
-new NodeQuery<Node>(nodeQueryString: string) // Initialize NodeQuery
-  .parse(node: Node): Node[] // Get the matching nodes.
+const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object) // Initialize NodeQuery
+nodeQuery.queryNodes(node: Node): Node[] // Get the matching nodes.
+nodeQuery.matchNode(node: Node): boolean // Check if the node matches nql or rules.
 ```
 
 Here is an example for typescript ast node.
@@ -76,12 +93,12 @@ const source = `
 const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 
 // It will get the two nodes of property declaration in the class declaration.
-new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
+new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').queryNodes(node)
 ```
 
 ## Node Query Language
 
-### matches node type
+### nql matches node type
 
 ```
 .ClassDeclaration
@@ -89,7 +106,7 @@ new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').parse(node)
 
 It matches ClassDeclaration node
 
-### matches attribute
+### nql matches attribute
 
 ```
 .NewExpression[expression=UserAccount]
@@ -103,7 +120,7 @@ It matches NewExpression node whose expression value is UserAccount
 
 It matches NewExpression node whose first argument is "Murphy" and second argument is 1
 
-### matches nested attribute
+### nql matches nested attribute
 
 ```
 .NewExpression[expression.escapedText=UserAccount]
@@ -111,7 +128,7 @@ It matches NewExpression node whose first argument is "Murphy" and second argume
 
 It matches NewExpression node whose escapedText of expression is UserAccount
 
-### matches evaluated value
+### nql matches evaluated value
 
 ```
 .PropertyAssignment[name={{initializer}}]
@@ -119,7 +136,7 @@ It matches NewExpression node whose escapedText of expression is UserAccount
 
 It matches PropertyAssignement node whose node value of name matches node value of intiailizer
 
-### matches nested selector
+### nql matches nested selector
 
 ```
 .VariableDeclaration[initializer=.NewExpression[expression=UserAccount]]
@@ -127,7 +144,7 @@ It matches PropertyAssignement node whose node value of name matches node value 
 
 It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount
 
-### matches property
+### nql matches property
 
 ```
 .NewExpression[arguments.length=2]
@@ -135,7 +152,7 @@ It matches VariableDelclaration node whose initializer is a NewExpression node w
 
 It matches NewExpression node whose arguments length is 2
 
-### matches operators
+### nql matches operators
 
 ```
 .NewExpression[expression=UserAccount]
@@ -221,7 +238,7 @@ Value of name does not start with User
 
 Value of name matches any of /User/ and /Account/
 
-### matches multiple nodes attribute
+### nql matches multiple nodes attribute
 
 ```
 .NewExpression[arguments=("Murphy" 1)]
@@ -229,7 +246,7 @@ Value of name matches any of /User/ and /Account/
 
 It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
-### matches * in attribute key
+### nql matches * in attribute key
 
 ```
 .Constructor[parameters.*.name IN (name id)]
@@ -237,7 +254,7 @@ It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
 It matches Constructor whose parameters' names are all in [name id]
 
-### matches multiple selectors
+### nql matches multiple selectors
 
 #### Descendant combinator
 
@@ -271,7 +288,7 @@ It matches PropertyDeclaration node only if it immediately follows the PropertyD
 
 It matches PropertyDeclaration node only if it follows the PropertyDeclaration whose name is name
 
-### matches goto scope
+### nql matches goto scope
 
 ```
 .ClassDeclaration members .PropertyDeclaration
@@ -279,7 +296,7 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 
 It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node
 
-### matches pseudo selector
+### nql matches pseudo selector
 
 ```
 .ClassDeclaration:has(.Constructor)
@@ -293,13 +310,145 @@ It matches ClassDeclaration node if it has a Constructor node
 
 It matches ClassDeclaration node if it does not have a Constructor node
 
-### matches multiple expressions
+### nql matches multiple expressions
 
 ```
 .JSXOpeningElement[name=Fragment], .JSXClosingElement[name=Fragment]
 ```
 
 It matches JSXOpeningElement node whose name is Fragment or JSXClosingElement node whose name is Fragment
+
+## Node Rules
+
+### rules matches node type
+
+```
+{ nodeType: "ClassDeclaration" }
+```
+
+It matches ClassDeclaration node
+
+### rules matches attribute
+
+```
+{ nodeType: "NewExpression", expression: "UserAccount" }
+```
+
+It matches NewExpression node whose expression value is UserAccount
+
+```
+{ nodeType: "NewExpression", arguments: { 0: "Murphy", 1: 1 } }
+```
+
+It matches NewExpression node whose first argument is "Murphy" and second argument is 1
+
+### rules matches nested attribute
+
+```
+{ nodeType: "NewExpression", expression: { escapedText: "UserAccount" } }
+```
+
+It matches NewExpression node whose escapedText of expression is UserAccount
+
+### rules matches evaluated value
+
+```
+{ nodeType: "PropertyAssignment", name: "{{initializer}}" }
+```
+
+It matches PropertyAssignement node whose node value of name matches node value of intiailizer
+
+### rules matches nested selector
+
+```
+{ nodeType: "VariableDeclaration", initializer: { nodeType: "NewExpression", expression: "UserAccount" } }
+```
+
+It matches VariableDelclaration node whose initializer is a NewExpression node whose expression is UserAccount
+
+### rules matches property
+
+```
+{ nodeType: "NewExpression", arguments: { length: 2 } }
+```
+
+It matches NewExpression node whose arguments length is 2
+
+### rules matches operators
+
+```
+{ nodeType: "NewExpression", expression: "UserAccount" }
+```
+
+Value of expression is equal to UserAccount
+
+```
+{ nodeType: "NewExpression", arguments: { length: { not: 0 } } }
+```
+
+Length of arguments is not equal to 0
+
+```
+{ nodeType: "NewExpression", arguments: { length: { gte: 2 } } }
+```
+
+Length of arguments is greater than or equal to 2
+
+```
+{ nodeType: "NewExpression", arguments: { length: { gt: 1 } } }
+```
+
+Length of arguments is greater than 1
+
+```
+{ nodeType: "NewExpression", arguments: { length: { lte: 2 } } }
+```
+
+Length of arguments is less than or equal to 2
+
+```
+{ nodeType: "NewExpression", arguments: { length: { lt: 3 } } }
+```
+
+Length of arguments is less than 3
+
+```
+{ nodeType: "ClassDeclaration", name: { in: [User Account UserAccount] } }
+```
+
+Value of name matches any of User, Account and UserAccount
+
+```
+{ nodeType: "ClassDeclaration", name: { notIn: [User Account] } }
+```
+
+Value of name does not match all of User and Account
+
+```
+{ nodeType: "ClassDeclaration", name: /^User/ }
+```
+
+Value of name starts with User
+
+```
+{ nodeType: "ClassDeclaration", name: { not: /^User/ } }
+```
+
+Value of name does not start with User
+
+```
+{ nodeType: "ClassDeclaration", name: { in: [/User/, /Account/] } }
+```
+
+Value of name matches any of /User/ and /Account/
+
+### rules matches multiple nodes attribute
+
+```
+{ nodeType: "NewExpression", arguments: ["Murphy", 1] }
+```
+
+It matches NewExpressioin node whose arguments are ["Murphy", 1]
 
 ## Write Adapter
 
