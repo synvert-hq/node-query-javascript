@@ -58,4 +58,34 @@ describe("NodeQuery", () => {
       });
     });
   });
+
+  describe("#matchNode", () => {
+    const node = parseCode(`
+      class UserAccount {
+        name: string;
+        id: number;
+        active: boolean;
+
+        constructor(name: string, id: number, active: boolean) {
+          this.name = name;
+          this.id = id;
+          this.active = active;
+        }
+      }
+    `).statements[0];
+
+    describe("nql", () => {
+      it("match node", () => {
+        const nodeQuery = new NodeQuery<Node>(".ClassDeclaration");
+        expect(nodeQuery.matchNode(node)).toBeTruthy();
+      });
+    });
+
+    describe("rules", () => {
+      it.only("match node", () => {
+        const nodeQuery = new NodeQuery<Node>({ nodeType: "ClassDeclaration" });
+        expect(nodeQuery.matchNode(node)).toBeTruthy();
+      });
+    });
+  });
 });
