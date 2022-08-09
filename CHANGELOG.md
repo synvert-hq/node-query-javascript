@@ -1,5 +1,13 @@
 # NodeQuery
 
+## 1.9.0 (2022-08-08)
+
+* Rename `NodeQuery#parse` to `NodeQuery#queryNodes`
+* `NodeQuery#queryNodes` accepts `includingSelf` arguments
+* `NodeQuery#queryNodes` supports both `nql` and `rules`
+* Add `NodeQuery#matchNode` method
+* Do not export `handleRecursiveChild` and `getTargetNode` helpers
+
 ## 1.8.5 (2022-06-23)
 
 * Match not equal nested selector
