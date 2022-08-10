@@ -1,6 +1,6 @@
 {
   "name": "@xinminlabs/node-query",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "ast node query language",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
