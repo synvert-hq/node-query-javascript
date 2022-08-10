@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.9.1 (2022-08-10)
+
+* Export `TypescriptAdapter`
+
 ## 1.9.0 (2022-08-08)
 
 * Rename `NodeQuery#parse` to `NodeQuery#queryNodes`
