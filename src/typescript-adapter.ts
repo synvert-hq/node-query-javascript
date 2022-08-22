@@ -7,7 +7,8 @@ class TypescriptAdapter implements Adapter<Node> {
   }
 
   getSource(node: Node): string {
-    return node.getFullText().trim();
+    // typescript getText() may contain trailing whitespaces and newlines.
+    return node.getText().trimEnd();
   }
 
   getChildren(node: Node): Node[] {
