@@ -83,7 +83,7 @@ describe("NodeQuery", () => {
     });
 
     describe("rules", () => {
-      it.only("match node", () => {
+      it("match node", () => {
         const nodeQuery = new NodeQuery<Node>({ nodeType: "ClassDeclaration" });
         expect(nodeQuery.matchNode(node)).toBeTruthy();
       });
