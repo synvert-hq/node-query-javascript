@@ -1,5 +1,10 @@
 # NodeQuery
 
+## 1.9.2 (2022-08-23)
+
+* Fix "typescript getText() may contain trailing whitespaces and newlines"
+* Debug operation result
+
 ## 1.9.1 (2022-08-10)
 
 * Export `TypescriptAdapter`
