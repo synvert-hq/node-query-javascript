@@ -10,7 +10,19 @@ abstract class Value<T> {
   match(node: Node<T>, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = this.expectedValue();
-    debug("node-query:attribute")(`${actual} ${operator} ${expected}`);
+    const result = this.matchString(actual, expected, operator);
+    debug("node-query:attribute")(`"${actual}" ${operator} "${expected}" ${result}`);
+    return result;
+  }
+
+  // actual value can be a string or the source code of a typescript node.
+  actualValue(node: Node<T>): string {
+    return toString(node);
+  }
+
+  abstract expectedValue(): string;
+
+  private matchString(actual: string, expected: string, operator: string): boolean {
     switch (operator) {
       case "^=":
         return actual.startsWith(expected);
@@ -32,13 +44,6 @@ abstract class Value<T> {
         return actual === expected;
     }
   }
-
-  // actual value can be a string or the source code of a typescript node.
-  actualValue(node: Node<T>): string {
-    return toString(node);
-  }
-
-  abstract expectedValue(): string;
 }
 
 export default Value;

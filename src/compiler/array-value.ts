@@ -21,25 +21,9 @@ class ArrayValue<T> {
   // check if the actual value matches the expected value.
   match(node: Node<T> | Node<T>[], operator: string): boolean {
     const expected = this.expectedValue();
-    debug("node-query:array-value")(`${operator} ${expected}`);
-    switch (operator) {
-      case "not_in":
-        return Array.isArray(node)
-          ? node.every((n) =>
-              expected.every((expectedValue) => expectedValue.match(n, "!="))
-            )
-          : expected.every((expectedValue) => expectedValue.match(node, "!="));
-      case "in":
-        return Array.isArray(node)
-          ? node.every((n) =>
-              expected.some((expectedValue) => expectedValue.match(n, "=="))
-            )
-          : expected.some((expectedValue) => expectedValue.match(node, "=="));
-      case "!=":
-        return Array.isArray(node) && this.compareNotEqual(node, expected);
-      default:
-        return Array.isArray(node) && this.compareEqual(node, expected);
-    }
+    const result = this.matchArray(expected, node, operator);
+    debug("node-query:array-value")(`${operator} ${expected} ${result}`);
+    return result;
   }
 
   // expected value is an array of Value.
@@ -62,6 +46,27 @@ class ArrayValue<T> {
       return this.value.toString();
     }
     return "";
+  }
+
+  private matchArray(expected: Value<T>[], node: Node<T> | Node<T>[], operator: string): boolean {
+    switch (operator) {
+      case "not_in":
+        return Array.isArray(node)
+          ? node.every((n) =>
+              expected.every((expectedValue) => expectedValue.match(n, "!="))
+            )
+          : expected.every((expectedValue) => expectedValue.match(node, "!="));
+      case "in":
+        return Array.isArray(node)
+          ? node.every((n) =>
+              expected.some((expectedValue) => expectedValue.match(n, "=="))
+            )
+          : expected.some((expectedValue) => expectedValue.match(node, "=="));
+      case "!=":
+        return Array.isArray(node) && this.compareNotEqual(node, expected);
+      default:
+        return Array.isArray(node) && this.compareEqual(node, expected);
+    }
   }
 
   private compareNotEqual(actual: Node<T>[], expected: Value<T>[]) {
