@@ -48,7 +48,11 @@ class ArrayValue<T> {
     return "";
   }
 
-  private matchArray(expected: Value<T>[], node: Node<T> | Node<T>[], operator: string): boolean {
+  private matchArray(
+    expected: Value<T>[],
+    node: Node<T> | Node<T>[],
+    operator: string
+  ): boolean {
     switch (operator) {
       case "not_in":
         return Array.isArray(node)

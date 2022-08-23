@@ -11,7 +11,9 @@ class Number<T> extends Value<T> {
     const actual = this.actualValue(node);
     const expected = this.expectedValue();
     const result = this.matchNumber(actual, expected, operator);
-    debug("node-query:attribute")(`${actual} ${operator} ${expected} ${result}`);
+    debug("node-query:attribute")(
+      `${actual} ${operator} ${expected} ${result}`
+    );
     return result;
   }
 
@@ -24,7 +26,11 @@ class Number<T> extends Value<T> {
     return this.value.toString();
   }
 
-  private matchNumber(actual: string, expected: string, operator: string): boolean {
+  private matchNumber(
+    actual: string,
+    expected: string,
+    operator: string
+  ): boolean {
     switch (operator) {
       case "!=":
         return actual !== expected;
