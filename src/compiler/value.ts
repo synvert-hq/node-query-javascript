@@ -11,7 +11,9 @@ abstract class Value<T> {
     const actual = this.actualValue(node);
     const expected = this.expectedValue();
     const result = this.matchString(actual, expected, operator);
-    debug("node-query:attribute")(`"${actual}" ${operator} "${expected}" ${result}`);
+    debug("node-query:attribute")(
+      `"${actual}" ${operator} "${expected}" ${result}`
+    );
     return result;
   }
 
@@ -22,7 +24,11 @@ abstract class Value<T> {
 
   abstract expectedValue(): string;
 
-  private matchString(actual: string, expected: string, operator: string): boolean {
+  private matchString(
+    actual: string,
+    expected: string,
+    operator: string
+  ): boolean {
     switch (operator) {
       case "^=":
         return actual.startsWith(expected);
