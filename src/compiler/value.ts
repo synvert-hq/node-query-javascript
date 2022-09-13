@@ -1,7 +1,7 @@
 import debug from "debug";
 
 import type { Node } from "./types";
-import { getAdapter } from "./helpers";
+import { getAdapter } from "./helper";
 
 // Value is an atom value,
 // it can be a Boolean, Null, Number, Undefined, String or Identifier.

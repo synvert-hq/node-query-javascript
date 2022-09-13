@@ -1,7 +1,7 @@
 import debug from "debug";
 
 import Value from "./value";
-import { getTargetNode, toString } from "./helpers";
+import { getTargetNode, toString } from "./helper";
 
 class EvaluatedValue<T> extends Value<T> {
   public baseNode!: T;
