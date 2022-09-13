@@ -4,7 +4,7 @@
 # NodeQuery
 
 NodeQuery defines an AST node query language, which is a css like syntax for matching nodes,
-it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`.
+it supports other ast parser if it implements `NodeQuery.Adapter`.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
     - [nql matches nested selector](#nql-matches-nested-selector)
     - [nql matches property](#nql-matches-property)
     - [nql matches operators](#nql-matches-operators)
-    - [nql matches multiple nodes attribute](#nql-matches-multiple-nodes-attribute)
+    - [nql matches array node attribute](#nql-matches-array-node-attribute)
     - [nql matches * in attribute key](#nql-matches--in-attribute-key)
     - [nql matches multiple selectors](#nql-matches-multiple-selectors)
       - [Descendant combinator](#descendant-combinator)
@@ -38,7 +38,7 @@ it supports other ast parsers, like espree, if it implements `NodeQuery.Adapter`
     - [rules matches nested selector](#rules-matches-nested-selector)
     - [rules matches property](#rules-matches-property)
     - [rules matches operators](#rules-matches-operators)
-    - [rules matches multiple nodes attribute](#rules-matches-multiple-nodes-attribute)
+    - [rules matches array node attribute](#rules-matches-array-node-attribute)
   - [Write Adapter](#write-adapter)
   - [Contributing Guide](#contributing-guide)
 
@@ -62,7 +62,7 @@ It provides two apis: `queryNodes` and `matchNode`
 
 ```typescript
 const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object) // Initialize NodeQuery
-nodeQuery.queryNodes(node: Node): Node[] // Get the matching nodes.
+nodeQuery.queryNodes(node: Node, includingSelf = true): Node[] // Get the matching nodes.
 nodeQuery.matchNode(node: Node): boolean // Check if the node matches nql or rules.
 ```
 
@@ -239,7 +239,7 @@ Value of name does not start with User
 
 Value of name matches any of /User/ and /Account/
 
-### nql matches multiple nodes attribute
+### nql matches array node attribute
 
 ```
 .NewExpression[arguments=("Murphy" 1)]
@@ -295,7 +295,7 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 .ClassDeclaration members .PropertyDeclaration
 ```
 
-It matches PropertyDeclaration node whose ancestor matches one of the members of ClassDeclaration node
+It matches PropertyDeclaration node who is in the members of ClassDeclaration node
 
 ### nql matches pseudo selector
 
@@ -443,7 +443,7 @@ Value of name does not start with User
 
 Value of name matches any of /User/ and /Account/
 
-### rules matches multiple nodes attribute
+### rules matches array node attribute
 
 ```
 { nodeType: "NewExpression", arguments: ["Murphy", 1] }
@@ -468,7 +468,6 @@ Here are some examples:
 2. [typescript version EspreeAdapter](https://github.com/xinminlabs/synvert-core-javascript/blob/master/src/espree-adapter.ts)
 
 3. [TypescriptAdapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/typescript-adapter.ts)
-
 
 ## Contributing Guide
 
