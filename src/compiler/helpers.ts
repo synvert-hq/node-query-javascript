@@ -59,23 +59,3 @@ export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
   }
   return true;
 }
-
-export function toString<T>(node: Node<T> | Node<T>[]): string {
-  if (Array.isArray(node)) {
-    return `[${node.map((n) => toString<T>(n)).join(", ")}]`;
-  }
-
-  if (node === null) {
-    return "null";
-  }
-  switch (typeof node) {
-    case "undefined":
-      return "undefined";
-    case "string":
-    case "number":
-    case "boolean":
-      return node.toString();
-    default:
-      return getAdapter<T>().getSource(node);
-  }
-}
