@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.10.0 (2022-09-14)
+
+* Drop `EvaluatedValue`, use `String` instead
+
 ## 1.9.2 (2022-08-23)
 
 * Fix "typescript getText() may contain trailing whitespaces and newlines"
