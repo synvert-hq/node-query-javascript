@@ -47,4 +47,38 @@ describe("Compiler::Helper", () => {
       expect(value).toEqual("this.isArray");
     });
   });
+
+  describe("toString", () => {
+    it("get source for null", () => {
+      expect(Helper.toString(null)).toEqual("null");
+    });
+
+    it("get source for undefined", () => {
+      expect(Helper.toString(undefined)).toEqual("undefined");
+    });
+
+    it("get source for boolean", () => {
+      expect(Helper.toString(true)).toEqual("true");
+      expect(Helper.toString(false)).toEqual("false");
+    });
+
+    it("get source for number", () => {
+      expect(Helper.toString(0)).toEqual("0");
+      expect(Helper.toString(1)).toEqual("1");
+    });
+
+    it("get source for string", () => {
+      expect(Helper.toString("foobar")).toEqual("foobar");
+    });
+
+    it("get source for node", () => {
+      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+      expect(Helper.toString(node.expression.expression)).toEqual("Array");
+    });
+
+    it("get source for nodes", () => {
+      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+      expect(Helper.toString(node.arguments)).toEqual("(foobar)");
+    });
+  });
 });

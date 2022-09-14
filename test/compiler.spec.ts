@@ -90,6 +90,15 @@ describe("Compiler", () => {
       const node = parseCode('"foobar"').statements[0];
       expect(value.match(node, "!=")).toBeTruthy();
     });
+
+    it("matches evaluated value", () => {
+      const value = new Compiler.String("{{initializer.text}}");
+      const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0]
+        .declarationList.declarations[0].initializer.properties[0];
+      value.baseNode = baseNode;
+      const node = baseNode.name;
+      expect(value.match(node, "==")).toBeTruthy();
+    });
   });
 
   describe("Undefined", () => {
@@ -103,17 +112,6 @@ describe("Compiler", () => {
       const value = new Compiler.Undefined();
       const node = parseCode("synvert").statements[0];
       expect(value.match(node, "!=")).toBeTruthy();
-    });
-  });
-
-  describe("EvaluatedValue", () => {
-    it("matches evaluated value", () => {
-      const value = new Compiler.EvaluatedValue("initializer.text");
-      const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0]
-        .declarationList.declarations[0].initializer.properties[0];
-      value.baseNode = baseNode;
-      const node = baseNode.name;
-      expect(value.match(node, "==")).toBeTruthy();
     });
   });
 

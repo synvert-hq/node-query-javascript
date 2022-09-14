@@ -1,6 +1,6 @@
 import Value from "./value";
 import ArrayValue from "./array-value";
-import EvaluatedValue from "./evaluated-value";
+import String from "./string";
 import Selector from "./selector";
 import { getTargetNode } from "./helper";
 
@@ -23,7 +23,7 @@ class Attribute<T> {
 
   // check if the node matches the attribute.
   match(node: T): boolean {
-    if (this.value instanceof EvaluatedValue) {
+    if (this.value instanceof String) {
       this.value.baseNode = node;
     }
     const actualValue = getTargetNode(node, this.key);

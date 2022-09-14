@@ -63,7 +63,27 @@ export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
 export function evaluateNodeValue<T>(node: T, str: string): string {
   for (let matchData of str.matchAll(/{{(.*?)}}/g)) {
     const targetNode = getTargetNode(node, matchData[1]);
-    str = str.replace(matchData[0], NodeQuery.getAdapter().getSource(targetNode));
+    str = str.replace(matchData[0], toString(targetNode));
   }
   return str;
+}
+
+export function toString<T>(node: Node<T> | Node<T>[]): string {
+  if (Array.isArray(node)) {
+    return `(${node.map((n) => toString(n)).join(", ")})`;
+  }
+
+  if (node === null) {
+    return "null";
+  }
+  switch (typeof node) {
+    case "undefined":
+      return "undefined";
+    case "string":
+    case "number":
+    case "boolean":
+      return node.toString();
+    default:
+      return getAdapter<T>().getSource(node);
+  }
 }

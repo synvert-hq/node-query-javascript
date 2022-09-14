@@ -1,7 +1,6 @@
 NUMBER ([0-9]+("."[0-9]+)?)
 SINGLE_QUOTE_STRING (\'.*?\')
 DOUBLE_QUOTE_STRING (\".*?\")
-EVALUATED_VALUE (\{\{[\*\.\w]*\w\}\})
 REGEXP (\/.*?\/)
 IDENTIFIER ([\*\.\w]*\w)
 IDENTIFIER_VALUE ([\$\.\w]+)
@@ -89,11 +88,6 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 return 'OPERATOR';
         %}
 <key>({IDENTIFIER})       return 'KEY';
-<value>({EVALUATED_VALUE})
-        %{
-                yytext = yytext.substring(2, yytext.length - 2);
-                return 'EVALUATED_VALUE';
-        %}
 <value>("(")
         %{
                 this.begin('array_value');

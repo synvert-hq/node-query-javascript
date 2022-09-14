@@ -6,7 +6,6 @@ import AttributeList from "./compiler/attribute-list";
 import Attribute from "./compiler/attribute";
 import ArrayValue from "./compiler/array-value";
 import Boolean from "./compiler/boolean";
-import EvaluatedValue from "./compiler/evaluated-value";
 import Identifier from "./compiler/identifier";
 import Null from "./compiler/null";
 import Number from "./compiler/number";
@@ -24,7 +23,6 @@ module.exports = {
   Attribute,
   ArrayValue,
   Boolean,
-  EvaluatedValue,
   Identifier,
   Null,
   Number,

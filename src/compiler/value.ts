@@ -1,7 +1,7 @@
 import debug from "debug";
 
 import type { Node } from "./types";
-import { getAdapter } from "./helper";
+import { toString } from "./helper";
 
 // Value is an atom value,
 // it can be a Boolean, Null, Number, Undefined, String or Identifier.
@@ -19,23 +19,7 @@ abstract class Value<T> {
 
   // actual value can be a string or the source code of a typescript node.
   actualValue(node: any): string {
-    if (Array.isArray(node)) {
-      return `[${node.map((n) => this.actualValue(n)).join(", ")}]`;
-    }
-
-    if (node === null) {
-      return "null";
-    }
-    switch (typeof node) {
-      case "undefined":
-        return "undefined";
-      case "string":
-      case "number":
-      case "boolean":
-        return node.toString();
-      default:
-        return getAdapter<T>().getSource(node);
-    }
+    return toString(node);
   }
 
   abstract expectedValue(): string;
