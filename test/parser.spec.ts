@@ -129,7 +129,7 @@ describe("Parser", () => {
 
     it("parsers evaluated value", () => {
       const source =
-        ".VariableDeclaration[name!=\"{{type.typeName.escapedText.toLowerCase}}\"]";
+        '.VariableDeclaration[name!="{{type.typeName.escapedText.toLowerCase}}"]';
       assertParser(source);
     });
 
