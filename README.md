@@ -132,7 +132,7 @@ It matches NewExpression node whose escapedText of expression is UserAccount
 ### nql matches evaluated value
 
 ```
-.PropertyAssignment[name={{initializer}}]
+.PropertyAssignment[name="{{initializer}}"]
 ```
 
 It matches PropertyAssignement node whose node value of name matches node value of intiailizer
