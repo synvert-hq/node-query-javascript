@@ -4,7 +4,9 @@ import { parseCode } from "../test-helper";
 
 describe("Compiler::Helper", () => {
   describe("getTargetNode", () => {
-    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
+      "expression"
+    ];
 
     it("checks nodeType", () => {
       const targetNode = Helper.getTargetNode<Node>(node, "nodeType");
@@ -12,7 +14,10 @@ describe("Compiler::Helper", () => {
     });
 
     it("checks attribute", () => {
-      const targetNode = Helper.getTargetNode<Node>(node, "expression.expression");
+      const targetNode = Helper.getTargetNode<Node>(
+        node,
+        "expression.expression"
+      );
       expect(Helper.getAdapter().getSource(targetNode)).toEqual("Array");
     });
 
@@ -28,19 +33,28 @@ describe("Compiler::Helper", () => {
   });
 
   describe("handleRecursiveChild", () => {
-    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
+      "expression"
+    ];
 
     it("recursively handle all children", () => {
       const children: string[] = [];
       Helper.handleRecursiveChild<Node>(node, (childNode) => {
         children.push(Helper.getAdapter().getNodeType(childNode));
       });
-      expect(children).toEqual(["PropertyAccessExpression", "Identifier", "Identifier", "Identifier"]);
+      expect(children).toEqual([
+        "PropertyAccessExpression",
+        "Identifier",
+        "Identifier",
+        "Identifier",
+      ]);
     });
   });
 
   describe("evaluateNodeValue", () => {
-    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+    const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
+      "expression"
+    ];
 
     it("returns an evaluated string", () => {
       const value = Helper.evaluateNodeValue(node, "this.{{expression.name}}");
@@ -72,12 +86,16 @@ describe("Compiler::Helper", () => {
     });
 
     it("get source for node", () => {
-      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
+        "expression"
+      ];
       expect(Helper.toString(node.expression.expression)).toEqual("Array");
     });
 
     it("get source for nodes", () => {
-      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)['expression'];
+      const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
+        "expression"
+      ];
       expect(Helper.toString(node.arguments)).toEqual("(foobar)");
     });
   });
