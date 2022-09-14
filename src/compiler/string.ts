@@ -1,6 +1,6 @@
 import type { Node } from "./types";
 import Value from "./value";
-import { evaluateNodeValue } from "./helper";
+import { evaluateNodeValue } from "../helper";
 
 class String<T> extends Value<T> {
   // baseNode is used for evaluated value.

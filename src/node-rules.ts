@@ -1,7 +1,7 @@
 import flatten from "flat";
 import { t } from "typy";
 import NodeQuery from "./node-query";
-import { getTargetNode, handleRecursiveChild } from "./compiler/helper";
+import { getTargetNode, handleRecursiveChild } from "./helper";
 
 const KEYWORDS = ["not", "in", "notIn", "gt", "gte", "lt", "lte"];
 

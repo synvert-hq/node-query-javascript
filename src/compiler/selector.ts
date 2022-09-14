@@ -4,7 +4,7 @@ import {
   handleRecursiveChild,
   getTargetNode,
   isNode,
-} from "./helper";
+} from "../helper";
 
 interface SelectorParameters<T> {
   gotoScope?: string;

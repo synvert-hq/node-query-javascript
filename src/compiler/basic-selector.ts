@@ -1,7 +1,7 @@
 import debug from "debug";
 
 import AttributeList from "./attribute-list";
-import { getAdapter } from "./helper";
+import { getAdapter } from "../helper";
 
 interface BasicSelectorParameters<T> {
   nodeType: string;

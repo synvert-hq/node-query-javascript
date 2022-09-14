@@ -1,4 +1,4 @@
-import * as Helper from "../../src/compiler/helper";
+import * as Helper from "../../src/helper";
 import { Node } from "typescript";
 import { parseCode } from "../test-helper";
 

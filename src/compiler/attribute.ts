@@ -2,7 +2,7 @@ import Value from "./value";
 import ArrayValue from "./array-value";
 import String from "./string";
 import Selector from "./selector";
-import { getTargetNode } from "./helper";
+import { getTargetNode } from "../helper";
 
 interface AttributeParameters<T> {
   key: string;

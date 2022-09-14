@@ -1,7 +1,7 @@
 import debug from "debug";
-import Adapter from "../adapter";
-import NodeQuery from "../node-query";
-import type { Node } from "./types";
+import Adapter from "./adapter";
+import NodeQuery from "./node-query";
+import type { Node } from "./compiler/types";
 
 export function getAdapter<T>(): Adapter<T> {
   return NodeQuery<T>.getAdapter();
