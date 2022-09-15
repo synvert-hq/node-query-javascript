@@ -11,7 +11,10 @@ class NodeRules<T> {
   constructor(private rules: object) {}
 
   queryNodes(node: T, options: QueryOptions = {}): T[] {
-    options = Object.assign({ includingSelf: true, stopAtFirstMatch: false, recursive: true }, options);
+    options = Object.assign(
+      { includingSelf: true, stopAtFirstMatch: false, recursive: true },
+      options
+    );
     if (options.includingSelf && !options.recursive) {
       return this.matchNode(node) ? [node] : [];
     }
@@ -33,14 +36,16 @@ class NodeRules<T> {
         }
       });
     } else {
-      NodeQuery.getAdapter().getChildren(node).forEach((childNode) => {
-        if (this.matchNode(childNode)) {
-          matchingNodes.push(childNode);
-          if (options.stopAtFirstMatch) {
-            return { stop: true };
+      NodeQuery.getAdapter()
+        .getChildren(node)
+        .forEach((childNode) => {
+          if (this.matchNode(childNode)) {
+            matchingNodes.push(childNode);
+            if (options.stopAtFirstMatch) {
+              return { stop: true };
+            }
           }
-        }
-      });
+        });
     }
     return matchingNodes;
   }
