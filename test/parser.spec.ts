@@ -458,21 +458,29 @@ describe("Parser", () => {
 
     it("sets option includingSelf to false", () => {
       const expression = parseNql(".ClassDeclaration");
-      expect(expression.queryNodes(node.statements[1], { includingSelf: false })).toEqual([]);
+      expect(
+        expression.queryNodes(node.statements[1], { includingSelf: false })
+      ).toEqual([]);
 
-      expect(expression.queryNodes(node.statements[1])).toEqual([node.statements[1]]);
+      expect(expression.queryNodes(node.statements[1])).toEqual([
+        node.statements[1],
+      ]);
     });
 
     it("sets option stopAtFirstMatch to true", () => {
       const expression = parseNql(".BinaryExpression");
-      expect(expression.queryNodes(node, { stopAtFirstMatch: true }).length).toEqual(1);
+      expect(
+        expression.queryNodes(node, { stopAtFirstMatch: true }).length
+      ).toEqual(1);
 
       expect(expression.queryNodes(node).length).toEqual(3);
     });
 
     it("sets option recursive to false", () => {
       const expression = parseNql(".ClassDeclaration");
-      expect(expression.queryNodes(node, { recursive: false }).length).toEqual(0);
+      expect(expression.queryNodes(node, { recursive: false }).length).toEqual(
+        0
+      );
 
       expect(expression.queryNodes(node).length).toEqual(1);
     });

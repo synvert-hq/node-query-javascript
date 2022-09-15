@@ -55,7 +55,10 @@ class Selector<T> {
   }
 
   queryNodes(node: T | T[], options: QueryOptions = {}): T[] {
-    options = Object.assign({ includingSelf: true, stopAtFirstMatch: false, recursive: true }, options);
+    options = Object.assign(
+      { includingSelf: true, stopAtFirstMatch: false, recursive: true },
+      options
+    );
 
     if (this.relationship && !Array.isArray(node)) {
       return this.findNodesByRelationship(node);
@@ -98,14 +101,16 @@ class Selector<T> {
           }
         });
       } else {
-        NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
-          if (this.match(childNode)) {
-            nodes.push(childNode);
-            if (options.stopAtFirstMatch) {
-              return { stop: true };
+        NodeQuery.getAdapter()
+          .getChildren(node)
+          .forEach((childNode) => {
+            if (this.match(childNode)) {
+              nodes.push(childNode);
+              if (options.stopAtFirstMatch) {
+                return { stop: true };
+              }
             }
-          }
-        });
+          });
       }
     }
     return nodes;

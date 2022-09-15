@@ -255,21 +255,29 @@ describe("NodeRules", () => {
 
     it("sets option includingSelf to false", () => {
       const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" });
-      expect(nodeRules.queryNodes(node.statements[1], { includingSelf: false })).toEqual([]);
+      expect(
+        nodeRules.queryNodes(node.statements[1], { includingSelf: false })
+      ).toEqual([]);
 
-      expect(nodeRules.queryNodes(node.statements[1])).toEqual([node.statements[1]]);
+      expect(nodeRules.queryNodes(node.statements[1])).toEqual([
+        node.statements[1],
+      ]);
     });
 
     it("sets option stopAtFirstMatch to true", () => {
       const nodeRules = new NodeRules({ nodeType: "BinaryExpression" });
-      expect(nodeRules.queryNodes(node, { stopAtFirstMatch: true }).length).toEqual(1);
+      expect(
+        nodeRules.queryNodes(node, { stopAtFirstMatch: true }).length
+      ).toEqual(1);
 
       expect(nodeRules.queryNodes(node).length).toEqual(3);
     });
 
     it("sets option recursive to false", () => {
       const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" });
-      expect(nodeRules.queryNodes(node, { recursive: false }).length).toEqual(0);
+      expect(nodeRules.queryNodes(node, { recursive: false }).length).toEqual(
+        0
+      );
 
       expect(nodeRules.queryNodes(node).length).toEqual(1);
     });
