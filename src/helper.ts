@@ -36,14 +36,23 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
 
 export function handleRecursiveChild<T>(
   node: T,
-  handler: (childNode: T) => void
-): void {
-  getAdapter<T>()
-    .getChildren(node)
-    .forEach((childNode: T) => {
-      handler(childNode);
-      handleRecursiveChild(childNode, handler);
-    });
+  handler: (childNode: T) => { stop: boolean } | void
+): { stop: boolean } {
+  let result;
+  for (let childNode of getAdapter<T>().getChildren(node)) {
+    result = handler(childNode);
+    if (result && result.stop) {
+      break;
+    }
+    result = handleRecursiveChild(childNode, handler);
+    if (result && result.stop) {
+      break;
+    }
+  }
+  if (result) {
+    return result;
+  }
+  return { stop: false };
 }
 
 export function isNode<T>(node: Node<T> | Node<T>[]): boolean {

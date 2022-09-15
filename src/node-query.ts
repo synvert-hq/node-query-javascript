@@ -2,6 +2,7 @@ import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
 import TypescriptAdapter from "./typescript-adapter";
 import NodeRules from "./node-rules";
+import { QueryOptions } from "./compiler/types";
 const { parser } = require("./parser");
 const { ExpressionList } = require("./compiler");
 
@@ -75,16 +76,25 @@ class NodeQuery<T> {
   }
 
   /**
+   * Query options
+   * @typedef {Object} QueryOptions
+   * @property {boolean} [includingSelf = true] - If query the node itself
+   * @property {boolean} [stopAtFirstMatch = false] - If stop at first match
+   * @property {boolean} [recursive = true] - If recursively query child nodes
+   */
+
+  /**
    * Query matching nodes.
    * @param node {T} ast node
-   * @param includingSelf {boolean} if check the node itself
+   * @param options {QueryOptions}
+   * @option
    * @returns {T[]} matching ast nodes
    */
-  queryNodes(node: T, includingSelf = true): T[] {
+  queryNodes(node: T, options: QueryOptions = {}): T[] {
     if (this.expression) {
-      return this.expression.queryNodes(node, includingSelf);
+      return this.expression.queryNodes(node, options);
     } else if (this.rules) {
-      return this.rules.queryNodes(node, includingSelf);
+      return this.rules.queryNodes(node, options);
     } else {
       return [];
     }

@@ -1,4 +1,5 @@
 import Expression from "./expression";
+import { QueryOptions } from "./types";
 
 interface ExpressionListParameters<T> {
   expression: Expression<T>;
@@ -18,10 +19,10 @@ class ExpressionList<T> {
     return this.queryNodes(node).length !== 0;
   }
 
-  queryNodes(node: T | T[], includingSelf = true): T[] {
-    const matchingNodes = this.expression.queryNodes(node, includingSelf);
+  queryNodes(node: T | T[], options: QueryOptions = {}): T[] {
+    const matchingNodes = this.expression.queryNodes(node, options);
     if (this.rest) {
-      return matchingNodes.concat(this.rest.queryNodes(node, includingSelf));
+      return matchingNodes.concat(this.rest.queryNodes(node, options));
     }
     return matchingNodes;
   }

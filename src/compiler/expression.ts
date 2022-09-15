@@ -1,4 +1,5 @@
 import Selector from "./selector";
+import { QueryOptions } from "./types";
 
 interface ExpressionParameters<T> {
   selector: Selector<T>;
@@ -14,13 +15,13 @@ class Expression<T> {
     this.rest = rest;
   }
 
-  queryNodes(node: T | T[], includingSelf = true): T[] {
-    const matchingNodes = this.selector.queryNodes(node, includingSelf);
+  queryNodes(node: T | T[], options: QueryOptions = {}): T[] {
+    const matchingNodes = this.selector.queryNodes(node, options);
     if (!this.rest) {
       return matchingNodes;
     }
     return matchingNodes.flatMap((matchingNode) =>
-      this.findNodesByRest(matchingNode, includingSelf)
+      this.findNodesByRest(matchingNode, options)
     );
   }
 
@@ -35,11 +36,11 @@ class Expression<T> {
     return result.join(" ");
   }
 
-  private findNodesByRest(node: T | T[], includingSelf = true): T[] {
+  private findNodesByRest(node: T | T[], options = {}): T[] {
     if (!this.rest) {
       return [];
     }
-    return this.rest.queryNodes(node, includingSelf);
+    return this.rest.queryNodes(node, options);
   }
 }
 

@@ -5,6 +5,8 @@ import {
   getTargetNode,
   isNode,
 } from "../helper";
+import { QueryOptions } from "./types";
+import NodeQuery from "../node-query";
 
 interface SelectorParameters<T> {
   gotoScope?: string;
@@ -52,7 +54,9 @@ class Selector<T> {
     );
   }
 
-  queryNodes(node: T | T[], includingSelf = true): T[] {
+  queryNodes(node: T | T[], options: QueryOptions = {}): T[] {
+    options = Object.assign({ includingSelf: true, stopAtFirstMatch: false, recursive: true }, options);
+
     if (this.relationship && !Array.isArray(node)) {
       return this.findNodesByRelationship(node);
     }
@@ -72,16 +76,37 @@ class Selector<T> {
       }
     }
 
+    if (options.includingSelf && !options.recursive) {
+      return this.match(node) ? [node] : [];
+    }
+
     const nodes: T[] = [];
-    if (includingSelf && this.match(node)) {
+    if (options.includingSelf && this.match(node)) {
       nodes.push(node);
+      if (options.stopAtFirstMatch) {
+        return nodes;
+      }
     }
     if (this.basicSelector) {
-      handleRecursiveChild(node, (childNode) => {
-        if (this.match(childNode)) {
-          nodes.push(childNode);
-        }
-      });
+      if (options.recursive) {
+        handleRecursiveChild(node, (childNode) => {
+          if (this.match(childNode)) {
+            nodes.push(childNode);
+            if (options.stopAtFirstMatch) {
+              return { stop: true };
+            }
+          }
+        });
+      } else {
+        NodeQuery.getAdapter().getChildren(node).forEach(childNode => {
+          if (this.match(childNode)) {
+            nodes.push(childNode);
+            if (options.stopAtFirstMatch) {
+              return { stop: true };
+            }
+          }
+        });
+      }
     }
     return nodes;
   }

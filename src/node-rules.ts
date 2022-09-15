@@ -2,22 +2,46 @@ import flatten from "flat";
 import { t } from "typy";
 import NodeQuery from "./node-query";
 import { getTargetNode, handleRecursiveChild } from "./helper";
+import { QueryOptions } from "./compiler/types";
+import { EndOfLineState } from "typescript";
 
 const KEYWORDS = ["not", "in", "notIn", "gt", "gte", "lt", "lte"];
 
 class NodeRules<T> {
   constructor(private rules: object) {}
 
-  queryNodes(node: T, includingSelf = true): T[] {
-    const matchingNodes = [];
-    if (includingSelf && this.matchNode(node)) {
-      matchingNodes.push(node);
+  queryNodes(node: T, options: QueryOptions = {}): T[] {
+    options = Object.assign({ includingSelf: true, stopAtFirstMatch: false, recursive: true }, options);
+    if (options.includingSelf && !options.recursive) {
+      return this.matchNode(node) ? [node] : [];
     }
-    handleRecursiveChild(node, (childNode) => {
-      if (this.matchNode(childNode)) {
-        matchingNodes.push(childNode);
+
+    const matchingNodes: T[] = [];
+    if (options.includingSelf && this.matchNode(node)) {
+      matchingNodes.push(node);
+      if (options.stopAtFirstMatch) {
+        return matchingNodes;
       }
-    });
+    }
+    if (options.recursive) {
+      handleRecursiveChild(node, (childNode) => {
+        if (this.matchNode(childNode)) {
+          matchingNodes.push(childNode);
+          if (options.stopAtFirstMatch) {
+            return { stop: true };
+          }
+        }
+      });
+    } else {
+      NodeQuery.getAdapter().getChildren(node).forEach((childNode) => {
+        if (this.matchNode(childNode)) {
+          matchingNodes.push(childNode);
+          if (options.stopAtFirstMatch) {
+            return { stop: true };
+          }
+        }
+      });
+    }
     return matchingNodes;
   }
 
