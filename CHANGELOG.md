@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.11.1 (2022-09-15)
+
+* Export `QueryOptions`
+
 ## 1.11.0 (2022-09-15)
 
 * Add `includingSelf`, `stopAtFirstMatch` and `recursive` options
