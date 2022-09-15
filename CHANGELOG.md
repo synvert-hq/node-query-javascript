@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.11.0 (2022-09-15)
+
+* Add `includingSelf`, `stopAtFirstMatch` and `recursive` options
+
 ## 1.10.0 (2022-09-14)
 
 * Drop `EvaluatedValue`, use `String` instead
