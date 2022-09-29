@@ -60,7 +60,7 @@ class NodeRules<T> {
           : getTargetNode(node, multiKey);
         let expected = t(this.rules, multiKey).safeObject;
         if (typeof expected === "string") {
-          const found = expected.match(/{{(.*)}}/);
+          const found = expected.match(/{{(.+?)}}/);
           if (found) {
             expected = getTargetNode(node, found[1]);
           }

@@ -70,7 +70,7 @@ export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
 }
 
 export function evaluateNodeValue<T>(node: T, str: string): string {
-  for (let matchData of str.matchAll(/{{(.*?)}}/g)) {
+  for (let matchData of str.matchAll(/{{(.+?)}}/g)) {
     const targetNode = getTargetNode(node, matchData[1]);
     str = str.replace(matchData[0], toString(targetNode));
   }
