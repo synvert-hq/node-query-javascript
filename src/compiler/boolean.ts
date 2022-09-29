@@ -6,7 +6,7 @@ class Boolean<T> extends Value<T> {
   }
 
   // expected value returns string true or false.
-  expectedValue(): string {
+  expectedValue(_baseNode: T): string {
     return this.value.toString();
   }
 

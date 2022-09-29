@@ -383,6 +383,12 @@ describe("Parser", () => {
       ]);
     });
 
+    it("matches evaluated value from base node", () => {
+      const node = parseCode("foo.slice(foo.length - 2, foo.length - 1)")
+      const expression = parseNql(`.CallExpression[expression=.PropertyAccessExpression[name=slice]][arguments.0=.BinaryExpression[left=.PropertyAccessExpression[expression="{{expression.expression}}"][name=length]][operatorToken=.MinusToken][right=.FirstLiteralToken]][arguments.1=.BinaryExpression[left=.PropertyAccessExpression[expression="{{expression.expression}}"][name=length]][operatorToken=.MinusToken][right=.FirstLiteralToken]][arguments.length=2]`);
+      expect(expression.queryNodes(node).length).toEqual(1);
+    });
+
     it("matches multiple attributes", () => {
       const expression = parseNql(
         '.NewExpression[arguments.0="Murphy"][arguments.1=1]'

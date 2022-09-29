@@ -6,9 +6,9 @@ class Regexp<T> extends Value<T> {
     super();
   }
 
-  match(node: T, operator: string): boolean {
+  match(node: T, baseNode: T, operator: string): boolean {
     const actual = this.actualValue(node);
-    const expected = new RegExp(this.expectedValue());
+    const expected = new RegExp(this.expectedValue(baseNode));
     const result = this.matchRegExp(actual, expected, operator);
     debug("node-query:attribute")(
       `${actual} ${operator} ${expected} ${result}`
@@ -16,7 +16,7 @@ class Regexp<T> extends Value<T> {
     return result;
   }
 
-  expectedValue(): string {
+  expectedValue(_baseNode: T): string {
     return this.value;
   }
 

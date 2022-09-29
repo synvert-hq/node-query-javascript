@@ -4,7 +4,7 @@ import NodeQuery from "./node-query";
 import type { Node } from "./compiler/types";
 
 export function getAdapter<T>(): Adapter<T> {
-  return NodeQuery<T>.getAdapter();
+  return NodeQuery.getAdapter();
 }
 
 export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {

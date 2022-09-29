@@ -6,19 +6,19 @@ describe("Compiler", () => {
     it("matches true", () => {
       const value = new Compiler.Boolean(true);
       const node = parseCode("true").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches false", () => {
       const value = new Compiler.Boolean(false);
       const node = parseCode("false").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not equal", () => {
       const value = new Compiler.Boolean(true);
       const node = parseCode("false").statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
   });
 
@@ -26,13 +26,13 @@ describe("Compiler", () => {
     it("matches equal", () => {
       const value = new Compiler.Identifier("contructor");
       const node = parseCode("contructor").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not equal", () => {
       const value = new Compiler.Identifier("contructor");
       const node = parseCode("synvert").statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
   });
 
@@ -40,13 +40,13 @@ describe("Compiler", () => {
     it("matches null", () => {
       const value = new Compiler.Null();
       const node = parseCode("null").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not null", () => {
       const value = new Compiler.Null();
       const node = parseCode("synvert").statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
   });
 
@@ -54,13 +54,13 @@ describe("Compiler", () => {
     it("matches number", () => {
       const value = new Compiler.Number(1.1);
       const node = parseCode("1.1").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not equal", () => {
       const value = new Compiler.Number(1.1);
       const node = parseCode("1").statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
   });
 
@@ -68,13 +68,13 @@ describe("Compiler", () => {
     it("matches regexp", () => {
       const value = new Compiler.Regexp(/\$/);
       const node = parseCode("$(body)").statements[0];
-      expect(value.match(node, "=~")).toBeTruthy();
+      expect(value.match(node, node, "=~")).toBeTruthy();
     });
 
     it("does not match regexp", () => {
       const value = new Compiler.Regexp(/\$/);
       const node = parseCode("foo bar").statements[0];
-      expect(value.match(node, "!~")).toBeTruthy();
+      expect(value.match(node, node, "!~")).toBeTruthy();
     });
   });
 
@@ -82,22 +82,21 @@ describe("Compiler", () => {
     it("matches string", () => {
       const value = new Compiler.String("synvert");
       const node = parseCode('"synvert"').statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not equal", () => {
       const value = new Compiler.String("synvert");
       const node = parseCode('"foobar"').statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
 
     it("matches evaluated value", () => {
       const value = new Compiler.String("{{initializer.text}}");
       const baseNode = parseCode("const foo = { foo: 'foo' }").statements[0]
         .declarationList.declarations[0].initializer.properties[0];
-      value.baseNode = baseNode;
       const node = baseNode.name;
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, baseNode, "==")).toBeTruthy();
     });
   });
 
@@ -105,13 +104,13 @@ describe("Compiler", () => {
     it("matches undefined", () => {
       const value = new Compiler.Undefined();
       const node = parseCode("undefined").statements[0];
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not null", () => {
       const value = new Compiler.Undefined();
       const node = parseCode("synvert").statements[0];
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
   });
 
@@ -124,7 +123,7 @@ describe("Compiler", () => {
         }),
       });
       const node = parseCode("[foo, bar]").statements[0].expression.elements;
-      expect(value.match(node, "==")).toBeTruthy();
+      expect(value.match(node, node, "==")).toBeTruthy();
     });
 
     it("matches not equal", () => {
@@ -135,7 +134,7 @@ describe("Compiler", () => {
         }),
       });
       const node = parseCode("[synvert]").statements[0].expression.elements;
-      expect(value.match(node, "!=")).toBeTruthy();
+      expect(value.match(node, node, "!=")).toBeTruthy();
     });
 
     it("matches in", () => {
@@ -146,7 +145,7 @@ describe("Compiler", () => {
         }),
       });
       const node = parseCode("foo").statements[0];
-      expect(value.match(node, "in")).toBeTruthy();
+      expect(value.match(node, node, "in")).toBeTruthy();
     });
 
     it("matches not_in", () => {
@@ -157,7 +156,7 @@ describe("Compiler", () => {
         }),
       });
       const node = parseCode("synvert").statements[0];
-      expect(value.match(node, "not_in")).toBeTruthy();
+      expect(value.match(node, node, "not_in")).toBeTruthy();
     });
   });
 
@@ -169,7 +168,7 @@ describe("Compiler", () => {
         operator: "==",
       });
       const node = parseCode("class Synvert {}").statements[0];
-      expect(attribute.match(node)).toBeTruthy();
+      expect(attribute.match(node, node)).toBeTruthy();
     });
 
     it("does not match node", () => {
@@ -179,7 +178,7 @@ describe("Compiler", () => {
         operator: "==",
       });
       const node = parseCode("class Foobar {}").statements[0];
-      expect(attribute.match(node)).toBeFalsy();
+      expect(attribute.match(node, node)).toBeFalsy();
     });
 
     it("matches nested key", () => {
@@ -189,7 +188,7 @@ describe("Compiler", () => {
         operator: "==",
       });
       const node = parseCode("class Synvert {}").statements[0];
-      expect(attribute.match(node)).toBeTruthy();
+      expect(attribute.match(node, node)).toBeTruthy();
     });
 
     it("matches nested key with array index", () => {
@@ -199,7 +198,7 @@ describe("Compiler", () => {
         operator: "==",
       });
       const node = parseCode("class Synvert {}").statements[0];
-      expect(attribute.match(node)).toBeTruthy();
+      expect(attribute.match(node, node)).toBeTruthy();
     });
 
     it("matches nested key with function", () => {
@@ -209,7 +208,7 @@ describe("Compiler", () => {
         operator: "==",
       });
       const node = parseCode("class Synvert {}").statements[0];
-      expect(attribute.match(node)).toBeTruthy();
+      expect(attribute.match(node, node)).toBeTruthy();
     });
   });
 
@@ -238,7 +237,7 @@ describe("Compiler", () => {
       });
       const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0]
         .expression;
-      expect(attributeList.match(node)).toBeTruthy();
+      expect(attributeList.match(node, node)).toBeTruthy();
     });
   });
 
@@ -270,7 +269,7 @@ describe("Compiler", () => {
       });
       const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0]
         .expression;
-      expect(basicSelector.match(node)).toBeTruthy();
+      expect(basicSelector.match(node, node)).toBeTruthy();
     });
   });
 
@@ -290,7 +289,7 @@ describe("Compiler", () => {
       });
       const node = parseCode('new UserAccount("Murphy", 1, true)').statements[0]
         .expression;
-      expect(selector.match(node)).toBeTruthy();
+      expect(selector.match(node, node)).toBeTruthy();
     });
   });
 });

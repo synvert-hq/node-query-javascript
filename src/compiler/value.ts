@@ -7,9 +7,9 @@ import { toString } from "../helper";
 // it can be a Boolean, Null, Number, Undefined, String or Identifier.
 abstract class Value<T> {
   // check if the actual value matches the expected value.
-  match(node: Node<T>, operator: string): boolean {
+  match(node: Node<T>, baseNode: T, operator: string): boolean {
     const actual = this.actualValue(node);
-    const expected = this.expectedValue();
+    const expected = this.expectedValue(baseNode);
     const result = this.matchString(actual, expected, operator);
     debug("node-query:attribute")(
       `"${actual}" ${operator} "${expected}" ${result}`
@@ -22,7 +22,7 @@ abstract class Value<T> {
     return toString(node);
   }
 
-  abstract expectedValue(): string;
+  abstract expectedValue(baseNode: T): string;
 
   private matchString(
     actual: string,

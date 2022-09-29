@@ -1,11 +1,8 @@
 import type { Node } from "./types";
 import Value from "./value";
-import { evaluateNodeValue } from "../helper";
+import { evaluateNodeValue, getAdapter } from "../helper";
 
 class String<T> extends Value<T> {
-  // baseNode is used for evaluated value.
-  public baseNode!: T;
-
   constructor(private value: string) {
     super();
   }
@@ -20,8 +17,8 @@ class String<T> extends Value<T> {
   }
 
   // expected value returns the value.
-  expectedValue(): string {
-    return evaluateNodeValue(this.baseNode, this.value);
+  expectedValue(baseNode: T): string {
+    return evaluateNodeValue(baseNode, this.value);
   }
 
   toString(): string {

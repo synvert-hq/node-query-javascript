@@ -242,6 +242,49 @@ describe("NodeRules", () => {
       ]);
     });
 
+    it("matches evaluated value from base node", () => {
+      const node = parseCode("foo.slice(foo.length - 2, foo.length - 1)")
+      const nodeRules = new NodeRules({
+        nodeType: "CallExpression",
+        expression: {
+          nodeType: "PropertyAccessExpression",
+          name: "slice"
+        },
+        arguments: {
+          length: 2,
+          0: {
+            nodeType: "BinaryExpression",
+            left: {
+              nodeType: "PropertyAccessExpression",
+              expression: "{{expression.expression}}",
+              name: "length"
+            },
+            operatorToken: {
+              nodeType: "MinusToken"
+            },
+            right: {
+              nodeType: "FirstLiteralToken",
+            }
+          },
+          1: {
+            nodeType: "BinaryExpression",
+            left: {
+              nodeType: "PropertyAccessExpression",
+              expression: "{{expression.expression}}",
+              name: "length"
+            },
+            operatorToken: {
+              nodeType: "MinusToken"
+            },
+            right: {
+              nodeType: "FirstLiteralToken",
+            }
+          }
+        }
+      });
+      expect(nodeRules.queryNodes(node).length).toEqual(1);
+    });
+
     it("matches multiple attributes", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",

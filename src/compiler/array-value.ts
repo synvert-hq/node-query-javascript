@@ -19,9 +19,9 @@ class ArrayValue<T> {
   }
 
   // check if the actual value matches the expected value.
-  match(node: Node<T> | Node<T>[], operator: string): boolean {
+  match(node: Node<T> | Node<T>[], baseNode: T, operator: string): boolean {
     const expected = this.expectedValue();
-    const result = this.matchArray(expected, node, operator);
+    const result = this.matchArray(expected, node, baseNode, operator);
     debug("node-query:array-value")(`${operator} ${expected} ${result}`);
     return result;
   }
@@ -51,35 +51,36 @@ class ArrayValue<T> {
   private matchArray(
     expected: Value<T>[],
     node: Node<T> | Node<T>[],
+    baseNode: T,
     operator: string
   ): boolean {
     switch (operator) {
       case "not_in":
         return Array.isArray(node)
           ? node.every((n) =>
-              expected.every((expectedValue) => expectedValue.match(n, "!="))
+              expected.every((expectedValue) => expectedValue.match(n, baseNode, "!="))
             )
-          : expected.every((expectedValue) => expectedValue.match(node, "!="));
+          : expected.every((expectedValue) => expectedValue.match(node, baseNode, "!="));
       case "in":
         return Array.isArray(node)
           ? node.every((n) =>
-              expected.some((expectedValue) => expectedValue.match(n, "=="))
+              expected.some((expectedValue) => expectedValue.match(n, baseNode, "=="))
             )
-          : expected.some((expectedValue) => expectedValue.match(node, "=="));
+          : expected.some((expectedValue) => expectedValue.match(node, baseNode, "=="));
       case "!=":
-        return Array.isArray(node) && this.compareNotEqual(node, expected);
+        return Array.isArray(node) && this.compareNotEqual(node, expected, baseNode);
       default:
-        return Array.isArray(node) && this.compareEqual(node, expected);
+        return Array.isArray(node) && this.compareEqual(node, expected, baseNode);
     }
   }
 
-  private compareNotEqual(actual: Node<T>[], expected: Value<T>[]) {
+  private compareNotEqual(actual: Node<T>[], expected: Value<T>[], baseNode: T) {
     if (expected.length !== actual.length) {
       return true;
     }
 
     for (let index = 0; index < actual.length; index++) {
-      if (expected[index].match(actual[index], "!=")) {
+      if (expected[index].match(actual[index], baseNode, "!=")) {
         return true;
       }
     }
@@ -87,13 +88,13 @@ class ArrayValue<T> {
     return false;
   }
 
-  private compareEqual(actual: Node<T>[], expected: Value<T>[]) {
+  private compareEqual(actual: Node<T>[], expected: Value<T>[], baseNode: T) {
     if (expected.length !== actual.length) {
       return false;
     }
 
     for (let index = 0; index < actual.length; index++) {
-      if (!expected[index].match(actual[index], "==")) {
+      if (!expected[index].match(actual[index], baseNode, "==")) {
         return false;
       }
     }

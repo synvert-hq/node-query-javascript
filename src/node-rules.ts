@@ -1,9 +1,8 @@
 import flatten from "flat";
 import { t } from "typy";
 import NodeQuery from "./node-query";
-import { getTargetNode, handleRecursiveChild } from "./helper";
+import { isNode, getTargetNode, handleRecursiveChild } from "./helper";
 import { QueryOptions } from "./compiler/types";
-import { EndOfLineState } from "typescript";
 
 const KEYWORDS = ["not", "in", "notIn", "gt", "gte", "lt", "lte"];
 
@@ -28,7 +27,7 @@ class NodeRules<T> {
     }
     if (options.recursive) {
       handleRecursiveChild(node, (childNode) => {
-        if (this.matchNode(childNode)) {
+        if (this.matchNode(childNode, childNode)) {
           matchingNodes.push(childNode);
           if (options.stopAtFirstMatch) {
             return { stop: true };
@@ -39,7 +38,7 @@ class NodeRules<T> {
       NodeQuery.getAdapter()
         .getChildren(node)
         .forEach((childNode) => {
-          if (this.matchNode(childNode)) {
+          if (this.matchNode(childNode, childNode)) {
             matchingNodes.push(childNode);
             if (options.stopAtFirstMatch) {
               return { stop: true };
@@ -50,7 +49,7 @@ class NodeRules<T> {
     return matchingNodes;
   }
 
-  matchNode(node: T): boolean {
+  matchNode(node: T, baseNode: T | undefined = undefined): boolean {
     return Object.keys(flatten(this.rules, { safe: true })).every(
       (multiKey) => {
         const keys = multiKey.split(".");
@@ -62,7 +61,10 @@ class NodeRules<T> {
         if (typeof expected === "string") {
           const found = expected.match(/{{(.+?)}}/);
           if (found) {
-            expected = getTargetNode(node, found[1]);
+            expected = getTargetNode(baseNode, found[1]);
+            if (!Array.isArray(expected) && isNode(expected)) {
+              expected = NodeQuery.getAdapter().getSource(expected);
+            }
           }
         }
         if (Array.isArray(actual) && Array.isArray(expected)) {
@@ -105,11 +107,11 @@ class NodeRules<T> {
     if (expected instanceof RegExp) {
       if (typeof actual === "string") return expected.test(actual);
       if (typeof actual === "number") return expected.test(actual.toString());
-      return expected.test(NodeQuery<T>.getAdapter().getSource(actual));
+      return expected.test(NodeQuery.getAdapter().getSource(actual));
     }
     if (typeof actual === "object") {
       // actual is a node
-      const source = NodeQuery<T>.getAdapter().getSource(actual);
+      const source = NodeQuery.getAdapter().getSource(actual);
       return expected.toString() === source || `"${expected}"` === source;
     }
     return false;

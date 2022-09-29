@@ -7,9 +7,9 @@ class Number<T> extends Value<T> {
     super();
   }
 
-  match(node: T, operator: string): boolean {
+  match(node: T, baseNode: T, operator: string): boolean {
     const actual = this.actualValue(node);
-    const expected = this.expectedValue();
+    const expected = this.expectedValue(baseNode);
     const result = this.matchNumber(actual, expected, operator);
     debug("node-query:attribute")(
       `${actual} ${operator} ${expected} ${result}`
@@ -18,7 +18,7 @@ class Number<T> extends Value<T> {
   }
 
   // expected value returns a number.
-  expectedValue(): string {
+  expectedValue(_baseNode: T): string {
     return this.value.toString();
   }
 

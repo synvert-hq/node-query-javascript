@@ -22,12 +22,9 @@ class Attribute<T> {
   }
 
   // check if the node matches the attribute.
-  match(node: T): boolean {
-    if (this.value instanceof String) {
-      this.value.baseNode = node;
-    }
+  match(node: T, baseNode: T): boolean {
     const actualValue = getTargetNode(node, this.key);
-    return this.value.match(actualValue as T, this.operator);
+    return this.value.match(actualValue as T, baseNode, this.operator);
   }
 
   toString(): string {

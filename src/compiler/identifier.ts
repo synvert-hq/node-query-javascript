@@ -6,7 +6,7 @@ class Identifier<T> extends Value<T> {
   }
 
   // expected value returns the value.
-  expectedValue(): string {
+  expectedValue(_baseNode: T): string {
     return this.value;
   }
 
