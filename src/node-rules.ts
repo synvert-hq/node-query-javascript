@@ -1,7 +1,7 @@
 import flatten from "flat";
 import { t } from "typy";
 import NodeQuery from "./node-query";
-import { isNode, getTargetNode, handleRecursiveChild } from "./helper";
+import { getTargetNode, handleRecursiveChild, evaluateNodeValue, toString } from "./helper";
 import { QueryOptions } from "./compiler/types";
 
 const KEYWORDS = ["not", "in", "notIn", "gt", "gte", "lt", "lte"];
@@ -59,13 +59,7 @@ class NodeRules<T> {
           : getTargetNode(node, multiKey);
         let expected = t(this.rules, multiKey).safeObject;
         if (typeof expected === "string") {
-          const found = expected.match(/{{(.+?)}}/);
-          if (found) {
-            expected = getTargetNode(baseNode, found[1]);
-            if (!Array.isArray(expected) && isNode(expected)) {
-              expected = NodeQuery.getAdapter().getSource(expected);
-            }
-          }
+          expected = evaluateNodeValue(baseNode, expected);
         }
         if (Array.isArray(actual) && Array.isArray(expected)) {
           return (
@@ -108,6 +102,9 @@ class NodeRules<T> {
       if (typeof actual === "string") return expected.test(actual);
       if (typeof actual === "number") return expected.test(actual.toString());
       return expected.test(NodeQuery.getAdapter().getSource(actual));
+    }
+    if (Array.isArray(actual) && typeof expected === "string") {
+      return expected === toString(actual);
     }
     if (typeof actual === "object") {
       // actual is a node
