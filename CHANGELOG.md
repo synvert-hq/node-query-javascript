@@ -1,5 +1,10 @@
 # NodeQuery
 
+## 1.12.0 (2022-10-01)
+
+* Better regexp to match evaluated value
+* Make baseNode as the root matching node
+
 ## 1.11.1 (2022-09-15)
 
 * Export `QueryOptions`
