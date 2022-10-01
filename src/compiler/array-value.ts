@@ -58,23 +58,39 @@ class ArrayValue<T> {
       case "not_in":
         return Array.isArray(node)
           ? node.every((n) =>
-              expected.every((expectedValue) => expectedValue.match(n, baseNode, "!="))
+              expected.every((expectedValue) =>
+                expectedValue.match(n, baseNode, "!=")
+              )
             )
-          : expected.every((expectedValue) => expectedValue.match(node, baseNode, "!="));
+          : expected.every((expectedValue) =>
+              expectedValue.match(node, baseNode, "!=")
+            );
       case "in":
         return Array.isArray(node)
           ? node.every((n) =>
-              expected.some((expectedValue) => expectedValue.match(n, baseNode, "=="))
+              expected.some((expectedValue) =>
+                expectedValue.match(n, baseNode, "==")
+              )
             )
-          : expected.some((expectedValue) => expectedValue.match(node, baseNode, "=="));
+          : expected.some((expectedValue) =>
+              expectedValue.match(node, baseNode, "==")
+            );
       case "!=":
-        return Array.isArray(node) && this.compareNotEqual(node, expected, baseNode);
+        return (
+          Array.isArray(node) && this.compareNotEqual(node, expected, baseNode)
+        );
       default:
-        return Array.isArray(node) && this.compareEqual(node, expected, baseNode);
+        return (
+          Array.isArray(node) && this.compareEqual(node, expected, baseNode)
+        );
     }
   }
 
-  private compareNotEqual(actual: Node<T>[], expected: Value<T>[], baseNode: T) {
+  private compareNotEqual(
+    actual: Node<T>[],
+    expected: Value<T>[],
+    baseNode: T
+  ) {
     if (expected.length !== actual.length) {
       return true;
     }
