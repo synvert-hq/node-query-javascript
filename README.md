@@ -27,7 +27,8 @@ NodeQuery defines a NQL (node query language) and node rules to query AST nodes.
       - [Adjacent sibling combinator](#adjacent-sibling-combinator)
       - [General sibling combinator](#general-sibling-combinator)
     - [nql matches goto scope](#nql-matches-goto-scope)
-    - [nql matches pseudo selector](#nql-matches-pseudo-selector)
+    - [nql matches :has and :not_has pseudo selector](#nql-matches-has-and-not_has-pseudo-selector)
+    - [nql matches :first-child and :last-child selector](#nql-matches-first-child-and-last-child-selector)
     - [nql matches multiple expressions](#nql-matches-multiple-expressions)
   - [Node Rules](#node-rules)
     - [rules matches node type](#rules-matches-node-type)
@@ -296,7 +297,7 @@ It matches PropertyDeclaration node only if it follows the PropertyDeclaration w
 
 It matches PropertyDeclaration node who is in the members of ClassDeclaration node
 
-### nql matches pseudo selector
+### nql matches :has and :not_has pseudo selector
 
 ```
 .ClassDeclaration:has(.Constructor)
@@ -309,6 +310,20 @@ It matches ClassDeclaration node if it has a Constructor node
 ```
 
 It matches ClassDeclaration node if it does not have a Constructor node
+
+### nql matches :first-child and :last-child selector
+
+```
+.MethodDefinition:first-child
+```
+
+It matches the first MethodDefinition node
+
+```
+.MethodDefinition:last-child
+```
+
+It matches the last MethodDefinition node
 
 ### nql matches multiple expressions
 
