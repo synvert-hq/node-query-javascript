@@ -476,18 +476,30 @@ describe("Parser", () => {
 
     it("matches first node", () => {
       let expression = parseNql(".PropertyDeclaration:first-child");
-      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 1));
+      expect(expression.queryNodes(node)).toEqual(
+        (node.statements[1] as ts.ClassDeclaration).members.slice(0, 1)
+      );
 
-      expression = parseNql(".ClassDeclaration > .PropertyDeclaration:first-child");
-      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 1));
+      expression = parseNql(
+        ".ClassDeclaration > .PropertyDeclaration:first-child"
+      );
+      expect(expression.queryNodes(node)).toEqual(
+        (node.statements[1] as ts.ClassDeclaration).members.slice(0, 1)
+      );
     });
 
     it("matches last node", () => {
       let expression = parseNql(".PropertyDeclaration:last-child");
-      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(2, 3));
+      expect(expression.queryNodes(node)).toEqual(
+        (node.statements[1] as ts.ClassDeclaration).members.slice(2, 3)
+      );
 
-      expression = parseNql(".ClassDeclaration > .PropertyDeclaration:last-child");
-      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(2, 3));
+      expression = parseNql(
+        ".ClassDeclaration > .PropertyDeclaration:last-child"
+      );
+      expect(expression.queryNodes(node)).toEqual(
+        (node.statements[1] as ts.ClassDeclaration).members.slice(2, 3)
+      );
     });
 
     it("sets option includingSelf to false", () => {
