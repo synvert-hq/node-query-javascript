@@ -14,6 +14,16 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 yytext = yytext.substring(1);
                 return 'NODE_TYPE';
         %}
+":first-child"
+        %{
+                yytext = yytext.substring(1);
+                return 'POSITION';
+        %}
+":last-child"
+        %{
+                yytext = yytext.substring(1);
+                return 'POSITION';
+        %}
 "["
         %{
                 this.begin('key');

@@ -12,6 +12,7 @@ interface SelectorParameters<T> {
   gotoScope?: string;
   rest?: Selector<T>;
   basicSelector?: BasicSelector<T>;
+  position?: string;
   relationship?: string;
   pseudoClass?: string;
   pseudoSelector?: Selector<T>;
@@ -21,6 +22,7 @@ class Selector<T> {
   private gotoScope?: string;
   private rest?: Selector<T>;
   private basicSelector?: BasicSelector<T>;
+  private position?: string;
   private relationship?: string;
   private pseudoClass?: string;
   private pseudoSelector?: Selector<T>;
@@ -29,6 +31,7 @@ class Selector<T> {
     gotoScope,
     rest,
     basicSelector,
+    position,
     relationship,
     pseudoClass,
     pseudoSelector,
@@ -36,6 +39,7 @@ class Selector<T> {
     this.gotoScope = gotoScope;
     this.rest = rest;
     this.basicSelector = basicSelector;
+    this.position = position;
     this.relationship = relationship;
     this.pseudoClass = pseudoClass;
     this.pseudoSelector = pseudoSelector;
@@ -113,7 +117,7 @@ class Selector<T> {
           });
       }
     }
-    return nodes;
+    return this.filterByPosition(nodes);
   }
 
   toString(): string {
@@ -130,6 +134,9 @@ class Selector<T> {
     if (this.basicSelector) {
       result.push(this.basicSelector.toString());
     }
+    if (this.position) {
+      result.push(`:${this.position}`);
+    }
     if (this.pseudoClass) {
       result.push(`:${this.pseudoClass}(${this.pseudoSelector})`);
     }
@@ -143,14 +150,14 @@ class Selector<T> {
         getAdapter<T>()
           .getChildren(node)
           .forEach((childNode) => {
-            if (this.match(childNode, childNode)) {
+            if (this.rest!.match(childNode, childNode)) {
               nodes.push(childNode);
             }
           });
         break;
       case "+":
         const nextSibling = getAdapter<T>().getSiblings(node)[0];
-        if (nextSibling && this.match(nextSibling, nextSibling)) {
+        if (nextSibling && this.rest!.match(nextSibling, nextSibling)) {
           nodes.push(nextSibling);
         }
         break;
@@ -158,7 +165,7 @@ class Selector<T> {
         getAdapter<T>()
           .getSiblings(node)
           .forEach((siblingNode) => {
-            if (this.match(siblingNode, siblingNode)) {
+            if (this.rest!.match(siblingNode, siblingNode)) {
               nodes.push(siblingNode);
             }
           });
@@ -166,7 +173,7 @@ class Selector<T> {
       default:
         break;
     }
-    return nodes;
+    return this.rest!.filterByPosition(nodes);
   }
 
   private matchPseudoClass(node: T): boolean {
@@ -177,6 +184,20 @@ class Selector<T> {
         return this.pseudoSelector!.queryNodes(node).length === 0;
       default:
         return true;
+    }
+  }
+
+  private filterByPosition(nodes: T[]): T[] {
+    if (!this.position) {
+      return nodes;
+    }
+    switch (this.position) {
+      case "first-child":
+        return [nodes[0]];
+      case "last-child":
+        return [nodes[nodes.length - 1]];
+      default:
+        return nodes;
     }
   }
 }

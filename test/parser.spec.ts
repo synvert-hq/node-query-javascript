@@ -147,6 +147,16 @@ describe("Parser", () => {
       const source = ".JSXOpeningElement, .JSXClosingElement";
       assertParser(source);
     });
+
+    it("parses :first-child", () => {
+      const source = ".MethodDefinition:first-child";
+      assertParser(source);
+    });
+
+    it("parses :last-child", () => {
+      const source = ".MethodDefinition:last-child";
+      assertParser(source);
+    });
   });
 
   describe("#queryNodes", () => {
@@ -462,6 +472,22 @@ describe("Parser", () => {
     it("matches ,", () => {
       const expression = parseNql(".InterfaceDeclaration, .ClassDeclaration");
       expect(expression.queryNodes(node)).toEqual(node.statements.slice(0, 2));
+    });
+
+    it("matches first node", () => {
+      let expression = parseNql(".PropertyDeclaration:first-child");
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 1));
+
+      expression = parseNql(".ClassDeclaration > .PropertyDeclaration:first-child");
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(0, 1));
+    });
+
+    it("matches last node", () => {
+      let expression = parseNql(".PropertyDeclaration:last-child");
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(2, 3));
+
+      expression = parseNql(".ClassDeclaration > .PropertyDeclaration:last-child");
+      expect(expression.queryNodes(node)).toEqual((node.statements[1] as ts.ClassDeclaration).members.slice(2, 3));
     });
 
     it("sets option includingSelf to false", () => {
