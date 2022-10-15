@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.13.1 (2022-10-15)
+
+* Fix `filterByPosition` with empty nodes
+
 ## 1.13.0 (2022-10-14)
 
 * Support `:first-child` and `:last-child`
