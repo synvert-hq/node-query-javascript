@@ -486,6 +486,10 @@ describe("Parser", () => {
       expect(expression.queryNodes(node)).toEqual(
         (node.statements[1] as ts.ClassDeclaration).members.slice(0, 1)
       );
+
+      expression = parseNql(`.FunctionDeclaration:first-child`);
+      // compare length to avoid equal [undefined]
+      expect(expression.queryNodes(node).length).toEqual(0);
     });
 
     it("matches last node", () => {
@@ -500,6 +504,10 @@ describe("Parser", () => {
       expect(expression.queryNodes(node)).toEqual(
         (node.statements[1] as ts.ClassDeclaration).members.slice(2, 3)
       );
+
+      expression = parseNql(`.FunctionDeclaration:last-child`);
+      // compare length to avoid equal [undefined]
+      expect(expression.queryNodes(node).length).toEqual(0);
     });
 
     it("sets option includingSelf to false", () => {

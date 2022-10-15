@@ -191,6 +191,9 @@ class Selector<T> {
     if (!this.position) {
       return nodes;
     }
+    if (nodes.length === 0) {
+      return nodes;
+    }
     switch (this.position) {
       case "first-child":
         return [nodes[0]];
