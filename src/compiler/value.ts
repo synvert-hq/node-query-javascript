@@ -8,12 +8,9 @@ import { toString } from "../helper";
 abstract class Value<T> {
   // check if the actual value matches the expected value.
   match(node: Node<T>, baseNode: T, operator: string): boolean {
+    debug("node-query:value")(`"${this.actualValue(node)}" ${operator} "${this.expectedValue(baseNode)}"`);
     const result = this.matchString(node, baseNode, operator);
-    debug("node-query:attribute")(
-      `"${this.actualValue(node)}" ${operator} "${this.expectedValue(
-        baseNode
-      )}" ${result}`
-    );
+    debug("node-query:value")(`result: ${result}`);
     return result;
   }
 

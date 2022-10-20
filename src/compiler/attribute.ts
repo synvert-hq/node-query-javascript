@@ -2,6 +2,7 @@ import Value from "./value";
 import ArrayValue from "./array-value";
 import Selector from "./selector";
 import { getTargetNode } from "../helper";
+import debug from "debug";
 
 interface AttributeParameters<T> {
   key: string;
@@ -23,7 +24,10 @@ class Attribute<T> {
   // check if the node matches the attribute.
   match(node: T, baseNode: T): boolean {
     const actualValue = getTargetNode(node, this.key);
-    return this.value.match(actualValue as T, baseNode, this.operator);
+    debug("node-query:attribute")(`${this.key} ${this.operator} ${this.value}`);
+    const result = this.value.match(actualValue as T, baseNode, this.operator);
+    debug("node-query:attribute")(`result: ${result}`);
+    return result;
   }
 
   toString(): string {

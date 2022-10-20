@@ -10,10 +10,9 @@ class Number<T> extends Value<T> {
   match(node: T, baseNode: T, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = this.expectedValue(baseNode);
+    debug("node-query:number")(`${actual} ${operator} ${expected}`);
     const result = this.matchNumber(actual, expected, operator);
-    debug("node-query:attribute")(
-      `${actual} ${operator} ${expected} ${result}`
-    );
+    debug("node-query:number")(`result: ${result}`);
     return result;
   }
 

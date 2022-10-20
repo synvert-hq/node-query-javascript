@@ -9,10 +9,9 @@ class Regexp<T> extends Value<T> {
   match(node: T, baseNode: T, operator: string): boolean {
     const actual = this.actualValue(node);
     const expected = new RegExp(this.expectedValue(baseNode));
+    debug("node-query:regexp")(`${actual} ${operator} ${expected}`);
     const result = this.matchRegExp(actual, expected, operator);
-    debug("node-query:attribute")(
-      `${actual} ${operator} ${expected} ${result}`
-    );
+    debug("node-query:regexp")(`result: ${result}`);
     return result;
   }
 

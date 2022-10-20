@@ -22,10 +22,12 @@ class BasicSelector<T> {
     const expectedNodeType = this.nodeType;
     const actualNodeType = getAdapter<T>().getNodeType(node);
     debug("node-query:node-type")(`${actualNodeType} == ${expectedNodeType}`);
-    return (
-      expectedNodeType == actualNodeType &&
+    const result = (
+      expectedNodeType === actualNodeType &&
       (!this.attributeList || this.attributeList.match(node, baseNode))
     );
+    debug("node-query:node-type")(`result: ${result}`);
+    return result;
   }
 
   toString(): string {
