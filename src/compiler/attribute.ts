@@ -1,6 +1,5 @@
 import Value from "./value";
 import ArrayValue from "./array-value";
-import String from "./string";
 import Selector from "./selector";
 import { getTargetNode } from "../helper";
 
@@ -29,6 +28,8 @@ class Attribute<T> {
 
   toString(): string {
     switch (this.operator) {
+      case "includes":
+        return `${this.key} INCLUDES ${this.value}`;
       case "not_in":
         return `${this.key} NOT IN (${this.value})`;
       case "in":

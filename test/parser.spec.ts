@@ -112,13 +112,18 @@ describe("Parser", () => {
       assertParser(source);
     });
 
-    it("parses IN array value", () => {
-      const source = ".MethodDefinition[key IN (foo bar $)]";
+    it("parses INCLUDES value", () => {
+      const source = '.NewExpression[arguments INCLUDES "Murphy"]';
       assertParser(source);
     });
 
     it("parses NOT IN array value", () => {
       const source = ".MethodDefinition[key NOT IN (/foo/ /bar/)]";
+      assertParser(source);
+    });
+
+    it("parses IN array value", () => {
+      const source = ".MethodDefinition[key IN (foo bar $)]";
       assertParser(source);
     });
 
@@ -279,6 +284,14 @@ describe("Parser", () => {
 
     it("matches !~ operator", () => {
       const expression = parseNql(".NewExpression[expression!~/^Account/]");
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
+    it("matches INCLUDES operator", () => {
+      const expression = parseNql('.NewExpression[arguments INCLUDES "Murphy"]');
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,

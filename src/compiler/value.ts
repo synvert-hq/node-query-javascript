@@ -8,11 +8,9 @@ import { toString } from "../helper";
 abstract class Value<T> {
   // check if the actual value matches the expected value.
   match(node: Node<T>, baseNode: T, operator: string): boolean {
-    const actual = this.actualValue(node);
-    const expected = this.expectedValue(baseNode);
-    const result = this.matchString(actual, expected, operator);
+    const result = this.matchString(node, baseNode, operator);
     debug("node-query:attribute")(
-      `"${actual}" ${operator} "${expected}" ${result}`
+      `"${this.actualValue(node)}" ${operator} "${this.expectedValue(baseNode)}" ${result}`
     );
     return result;
   }
@@ -25,11 +23,19 @@ abstract class Value<T> {
   abstract expectedValue(baseNode: T): string;
 
   private matchString(
-    actual: string,
-    expected: string,
+    actualNode: Node<T>,
+    baseNode: T,
     operator: string
   ): boolean {
+    const actual = this.actualValue(actualNode);
+    const expected = this.expectedValue(baseNode);
     switch (operator) {
+      case "includes":
+        return Array.isArray(actualNode)
+          ? actualNode.some((actualItem) => {
+            return this.match(actualItem, baseNode, "==")
+          })
+          : actual == expected
       case "^=":
         return actual.startsWith(expected);
       case "$=":

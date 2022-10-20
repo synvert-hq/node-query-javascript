@@ -119,6 +119,17 @@ describe("NodeRules", () => {
       ]);
     });
 
+    it("matches INCLUDES operator", () => {
+      const nodeRules = new NodeRules({
+        nodeType: "NewExpression",
+        arguments: { includes: "Murphy" }
+      });
+      expect(nodeRules.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
     it("matches IN operator", () => {
       const nodeRules = new NodeRules({
         nodeType: "ClassDeclaration",

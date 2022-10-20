@@ -85,15 +85,21 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 this.begin('value');
                 return 'OPERATOR';
         %}
-<key>("in ")
+<key>("includes ")
         %{
-                yytext = 'in';
+                yytext = 'includes';
                 this.begin('value');
                 return 'OPERATOR';
         %}
 <key>("not in ")
         %{
                 yytext = 'not_in';
+                this.begin('value');
+                return 'OPERATOR';
+        %}
+<key>("in ")
+        %{
+                yytext = 'in';
                 this.begin('value');
                 return 'OPERATOR';
         %}

@@ -1,6 +1,6 @@
 import type { Node } from "./types";
 import Value from "./value";
-import { evaluateNodeValue, getAdapter } from "../helper";
+import { evaluateNodeValue } from "../helper";
 
 class String<T> extends Value<T> {
   constructor(private value: string) {
