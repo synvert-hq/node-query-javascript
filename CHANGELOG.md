@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.14.0 (2022-10-20)
+
+* Supoort `includes` operator
+
 ## 1.13.1 (2022-10-15)
 
 * Fix `filterByPosition` with empty nodes
