@@ -291,7 +291,9 @@ describe("Parser", () => {
     });
 
     it("matches INCLUDES operator", () => {
-      const expression = parseNql('.NewExpression[arguments INCLUDES "Murphy"]');
+      const expression = parseNql(
+        '.NewExpression[arguments INCLUDES "Murphy"]'
+      );
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,

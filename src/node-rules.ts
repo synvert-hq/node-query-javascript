@@ -77,7 +77,9 @@ class NodeRules<T> {
         switch (lastKey) {
           case "includes":
             if (Array.isArray(actual)) {
-              return actual.some((actualItem: any) => this.matchValue(actualItem, expected));
+              return actual.some((actualItem: any) =>
+                this.matchValue(actualItem, expected)
+              );
             } else {
               return this.matchValue(actual, expected);
             }

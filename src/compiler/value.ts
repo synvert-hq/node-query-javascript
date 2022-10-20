@@ -10,7 +10,9 @@ abstract class Value<T> {
   match(node: Node<T>, baseNode: T, operator: string): boolean {
     const result = this.matchString(node, baseNode, operator);
     debug("node-query:attribute")(
-      `"${this.actualValue(node)}" ${operator} "${this.expectedValue(baseNode)}" ${result}`
+      `"${this.actualValue(node)}" ${operator} "${this.expectedValue(
+        baseNode
+      )}" ${result}`
     );
     return result;
   }
@@ -33,9 +35,9 @@ abstract class Value<T> {
       case "includes":
         return Array.isArray(actualNode)
           ? actualNode.some((actualItem) => {
-            return this.match(actualItem, baseNode, "==")
-          })
-          : actual == expected
+              return this.match(actualItem, baseNode, "==");
+            })
+          : actual == expected;
       case "^=":
         return actual.startsWith(expected);
       case "$=":
