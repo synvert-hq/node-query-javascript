@@ -50,9 +50,15 @@ class Selector<T> {
     if (Array.isArray(node)) {
       switch (operator) {
         case "not_includes":
-          return !this.basicSelector || node.every(child => !this.basicSelector!.match(child, baseNode));
+          return (
+            !this.basicSelector ||
+            node.every((child) => !this.basicSelector!.match(child, baseNode))
+          );
         case "includes":
-          return !this.basicSelector || node.some(child => this.basicSelector!.match(child, baseNode));
+          return (
+            !this.basicSelector ||
+            node.some((child) => this.basicSelector!.match(child, baseNode))
+          );
         default:
           return false;
       }
