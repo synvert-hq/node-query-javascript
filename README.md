@@ -216,6 +216,12 @@ Length of arguments is less than 3
 It matches NewExpressioin node one of whose arguments is "Murphy"
 
 ```
+.NewExpression[arguments NOT INCLUDES "Murphy"]
+```
+
+It matches NewExpressioin node none of whose arguments is "Murphy"
+
+```
 .ClassDeclaration[name IN (User Account UserAccount)]
 ```
 
@@ -438,6 +444,12 @@ Length of arguments is less than 3
 ```
 
 It matches NewExpressioin node one of whose arguments is "Murphy"
+
+```
+{ nodeType: "NewExpression", arguments: { notIncludes: "Murphy" } }
+```
+
+It matches NewExpressioin node none of whose arguments is "Murphy"
 
 ```
 { nodeType: "ClassDeclaration", name: { in: [User Account UserAccount] } }
