@@ -300,6 +300,16 @@ describe("Parser", () => {
       ]);
     });
 
+    it("matches INCLUDES operator with a selector", () => {
+      const expression = parseNql(
+        '.NewExpression[arguments INCLUDES .StringLiteral[text="Murphy"]]'
+      );
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
     it("matches IN operator", () => {
       const expression = parseNql(
         ".ClassDeclaration[name IN (User Account UserAccount)]"

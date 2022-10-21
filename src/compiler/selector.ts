@@ -46,7 +46,15 @@ class Selector<T> {
   }
 
   // check if the node matches the selector.
-  match(node: T, baseNode: T, operator: string = "="): boolean {
+  match(node: T | T[], baseNode: T, operator: string = "="): boolean {
+    if (Array.isArray(node)) {
+      switch (operator) {
+        case "includes":
+          return !this.basicSelector || node.some(child => this.basicSelector!.match(child, baseNode));
+        default:
+          return false;
+      }
+    }
     // node can be any value if it is a nested selector, e.g. .VariableDeclaration[initializer=.NewExpression[name=UserAccount]]
     return (
       isNode(node) &&

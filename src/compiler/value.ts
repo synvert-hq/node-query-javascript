@@ -31,9 +31,7 @@ abstract class Value<T> {
     switch (operator) {
       case "includes":
         return Array.isArray(actualNode)
-          ? actualNode.some((actualItem) => {
-              return this.match(actualItem, baseNode, "==");
-            })
+          ? actualNode.some((actualItem) => this.match(actualItem, baseNode, "=="))
           : actual == expected;
       case "^=":
         return actual.startsWith(expected);
