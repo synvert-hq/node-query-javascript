@@ -32,6 +32,8 @@ class Attribute<T> {
 
   toString(): string {
     switch (this.operator) {
+      case "not_includes":
+        return `${this.key} NOT INCLUDES ${this.value}`;
       case "includes":
         return `${this.key} INCLUDES ${this.value}`;
       case "not_in":

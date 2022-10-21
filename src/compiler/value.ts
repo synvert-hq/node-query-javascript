@@ -29,10 +29,14 @@ abstract class Value<T> {
     const actual = this.actualValue(actualNode);
     const expected = this.expectedValue(baseNode);
     switch (operator) {
+      case "not_includes":
+        return Array.isArray(actualNode)
+          ? actualNode.every((actualItem) => this.match(actualItem, baseNode, "!="))
+          : actual !== expected;
       case "includes":
         return Array.isArray(actualNode)
           ? actualNode.some((actualItem) => this.match(actualItem, baseNode, "=="))
-          : actual == expected;
+          : actual === expected;
       case "^=":
         return actual.startsWith(expected);
       case "$=":

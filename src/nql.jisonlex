@@ -85,6 +85,12 @@ IDENTIFIER_VALUE ([\$\.\w]+)
                 this.begin('value');
                 return 'OPERATOR';
         %}
+<key>("not includes ")
+        %{
+                yytext = 'not_includes';
+                this.begin('value');
+                return 'OPERATOR';
+        %}
 <key>("includes ")
         %{
                 yytext = 'includes';

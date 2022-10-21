@@ -112,6 +112,11 @@ describe("Parser", () => {
       assertParser(source);
     });
 
+    it("parses NOT INCLUDES value", () => {
+      const source = '.NewExpression[arguments NOT INCLUDES "Murphy"]';
+      assertParser(source);
+    });
+
     it("parses INCLUDES value", () => {
       const source = '.NewExpression[arguments INCLUDES "Murphy"]';
       assertParser(source);
@@ -303,6 +308,26 @@ describe("Parser", () => {
     it("matches INCLUDES operator with a selector", () => {
       const expression = parseNql(
         '.NewExpression[arguments INCLUDES .StringLiteral[text="Murphy"]]'
+      );
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
+    it("matches NOT INCLUDES operator", () => {
+      const expression = parseNql(
+        '.NewExpression[arguments NOT INCLUDES "Richard"]'
+      );
+      expect(expression.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
+    it("matches NOT INCLUDES operator with a selector", () => {
+      const expression = parseNql(
+        '.NewExpression[arguments NOT INCLUDES .StringLiteral[text="Richard"]]'
       );
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
