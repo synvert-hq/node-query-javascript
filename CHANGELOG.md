@@ -1,5 +1,11 @@
 # NodeQuery
 
+## 1.15.0 (2022-10-21)
+
+* Support `not includes` operator
+* Support `includes` a selector
+* Add more debug info
+
 ## 1.14.0 (2022-10-20)
 
 * Supoort `includes` operator
