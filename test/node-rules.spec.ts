@@ -130,6 +130,17 @@ describe("NodeRules", () => {
       ]);
     });
 
+    it("matches NOT INCLUDES operator", () => {
+      const nodeRules = new NodeRules({
+        nodeType: "NewExpression",
+        arguments: { notIncludes: "Richard" },
+      });
+      expect(nodeRules.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
     it("matches IN operator", () => {
       const nodeRules = new NodeRules({
         nodeType: "ClassDeclaration",
