@@ -55,11 +55,7 @@ export function handleRecursiveChild<T>(
   return { stop: false };
 }
 
-export function isNode<T>(node: Node<T> | Node<T>[]): boolean {
-  if (Array.isArray(node)) {
-    return node.every((n) => isNode(n));
-  }
-
+export function isNode<T>(node: Node<T>): boolean {
   if (node === null) {
     return false;
   }
