@@ -9,7 +9,17 @@ import {
 } from "./helper";
 import { QueryOptions } from "./compiler/types";
 
-const KEYWORDS = ["notIncludes", "includes", "not", "in", "notIn", "gt", "gte", "lt", "lte"];
+const KEYWORDS = [
+  "notIncludes",
+  "includes",
+  "not",
+  "in",
+  "notIn",
+  "gt",
+  "gte",
+  "lt",
+  "lte",
+];
 
 class NodeRules<T> {
   constructor(private rules: object) {}
@@ -85,8 +95,8 @@ class NodeRules<T> {
             }
           case "notIncludes":
             if (Array.isArray(actual)) {
-              return actual.every((actualItem: any) =>
-                !this.matchValue(actualItem, expected)
+              return actual.every(
+                (actualItem: any) => !this.matchValue(actualItem, expected)
               );
             } else {
               return !this.matchValue(actual, expected);
