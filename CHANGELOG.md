@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.15.1 (2022-10-30)
+
+* Matches `null` and `undefined` for node rules
+
 ## 1.15.0 (2022-10-21)
 
 * Support `not includes` operator
