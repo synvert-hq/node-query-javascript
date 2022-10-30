@@ -129,6 +129,8 @@ class NodeRules<T> {
   matchValue(actual: any, expected: any): boolean {
     if (actual === expected) return true;
     if (!actual && expected) return false;
+    if (expected === null) return actual === null;
+    if (typeof expected === "undefined") return typeof actual === "undefined";
     if (expected instanceof RegExp) {
       if (typeof actual === "string") return expected.test(actual);
       if (typeof actual === "number") return expected.test(actual.toString());

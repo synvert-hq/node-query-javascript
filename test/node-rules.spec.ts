@@ -86,6 +86,28 @@ describe("NodeRules", () => {
       ]);
     });
 
+    it("matches null", () => {
+      const nodeRules = new NodeRules({
+        nodeType: "NewExpression",
+        arguments: { 0: { not: null } },
+      });
+      expect(nodeRules.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
+    it("matches undefined", () => {
+      const nodeRules = new NodeRules({
+        nodeType: "NewExpression",
+        arguments: { 0: { not: undefined } },
+      });
+      expect(nodeRules.queryNodes(node)).toEqual([
+        (node.statements[2] as ts.VariableStatement).declarationList
+          .declarations[0].initializer,
+      ]);
+    });
+
     it("matches not operator", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
