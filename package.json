@@ -43,6 +43,6 @@
     "jison": "^0.4.18",
     "nodemon": "^2.0.16",
     "ts-jest": "^28.0.1",
-    "typescript": "^4.7.2"
+    "typescript": "^4.9.3"
   }
 }
