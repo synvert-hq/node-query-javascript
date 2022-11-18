@@ -8,7 +8,7 @@ describe("NodeQuery", () => {
   it("configure adapter", () => {
     const typescriptAdapter = new TypescriptAdapter();
     NodeQuery.configure({ adapter: typescriptAdapter });
-    expect(NodeQuery<Node>.getAdapter()).toEqual(typescriptAdapter);
+    expect(NodeQuery.getAdapter()).toEqual(typescriptAdapter);
   });
 
   describe("#queryNodes", () => {
