@@ -78,7 +78,7 @@ describe("NodeRules", () => {
     it("matches boolean literal", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
-        arguments: { 2: true },
+        arguments: { '-1': true },
       });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList

@@ -20,14 +20,14 @@ NodeQuery defines a NQL (node query language) and node rules to query AST nodes.
     - [nql matches property](#nql-matches-property)
     - [nql matches operators](#nql-matches-operators)
     - [nql matches array node attribute](#nql-matches-array-node-attribute)
-    - [nql matches * in attribute key](#nql-matches--in-attribute-key)
+    - [nql matches \* in attribute key](#nql-matches--in-attribute-key)
     - [nql matches multiple selectors](#nql-matches-multiple-selectors)
       - [Descendant combinator](#descendant-combinator)
       - [Child combinator](#child-combinator)
       - [Adjacent sibling combinator](#adjacent-sibling-combinator)
       - [General sibling combinator](#general-sibling-combinator)
     - [nql matches goto scope](#nql-matches-goto-scope)
-    - [nql matches :has and :not_has pseudo selector](#nql-matches-has-and-not_has-pseudo-selector)
+    - [nql matches :has and :not\_has pseudo selector](#nql-matches-has-and-not_has-pseudo-selector)
     - [nql matches :first-child and :last-child selector](#nql-matches-first-child-and-last-child-selector)
     - [nql matches multiple expressions](#nql-matches-multiple-expressions)
   - [Node Rules](#node-rules)
@@ -116,7 +116,7 @@ It matches ClassDeclaration node
 It matches NewExpression node whose expression value is UserAccount
 
 ```
-.NewExpression[arguments.0="Murphy"][arguments.1=1]
+.NewExpression[arguments.0="Murphy"][arguments.-1=1]
 ```
 
 It matches NewExpression node whose first argument is "Murphy" and second argument is 1

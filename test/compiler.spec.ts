@@ -194,7 +194,7 @@ describe("Compiler", () => {
     it("matches nested key with array index", () => {
       const attribute = new Compiler.Attribute({
         key: "members.0",
-        value: new Compiler.Null(),
+        value: new Compiler.Undefined(),
         operator: "==",
       });
       const node = parseCode("class Synvert {}").statements[0];

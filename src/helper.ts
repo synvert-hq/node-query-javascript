@@ -16,7 +16,9 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
     return target.map((t) => getTargetNode(t, restKeys.join(".")));
   }
 
-  if (target.hasOwnProperty(firstKey)) {
+  if (Array.isArray(target) && !Number.isNaN(Number.parseInt(firstKey))) {
+    target = target.at(Number.parseInt(firstKey));
+  } else if (target.hasOwnProperty(firstKey)) {
     target = target[firstKey];
   } else if (typeof target[firstKey] === "function") {
     target = target[firstKey].call(target);

@@ -232,7 +232,7 @@ describe("Parser", () => {
     });
 
     it("matches boolean literal", () => {
-      const expression = parseNql(".NewExpression[arguments.2=true]");
+      const expression = parseNql(".NewExpression[arguments.-1=true]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -264,7 +264,7 @@ describe("Parser", () => {
     });
 
     it("matches != operator", () => {
-      const expression = parseNql(".NewExpression[arguments.2!=false]");
+      const expression = parseNql(".NewExpression[arguments.-1!=false]");
       expect(expression.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
