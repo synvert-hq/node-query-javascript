@@ -1,5 +1,10 @@
 # NodeQuery
 
+## 1.16.0 (2022-12-09)
+
+* Support negative index to fetch array element
+* Parse negative number
+
 ## 1.15.1 (2022-10-30)
 
 * Matches `null` and `undefined` for node rules
