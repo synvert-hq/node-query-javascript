@@ -8,6 +8,11 @@ describe("Parser", () => {
       assertParser(source);
     });
 
+    it("parses negative number", () => {
+      const source = ".NewExpression[arguments.1=-1]";
+      assertParser(source);
+    });
+
     it("parses one selector", () => {
       const source = '.ExpressionStatement[directive="use strict"]';
       assertParser(source);

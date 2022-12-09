@@ -1,4 +1,4 @@
-NUMBER ([0-9]+("."[0-9]+)?)
+NUMBER (\-?[0-9]+("."[0-9]+)?)
 SINGLE_QUOTE_STRING (\'.*?\')
 DOUBLE_QUOTE_STRING (\".*?\")
 REGEXP (\/.*?\/)
