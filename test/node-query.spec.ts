@@ -1,6 +1,6 @@
 import { Node } from "typescript";
 import NodeQuery from "../src/node-query";
-import TypescriptAdapter from "../src/typescript-adapter";
+import TypescriptAdapter from "../src/adapter/typescript";
 import SyntaxError from "../src/syntax-error";
 import { parseCode } from "./test-helper";
 

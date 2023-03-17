@@ -1,6 +1,6 @@
 import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
-import TypescriptAdapter from "./typescript-adapter";
+import TypescriptAdapter from "./adapter/typescript";
 import NodeRules from "./node-rules";
 import { QueryOptions } from "./compiler/types";
 const { parser } = require("./parser");

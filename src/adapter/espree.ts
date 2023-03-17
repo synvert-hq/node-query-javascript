@@ -1,6 +1,6 @@
 import fs from "fs";
 import { KEYS } from "eslint-visitor-keys";
-import Adapter from "./adapter";
+import Adapter from "../adapter";
 
 import type { Node } from "acorn";
 

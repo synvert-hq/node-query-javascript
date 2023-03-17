@@ -1,4 +1,4 @@
-import Adapter from "./adapter";
+import Adapter from "../adapter";
 import { Node, SyntaxKind } from "typescript";
 
 class TypescriptAdapter implements Adapter<Node> {

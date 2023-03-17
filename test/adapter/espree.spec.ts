@@ -1,7 +1,7 @@
 import dedent from "dedent";
 import mock from "mock-fs";
-import EspreeAdapter from "../src/espree-adapter";
-import { parseCodeByEspree } from "./test-helper";
+import EspreeAdapter from "../../src/adapter/espree";
+import { parseCodeByEspree } from "../test-helper";
 
 describe("EspreeAdapter", () => {
   const adapter = new EspreeAdapter();

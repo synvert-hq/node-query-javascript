@@ -1,7 +1,7 @@
 import dedent from "dedent";
 import { ClassDeclaration } from "typescript";
-import TypescriptAdapter from "../src/typescript-adapter";
-import { parseCode } from "./test-helper";
+import TypescriptAdapter from "../../src/adapter/typescript";
+import { parseCode } from "../test-helper";
 
 describe("TypescriptAdapter", () => {
   const adapter = new TypescriptAdapter();
