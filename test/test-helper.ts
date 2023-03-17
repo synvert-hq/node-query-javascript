@@ -11,12 +11,12 @@ export const parseCode = (code: string): ts.SourceFile => {
   return ts.createSourceFile("code.ts", code, ts.ScriptTarget.Latest, true);
 };
 
-export const parseCodeByEspree = (code: string): Node => {
+export const parseCodeByEspree = (code: string): any => {
   return espree.parse(code, {
     ecmaVersion: "latest",
     loc: true,
     sourceFile: "code.js",
-  }).body[0];
+  });
 }
 
 // Parse nql string and return the Compiler.Expression.
