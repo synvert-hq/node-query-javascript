@@ -17,7 +17,7 @@ export const parseCodeByEspree = (code: string): any => {
     loc: true,
     sourceFile: "code.js",
   });
-}
+};
 
 // Parse nql string and return the Compiler.Expression.
 // @param nql [String] nql string
