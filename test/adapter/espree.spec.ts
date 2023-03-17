@@ -31,7 +31,7 @@ describe("EspreeAdapter", () => {
   });
 
   it("getChildren", () => {
-    expect(adapter.getChildren((node as any)['body']).length).toEqual(3);
+    expect(adapter.getChildren((node as any)["body"]).length).toEqual(3);
   });
 
   it("getSiblings", () => {
