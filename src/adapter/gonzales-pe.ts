@@ -11,12 +11,12 @@ class GonzalesPeAdapter implements Adapter<Node> {
   }
 
   getChildren(node: Node): Node[] {
-    return (Array.isArray(node.content) ? node.content : []);
+    return Array.isArray(node.content) ? node.content : [];
   }
 
   // Gonzales doesn't support siblings.
   getSiblings(_node: Node): Node[] {
-    return []
+    return [];
   }
 }
 
