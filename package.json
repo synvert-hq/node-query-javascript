@@ -41,6 +41,7 @@
     "@types/flat": "^5.0.2",
     "@types/jest": "^27.5.0",
     "@xinminlabs/espree": "^9.5.2",
+    "@xinminlabs/gonzales-pe": "^1.0.0",
     "dedent": "^0.7.0",
     "jest": "^28.0.3",
     "jison": "^0.4.18",

@@ -12,7 +12,7 @@ describe("EspreeAdapter", () => {
       get active() {};
     }
   `;
-  const node = parseCodeByEspree(code)["body"][0];
+  const node = (parseCodeByEspree(code) as any)["body"][0];
 
   beforeEach(() => {
     mock({ "code.js": code });

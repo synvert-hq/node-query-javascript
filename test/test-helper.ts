@@ -1,6 +1,7 @@
-import { Node } from "acorn";
 import ts from "typescript";
+import { Node as AcornNode } from "acorn";
 import * as espree from "@xinminlabs/espree";
+import gonzales from "@xinminlabs/gonzales-pe";
 const { parser } = require("../src/parser");
 const Compiler = require("../src/compiler");
 
@@ -11,13 +12,17 @@ export const parseCode = (code: string): ts.SourceFile => {
   return ts.createSourceFile("code.ts", code, ts.ScriptTarget.Latest, true);
 };
 
-export const parseCodeByEspree = (code: string): any => {
+export const parseCodeByEspree = (code: string): AcornNode => {
   return espree.parse(code, {
     ecmaVersion: "latest",
     loc: true,
     sourceFile: "code.js",
   });
 };
+
+export const parseCodeByGonzalesPe = (code: string): gonzales.Node => {
+  return gonzales.parse(code);
+}
 
 // Parse nql string and return the Compiler.Expression.
 // @param nql [String] nql string
