@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.18.0 (2023-05-28)
+
+* Add `GonzalesAdapter`
+
 ## 1.17.0 (2023-03-17)
 
 * Add `EspreeAdapter`
