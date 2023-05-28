@@ -2,7 +2,7 @@
 
 ## 1.18.0 (2023-05-28)
 
-* Add `GonzalesAdapter`
+* Add `GonzalesPeAdapter`
 
 ## 1.17.0 (2023-03-17)
 
