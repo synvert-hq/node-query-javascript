@@ -495,10 +495,11 @@ Different parsers, like typescript, espree, will generate different AST nodes, t
 we define an [Adapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/adapter.ts) interface,
 if you implement the Adapter interface, you can set it as NodeQuery's adapter.
 
-It provides 2 adapters
+It provides 3 adapters
 
 1. `TypescriptAdapter`
 2. `EspreeAdapter`
+3. `GonzalesPeAdapter`
 
 ```typescript
 NodeQuery.configure({ adapter: new EspreeAdapter() }) // default is TypescriptAdapter
