@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.18.1 (2023-06-04)
+
+* Export `GonzalesPeAdapter`
+
 ## 1.18.0 (2023-05-28)
 
 * Add `GonzalesPeAdapter`
