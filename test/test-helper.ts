@@ -22,7 +22,7 @@ export const parseCodeByEspree = (code: string): AcornNode => {
 
 export const parseCodeByGonzalesPe = (code: string): gonzales.Node => {
   return gonzales.parse(code);
-}
+};
 
 // Parse nql string and return the Compiler.Expression.
 // @param nql [String] nql string
