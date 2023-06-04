@@ -7,4 +7,11 @@ import SyntaxError from "./syntax-error";
 import type { QueryOptions } from "./compiler/types";
 
 export default NodeQuery;
-export { Adapter, EspreeAdapter, TypescriptAdapter, GonzalesPeAdapter, SyntaxError, QueryOptions };
+export {
+  Adapter,
+  EspreeAdapter,
+  TypescriptAdapter,
+  GonzalesPeAdapter,
+  SyntaxError,
+  QueryOptions,
+};
