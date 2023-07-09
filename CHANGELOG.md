@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.18.2 (2023-07-09)
+
+* Update `@xinminlabs/gonzales-pe` to 1.1.0
+
 ## 1.18.1 (2023-06-04)
 
 * Export `GonzalesPeAdapter`
