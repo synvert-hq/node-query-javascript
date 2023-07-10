@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>node-query.js - Documentation</title>
+    <title>adapter/espree.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">node-query.js</h1>
+    <h1 class="page-title">adapter/espree.js</h1>
     
 
     
@@ -44,99 +44,48 @@ var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
     return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const syntax_error_1 = __importDefault(require("./syntax-error"));
-const typescript_1 = __importDefault(require("./adapter/typescript"));
-const node_rules_1 = __importDefault(require("./node-rules"));
-const { parser } = require("./parser");
-const { ExpressionList } = require("./compiler");
-class NodeQuery {
-    /**
-     * Configure NodeQuery
-     * @static
-     * @param options {Object}
-     * @param options.adapter {Adapter} - adapter, default is TypescriptAdapter
-     */
-    static configure(options) {
-        this.adapter = options.adapter;
+const fs_1 = __importDefault(require("fs"));
+const eslint_visitor_keys_1 = require("eslint-visitor-keys");
+/**
+ * Espree Adapter
+ * @extends Adapter
+ */
+class EspreeAdapter {
+    // get node type
+    getNodeType(node) {
+        return node.type;
     }
-    /**
-     * Get the adapter.
-     * @returns {Aapter} the adapter
-     */
-    static getAdapter() {
-        if (!this.adapter) {
-            this.adapter = new typescript_1.default();
-        }
-        return this.adapter;
+    // get node source
+    getSource(node) {
+        const source = fs_1.default.readFileSync(node.loc.source, "utf-8");
+        return source.slice(node.start, node.end);
     }
-    /**
-     * Create a NodeQuery
-     * @param nqlOrRules {string | object} Node query language string or node rules
-     */
-    constructor(nqlOrRules) {
-        if (typeof nqlOrRules === "string") {
-            try {
-                parser.parse(nqlOrRules);
-                this.expression = parser.yy.result;
+    // get node children
+    getChildren(node) {
+        const children = [];
+        eslint_visitor_keys_1.KEYS[node.type].forEach((key) => {
+            const childNode = node[key];
+            if (Array.isArray(childNode)) {
+                childNode.forEach((child) => {
+                    if (child) {
+                        children.push(child);
+                    }
+                });
             }
-            catch (error) {
-                if (error instanceof Error &amp;&amp;
-                    (error.message.startsWith("Lexical error") ||
-                        error.message.startsWith("Parse error"))) {
-                    throw new syntax_error_1.default(error.message.split("\n").slice(0, 3).join("\n"));
-                }
-                else {
-                    throw error;
+            else {
+                if (childNode) {
+                    children.push(childNode);
                 }
             }
-        }
-        else {
-            this.rules = new node_rules_1.default(nqlOrRules);
-        }
+        });
+        return children;
     }
-    /**
-     * check if the node matches the nql or rules.
-     * @param node {T} ast node
-     * @returns {boolean} if the node matches the nql or rules.
-     */
-    matchNode(node) {
-        if (this.expression) {
-            return this.expression.matchNode(node);
-        }
-        else if (this.rules) {
-            return this.rules.matchNode(node);
-        }
-        else {
-            return false;
-        }
-    }
-    /**
-     * Query options
-     * @typedef {Object} QueryOptions
-     * @property {boolean} [includingSelf = true] - If query the node itself
-     * @property {boolean} [stopAtFirstMatch = false] - If stop at first match
-     * @property {boolean} [recursive = true] - If recursively query child nodes
-     */
-    /**
-     * Query matching nodes.
-     * @param node {T} ast node
-     * @param options {QueryOptions}
-     * @option
-     * @returns {T[]} matching ast nodes
-     */
-    queryNodes(node, options = {}) {
-        if (this.expression) {
-            return this.expression.queryNodes(node, options);
-        }
-        else if (this.rules) {
-            return this.rules.queryNodes(node, options);
-        }
-        else {
-            return [];
-        }
+    // Espree doesn't support siblings.
+    getSiblings(_node) {
+        return [];
     }
 }
-exports.default = NodeQuery;
+exports.default = EspreeAdapter;
 </code></pre>
         </article>
     </section>
