@@ -1,6 +1,10 @@
 import Adapter from "../adapter";
 import { Node, SyntaxKind } from "typescript";
 
+/**
+ * Typescript Adapter
+ * @extends Adapter
+ */
 class TypescriptAdapter implements Adapter<Node> {
   getNodeType(node: Node): string {
     return SyntaxKind[node.kind];

@@ -5,8 +5,8 @@ import Adapter from "../adapter";
 import type { Node } from "acorn";
 
 /**
- * Implement node-query-typescript adapter
- * @see https://github.com/xinminlabs/node-query-typescript/blob/main/src/adapter.ts
+ * Espree Adapter
+ * @extends Adapter
  */
 class EspreeAdapter implements Adapter<Node> {
   // get node type

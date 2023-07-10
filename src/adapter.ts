@@ -1,3 +1,6 @@
+/**
+ * Adapter interface
+ */
 interface Adapter<T> {
   /**
    * Get node type of the ast node.

@@ -1,6 +1,10 @@
 import type { Node } from "@xinminlabs/gonzales-pe";
 import Adapter from "../adapter";
 
+/**
+ * GonzelesPe Adapter
+ * @extends Adapter
+ */
 class GonzalesPeAdapter implements Adapter<Node> {
   getNodeType(node: Node): string {
     return node.type;
