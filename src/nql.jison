@@ -28,14 +28,14 @@ basic_selector
   ;
 
 attribute_list
-  : OPEN_ATTRIBUTE attribute CLOSE_ATTRIBUTE attribute_list { $$ = new Compiler.AttributeList({ attribute: $2, rest: $4 }) }
-  | OPEN_ATTRIBUTE attribute CLOSE_ATTRIBUTE { $$ = new Compiler.AttributeList({ attribute: $2 }) }
+  : attribute attribute_list { $$ = new Compiler.AttributeList({ attribute: $1, rest: $2 }) }
+  | attribute { $$ = new Compiler.AttributeList({ attribute: $1 }) }
   ;
 
 attribute
-  : KEY $OPERATOR OPEN_ARRAY array_value CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: $4, operator: $2 }) }
-  | KEY $OPERATOR OPEN_ARRAY CLOSE_ARRAY { $$ = new Compiler.Attribute({ key: $1, value: new Compiler.ArrayValue({}), operator: $2 }) }
-  | KEY OPERATOR value { $$ = new Compiler.Attribute({ key: $1, value: $3, operator: $2 }) }
+  : OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY array_value CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $5, operator: $3 }) }
+  | OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: new Compiler.ArrayValue({}), operator: $3 }) }
+  | OPEN_ATTRIBUTE KEY OPERATOR value CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $4, operator: $3 }) }
   ;
 
 array_value
