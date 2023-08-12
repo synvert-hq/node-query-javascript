@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.18.3 (2023-08-12)
+
+* Update `nql.jison`
+
 ## 1.18.2 (2023-07-09)
 
 * Update `@xinminlabs/gonzales-pe` to 1.1.0
