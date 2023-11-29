@@ -54,28 +54,28 @@ class ArrayValue<T> {
     expected: Value<T>[],
     node: Node<T> | Node<T>[],
     baseNode: T,
-    operator: string
+    operator: string,
   ): boolean {
     switch (operator) {
       case "not_in":
         return Array.isArray(node)
           ? node.every((n) =>
               expected.every((expectedValue) =>
-                expectedValue.match(n, baseNode, "!=")
-              )
+                expectedValue.match(n, baseNode, "!="),
+              ),
             )
           : expected.every((expectedValue) =>
-              expectedValue.match(node, baseNode, "!=")
+              expectedValue.match(node, baseNode, "!="),
             );
       case "in":
         return Array.isArray(node)
           ? node.every((n) =>
               expected.some((expectedValue) =>
-                expectedValue.match(n, baseNode, "==")
-              )
+                expectedValue.match(n, baseNode, "=="),
+              ),
             )
           : expected.some((expectedValue) =>
-              expectedValue.match(node, baseNode, "==")
+              expectedValue.match(node, baseNode, "=="),
             );
       case "!=":
         return (
@@ -91,7 +91,7 @@ class ArrayValue<T> {
   private compareNotEqual(
     actual: Node<T>[],
     expected: Value<T>[],
-    baseNode: T
+    baseNode: T,
   ) {
     if (expected.length !== actual.length) {
       return true;

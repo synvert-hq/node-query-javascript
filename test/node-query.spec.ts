@@ -30,7 +30,8 @@ describe("NodeQuery", () => {
     describe("nql", () => {
       it("queries nodes", () => {
         const nodeQuery = new NodeQuery<Node>(
-          ".ClassDeclaration .PropertyDeclaration", { adapter: "typescript" }
+          ".ClassDeclaration .PropertyDeclaration",
+          { adapter: "typescript" },
         );
         expect(nodeQuery.queryNodes(node).length).toEqual(3);
       });
@@ -44,10 +45,13 @@ describe("NodeQuery", () => {
 
     describe("rules", () => {
       it("queries nodes", () => {
-        const nodeQuery = new NodeQuery<Node>({
-          nodeType: "PropertyDeclaration",
-          type: { nodeType: "StringKeyword" },
-        }, { adapter: "typescript" });
+        const nodeQuery = new NodeQuery<Node>(
+          {
+            nodeType: "PropertyDeclaration",
+            type: { nodeType: "StringKeyword" },
+          },
+          { adapter: "typescript" },
+        );
         expect(nodeQuery.queryNodes(node).length).toEqual(1);
       });
     });
@@ -70,14 +74,19 @@ describe("NodeQuery", () => {
 
     describe("nql", () => {
       it("match node", () => {
-        const nodeQuery = new NodeQuery<Node>(".ClassDeclaration", { adapter: "typescript" });
+        const nodeQuery = new NodeQuery<Node>(".ClassDeclaration", {
+          adapter: "typescript",
+        });
         expect(nodeQuery.matchNode(node)).toBeTruthy();
       });
     });
 
     describe("rules", () => {
       it("match node", () => {
-        const nodeQuery = new NodeQuery<Node>({ nodeType: "ClassDeclaration" }, { adapter: "typescript" });
+        const nodeQuery = new NodeQuery<Node>(
+          { nodeType: "ClassDeclaration" },
+          { adapter: "typescript" },
+        );
         expect(nodeQuery.matchNode(node)).toBeTruthy();
       });
     });

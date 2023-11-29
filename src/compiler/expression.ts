@@ -21,7 +21,7 @@ class Expression<T> {
       return matchingNodes;
     }
     return matchingNodes.flatMap((matchingNode) =>
-      this.findNodesByRest(matchingNode, options)
+      this.findNodesByRest(matchingNode, options),
     );
   }
 

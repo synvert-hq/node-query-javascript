@@ -1,9 +1,5 @@
 import BasicSelector from "./basic-selector";
-import {
-  handleRecursiveChild,
-  getTargetNode,
-  isNode,
-} from "../helper";
+import { handleRecursiveChild, getTargetNode, isNode } from "../helper";
 import { QueryOptions } from "./types";
 import NodeQuery from "../node-query";
 import Adapter from "../adapter";
@@ -82,7 +78,7 @@ class Selector<T> {
   queryNodes(node: T | T[], options: QueryOptions = {}): T[] {
     options = Object.assign(
       { includingSelf: true, stopAtFirstMatch: false, recursive: true },
-      options
+      options,
     );
 
     if (this.relationship && !Array.isArray(node)) {
@@ -126,16 +122,14 @@ class Selector<T> {
           }
         });
       } else {
-        this.adapter
-          .getChildren(node)
-          .forEach((childNode) => {
-            if (this.match(childNode, childNode)) {
-              nodes.push(childNode);
-              if (options.stopAtFirstMatch) {
-                return { stop: true };
-              }
+        this.adapter.getChildren(node).forEach((childNode) => {
+          if (this.match(childNode, childNode)) {
+            nodes.push(childNode);
+            if (options.stopAtFirstMatch) {
+              return { stop: true };
             }
-          });
+          }
+        });
       }
     }
     return this.filterByPosition(nodes);
@@ -168,13 +162,11 @@ class Selector<T> {
     const nodes: T[] = [];
     switch (this.relationship) {
       case ">":
-        this.adapter
-          .getChildren(node)
-          .forEach((childNode) => {
-            if (this.rest!.match(childNode, childNode)) {
-              nodes.push(childNode);
-            }
-          });
+        this.adapter.getChildren(node).forEach((childNode) => {
+          if (this.rest!.match(childNode, childNode)) {
+            nodes.push(childNode);
+          }
+        });
         break;
       case "+":
         const nextSibling = this.adapter.getSiblings(node)[0];
@@ -183,13 +175,11 @@ class Selector<T> {
         }
         break;
       case "~":
-        this.adapter
-          .getSiblings(node)
-          .forEach((siblingNode) => {
-            if (this.rest!.match(siblingNode, siblingNode)) {
-              nodes.push(siblingNode);
-            }
-          });
+        this.adapter.getSiblings(node).forEach((siblingNode) => {
+          if (this.rest!.match(siblingNode, siblingNode)) {
+            nodes.push(siblingNode);
+          }
+        });
         break;
       default:
         break;

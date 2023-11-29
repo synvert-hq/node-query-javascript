@@ -24,14 +24,17 @@ const KEYWORDS = [
 class NodeRules<T> {
   private adapter: Adapter<T>;
 
-  constructor(private rules: object, { adapter }: { adapter: Adapter<T> }) {
+  constructor(
+    private rules: object,
+    { adapter }: { adapter: Adapter<T> },
+  ) {
     this.adapter = adapter;
   }
 
   queryNodes(node: T, options: QueryOptions = {}): T[] {
     options = Object.assign(
       { includingSelf: true, stopAtFirstMatch: false, recursive: true },
-      options
+      options,
     );
     if (options.includingSelf && !options.recursive) {
       return this.matchNode(node) ? [node] : [];
@@ -54,16 +57,14 @@ class NodeRules<T> {
         }
       });
     } else {
-      this.adapter
-        .getChildren(node)
-        .forEach((childNode) => {
-          if (this.matchNode(childNode, childNode)) {
-            matchingNodes.push(childNode);
-            if (options.stopAtFirstMatch) {
-              return { stop: true };
-            }
+      this.adapter.getChildren(node).forEach((childNode) => {
+        if (this.matchNode(childNode, childNode)) {
+          matchingNodes.push(childNode);
+          if (options.stopAtFirstMatch) {
+            return { stop: true };
           }
-        });
+        }
+      });
     }
     return matchingNodes;
   }
@@ -84,7 +85,7 @@ class NodeRules<T> {
           return (
             actual.length === expected.length &&
             expected.every((expectedItem, index) =>
-              this.matchValue(actual[index], expectedItem)
+              this.matchValue(actual[index], expectedItem),
             )
           );
         }
@@ -92,7 +93,7 @@ class NodeRules<T> {
           case "includes":
             if (Array.isArray(actual)) {
               return actual.some((actualItem: any) =>
-                this.matchValue(actualItem, expected)
+                this.matchValue(actualItem, expected),
               );
             } else {
               return this.matchValue(actual, expected);
@@ -100,7 +101,7 @@ class NodeRules<T> {
           case "notIncludes":
             if (Array.isArray(actual)) {
               return actual.every(
-                (actualItem: any) => !this.matchValue(actualItem, expected)
+                (actualItem: any) => !this.matchValue(actualItem, expected),
               );
             } else {
               return !this.matchValue(actual, expected);
@@ -109,11 +110,11 @@ class NodeRules<T> {
             return !this.matchValue(actual, expected);
           case "in":
             return expected.some((expectedItem: any) =>
-              this.matchValue(actual, expectedItem)
+              this.matchValue(actual, expectedItem),
             );
           case "notIn":
             return expected.every(
-              (expectedItem: any) => !this.matchValue(actual, expectedItem)
+              (expectedItem: any) => !this.matchValue(actual, expectedItem),
             );
           case "gt":
             return (actual as any) > expected;
@@ -126,7 +127,7 @@ class NodeRules<T> {
           default:
             return this.matchValue(actual, expected);
         }
-      }
+      },
     );
   }
 

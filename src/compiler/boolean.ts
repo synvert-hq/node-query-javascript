@@ -2,7 +2,10 @@ import Adapter from "../adapter";
 import Value from "./value";
 
 class Boolean<T> extends Value<T> {
-  constructor(private value: boolean, adapter: Adapter<T>) {
+  constructor(
+    private value: boolean,
+    adapter: Adapter<T>,
+  ) {
     super(adapter);
   }
 

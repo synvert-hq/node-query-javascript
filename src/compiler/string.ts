@@ -4,7 +4,10 @@ import { evaluateNodeValue } from "../helper";
 import Adapter from "../adapter";
 
 class String<T> extends Value<T> {
-  constructor(private value: string, adapter: Adapter<T>) {
+  constructor(
+    private value: string,
+    adapter: Adapter<T>,
+  ) {
     super(adapter);
   }
 

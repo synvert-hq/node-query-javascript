@@ -28,7 +28,7 @@ describe("TypescriptAdapter", () => {
 
   it("getSiblings", () => {
     expect(
-      adapter.getSiblings((node as ClassDeclaration).members[0]).length
+      adapter.getSiblings((node as ClassDeclaration).members[0]).length,
     ).toEqual(2);
   });
 });

@@ -2,7 +2,10 @@ import Adapter from "../adapter";
 import Value from "./value";
 
 class Identifier<T> extends Value<T> {
-  constructor(private value: string, adapter: Adapter<T>) {
+  constructor(
+    private value: string,
+    adapter: Adapter<T>,
+  ) {
     super(adapter);
   }
 

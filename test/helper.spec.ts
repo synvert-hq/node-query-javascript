@@ -20,18 +20,26 @@ describe("Compiler::Helper", () => {
       const targetNode = Helper.getTargetNode<Node>(
         node,
         "expression.expression",
-        adapter
+        adapter,
       );
       expect(adapter.getSource(targetNode as Node)).toEqual("Array");
     });
 
     it("checks array by index", () => {
-      const targetNode = Helper.getTargetNode<Node>(node, "arguments.0", adapter);
+      const targetNode = Helper.getTargetNode<Node>(
+        node,
+        "arguments.0",
+        adapter,
+      );
       expect(adapter.getSource(targetNode as Node)).toEqual("foobar");
     });
 
     it("checks array by method", () => {
-      const targetNode = Helper.getTargetNode<Node>(node, "arguments.length", adapter);
+      const targetNode = Helper.getTargetNode<Node>(
+        node,
+        "arguments.length",
+        adapter,
+      );
       expect(targetNode).toEqual(1);
     });
   });
@@ -61,7 +69,11 @@ describe("Compiler::Helper", () => {
     ];
 
     it("returns an evaluated string", () => {
-      const value = Helper.evaluateNodeValue(node, "this.{{expression.name}}", adapter);
+      const value = Helper.evaluateNodeValue(
+        node,
+        "this.{{expression.name}}",
+        adapter,
+      );
       expect(value).toEqual("this.isArray");
     });
   });
@@ -93,7 +105,9 @@ describe("Compiler::Helper", () => {
       const node = (parseCode("Array.isArray(foobar)").statements[0] as any)[
         "expression"
       ];
-      expect(Helper.toString(node.expression.expression, adapter)).toEqual("Array");
+      expect(Helper.toString(node.expression.expression, adapter)).toEqual(
+        "Array",
+      );
     });
 
     it("get source for nodes", () => {
