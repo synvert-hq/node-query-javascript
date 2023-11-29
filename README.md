@@ -61,7 +61,7 @@ yarn add @xinminlabs/node-query
 It provides two apis: `queryNodes` and `matchNode`
 
 ```typescript
-const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object) // Initialize NodeQuery
+const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object, { adapter: string }) // Initialize NodeQuery
 nodeQuery.queryNodes(node: Node, includingSelf = true): Node[] // Get the matching nodes.
 nodeQuery.matchNode(node: Node): boolean // Check if the node matches nql or rules.
 ```
@@ -93,8 +93,8 @@ const source = `
 const node = ts.createSourceFile('code.ts', source, ts.ScriptTarget.Latest, true)
 
 // It will get the two nodes of property declaration in the class declaration.
-new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration').queryNodes(node)
-new NodeQuery<Node>({ nodeType: "PropertyDeclaration" }).queryNodes(node)
+new NodeQuery<Node>('.ClassDeclaration .PropertyDeclaration', { adapter: 'typescript' }).queryNodes(node)
+new NodeQuery<Node>({ nodeType: "PropertyDeclaration" }, { adapter: 'typescript' }).queryNodes(node)
 ```
 
 ## Node Query Language
@@ -500,10 +500,6 @@ It provides 3 adapters
 1. `TypescriptAdapter`
 2. `EspreeAdapter`
 3. `GonzalesPeAdapter`
-
-```typescript
-NodeQuery.configure({ adapter: new EspreeAdapter() }) // default is TypescriptAdapter
-```
 
 ## Contributing Guide
 
