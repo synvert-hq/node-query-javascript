@@ -1,6 +1,5 @@
 import flatten from "flat";
 import { t } from "typy";
-import NodeQuery from "./node-query";
 import {
   getTargetNode,
   handleRecursiveChild,
@@ -8,6 +7,7 @@ import {
   toString,
 } from "./helper";
 import { QueryOptions } from "./compiler/types";
+import Adapter from "./adapter";
 
 const KEYWORDS = [
   "notIncludes",
@@ -22,7 +22,11 @@ const KEYWORDS = [
 ];
 
 class NodeRules<T> {
-  constructor(private rules: object) {}
+  private adapter: Adapter<T>;
+
+  constructor(private rules: object, { adapter }: { adapter: Adapter<T> }) {
+    this.adapter = adapter;
+  }
 
   queryNodes(node: T, options: QueryOptions = {}): T[] {
     options = Object.assign(
@@ -41,7 +45,7 @@ class NodeRules<T> {
       }
     }
     if (options.recursive) {
-      handleRecursiveChild(node, (childNode) => {
+      handleRecursiveChild(node, this.adapter, (childNode) => {
         if (this.matchNode(childNode, childNode)) {
           matchingNodes.push(childNode);
           if (options.stopAtFirstMatch) {
@@ -50,7 +54,7 @@ class NodeRules<T> {
         }
       });
     } else {
-      NodeQuery.getAdapter()
+      this.adapter
         .getChildren(node)
         .forEach((childNode) => {
           if (this.matchNode(childNode, childNode)) {
@@ -70,11 +74,11 @@ class NodeRules<T> {
         const keys = multiKey.split(".");
         const lastKey = keys[keys.length - 1];
         const actual = KEYWORDS.includes(lastKey)
-          ? getTargetNode(node, keys.slice(0, -1).join("."))
-          : getTargetNode(node, multiKey);
+          ? getTargetNode(node, keys.slice(0, -1).join("."), this.adapter)
+          : getTargetNode(node, multiKey, this.adapter);
         let expected = t(this.rules, multiKey).safeObject;
         if (typeof expected === "string") {
-          expected = evaluateNodeValue(baseNode, expected);
+          expected = evaluateNodeValue(baseNode, expected, this.adapter);
         }
         if (Array.isArray(actual) && Array.isArray(expected)) {
           return (
@@ -134,14 +138,14 @@ class NodeRules<T> {
     if (expected instanceof RegExp) {
       if (typeof actual === "string") return expected.test(actual);
       if (typeof actual === "number") return expected.test(actual.toString());
-      return expected.test(NodeQuery.getAdapter().getSource(actual));
+      return expected.test(this.adapter.getSource(actual));
     }
     if (Array.isArray(actual) && typeof expected === "string") {
-      return expected === toString(actual);
+      return expected === toString(actual, this.adapter);
     }
     if (typeof actual === "object") {
       // actual is a node
-      const source = NodeQuery.getAdapter().getSource(actual);
+      const source = this.adapter.getSource(actual);
       return expected.toString() === source || `"${expected}"` === source;
     }
     return false;

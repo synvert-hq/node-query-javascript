@@ -1,8 +1,11 @@
 import ts from "typescript";
 import { parseCode } from "./test-helper";
 import NodeRules from "../src/node-rules";
+import TypescriptAdapter from "../src/adapter/typescript";
 
 describe("NodeRules", () => {
+  const adapter = new TypescriptAdapter();
+
   describe("#queryNodes", () => {
     const node = parseCode(`
       interface User {
@@ -27,7 +30,7 @@ describe("NodeRules", () => {
     `);
 
     it("matches node type", () => {
-      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" });
+      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
@@ -35,7 +38,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         expression: "UserAccount",
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -46,7 +49,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         expression: { escapedText: "UserAccount" },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -57,7 +60,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 0: "Murphy" },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -68,7 +71,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 1: 1 },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -79,7 +82,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { "-1": true },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -90,7 +93,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 0: { not: null } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -101,7 +104,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 0: { not: undefined } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -112,7 +115,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 2: { not: false } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -123,7 +126,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         expression: /^User/,
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -134,7 +137,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         expression: { not: /^Account/ },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -145,7 +148,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { includes: "Murphy" },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -156,7 +159,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { notIncludes: "Richard" },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -167,7 +170,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "ClassDeclaration",
         name: { in: ["User", "Account", "UserAccount"] },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
@@ -175,7 +178,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "ClassDeclaration",
         name: { in: [/User/, /Account/] },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
@@ -183,7 +186,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "ClassDeclaration",
         name: { notIn: ["User", "Account"] },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([node.statements[1]]);
     });
 
@@ -191,7 +194,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: ["Murphy", 1, true],
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -202,7 +205,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: "{{arguments}}",
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -213,7 +216,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "VariableDeclaration",
         initializer: { nodeType: "NewExpression", expression: "UserAccount" },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0],
@@ -224,7 +227,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { length: 3 },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -235,7 +238,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { length: { gte: 3 } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -246,7 +249,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { length: { gt: 2 } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -257,7 +260,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { length: { lte: 3 } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -268,7 +271,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { length: { lt: 4 } },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -279,7 +282,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "VariableDeclaration",
         name: "{{type.typeName.escapedText.toLowerCase}}",
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0],
@@ -325,7 +328,7 @@ describe("NodeRules", () => {
             },
           },
         },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node).length).toEqual(1);
     });
 
@@ -333,7 +336,7 @@ describe("NodeRules", () => {
       const nodeRules = new NodeRules({
         nodeType: "NewExpression",
         arguments: { 0: "Murphy", 1: 1 },
-      });
+      }, { adapter });
       expect(nodeRules.queryNodes(node)).toEqual([
         (node.statements[2] as ts.VariableStatement).declarationList
           .declarations[0].initializer,
@@ -341,7 +344,7 @@ describe("NodeRules", () => {
     });
 
     it("sets option includingSelf to false", () => {
-      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" });
+      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" }, { adapter });
       expect(
         nodeRules.queryNodes(node.statements[1], { includingSelf: false })
       ).toEqual([]);
@@ -352,7 +355,7 @@ describe("NodeRules", () => {
     });
 
     it("sets option stopAtFirstMatch to true", () => {
-      const nodeRules = new NodeRules({ nodeType: "BinaryExpression" });
+      const nodeRules = new NodeRules({ nodeType: "BinaryExpression" }, { adapter });
       expect(
         nodeRules.queryNodes(node, { stopAtFirstMatch: true }).length
       ).toEqual(1);
@@ -361,7 +364,7 @@ describe("NodeRules", () => {
     });
 
     it("sets option recursive to false", () => {
-      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" });
+      const nodeRules = new NodeRules({ nodeType: "ClassDeclaration" }, { adapter });
       expect(nodeRules.queryNodes(node, { recursive: false }).length).toEqual(
         0
       );
