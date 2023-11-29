@@ -1,16 +1,9 @@
 import { Node } from "typescript";
 import NodeQuery from "../src/node-query";
-import TypescriptAdapter from "../src/adapter/typescript";
 import SyntaxError from "../src/syntax-error";
 import { parseCode } from "./test-helper";
 
 describe("NodeQuery", () => {
-  it("configure adapter", () => {
-    const typescriptAdapter = new TypescriptAdapter();
-    NodeQuery.configure({ adapter: typescriptAdapter });
-    expect(NodeQuery.getAdapter()).toEqual(typescriptAdapter);
-  });
-
   describe("#queryNodes", () => {
     const node = parseCode(`
       interface User {
@@ -37,14 +30,14 @@ describe("NodeQuery", () => {
     describe("nql", () => {
       it("queries nodes", () => {
         const nodeQuery = new NodeQuery<Node>(
-          ".ClassDeclaration .PropertyDeclaration"
+          ".ClassDeclaration .PropertyDeclaration", { adapter: "typescript" }
         );
         expect(nodeQuery.queryNodes(node).length).toEqual(3);
       });
 
       it("raises SyntaxError", () => {
         expect(() => {
-          new NodeQuery<Node>(".ClassDeclaration .");
+          new NodeQuery<Node>(".ClassDeclaration .", { adapter: "typescript" });
         }).toThrow(SyntaxError);
       });
     });
@@ -54,7 +47,7 @@ describe("NodeQuery", () => {
         const nodeQuery = new NodeQuery<Node>({
           nodeType: "PropertyDeclaration",
           type: { nodeType: "StringKeyword" },
-        });
+        }, { adapter: "typescript" });
         expect(nodeQuery.queryNodes(node).length).toEqual(1);
       });
     });
@@ -77,14 +70,14 @@ describe("NodeQuery", () => {
 
     describe("nql", () => {
       it("match node", () => {
-        const nodeQuery = new NodeQuery<Node>(".ClassDeclaration");
+        const nodeQuery = new NodeQuery<Node>(".ClassDeclaration", { adapter: "typescript" });
         expect(nodeQuery.matchNode(node)).toBeTruthy();
       });
     });
 
     describe("rules", () => {
       it("match node", () => {
-        const nodeQuery = new NodeQuery<Node>({ nodeType: "ClassDeclaration" });
+        const nodeQuery = new NodeQuery<Node>({ nodeType: "ClassDeclaration" }, { adapter: "typescript" });
         expect(nodeQuery.matchNode(node)).toBeTruthy();
       });
     });

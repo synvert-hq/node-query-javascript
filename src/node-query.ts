@@ -1,6 +1,8 @@
-import Adapter from "./adapter";
 import SyntaxError from "./syntax-error";
+import Adapter from "./adapter";
 import TypescriptAdapter from "./adapter/typescript";
+import EspreeAdapter from "./adapter/espree";
+import GonzalesPeAdapter from "./adapter/gonzales-pe";
 import NodeRules from "./node-rules";
 import { QueryOptions } from "./compiler/types";
 const { parser } = require("./parser");
@@ -37,9 +39,11 @@ class NodeQuery<T> {
    * Create a NodeQuery
    * @param nqlOrRules {string | object} Node query language string or node rules
    */
-  constructor(nqlOrRules: string | object) {
+  constructor(nqlOrRules: string | object, { adapter }: { adapter: string }) {
+    const adapterInstance = this.getAdapterInstance(adapter);
     if (typeof nqlOrRules === "string") {
       try {
+        parser.yy.adapter = adapterInstance;
         parser.parse(nqlOrRules);
         this.expression = parser.yy.result;
       } catch (error) {
@@ -56,7 +60,7 @@ class NodeQuery<T> {
         }
       }
     } else {
-      this.rules = new NodeRules(nqlOrRules);
+      this.rules = new NodeRules(nqlOrRules, { adapter: adapterInstance });
     }
   }
 
@@ -97,6 +101,19 @@ class NodeQuery<T> {
       return this.rules.queryNodes(node, options);
     } else {
       return [];
+    }
+  }
+
+  private getAdapterInstance(adapter: string): Adapter<any> {
+    switch (adapter) {
+      case "espree":
+        return new EspreeAdapter();
+      case "typescript":
+        return new TypescriptAdapter();
+      case "gonzales-pe":
+        return new GonzalesPeAdapter();
+      default:
+        throw new Error(`Adapter "${adapter}" is not supported.`);
     }
   }
 }
