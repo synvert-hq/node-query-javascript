@@ -1,19 +1,14 @@
 import debug from "debug";
-import Adapter from "./adapter";
-import NodeQuery from "./node-query";
 import type { Node } from "./compiler/types";
+import Adapter from "./adapter";
 
-export function getAdapter<T>(): Adapter<T> {
-  return NodeQuery.getAdapter();
-}
-
-export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
+export function getTargetNode<T>(node: T, keys: string, adapter: Adapter<T>): T | T[] | undefined {
   let target = node as any;
   if (!target) return;
 
   const [firstKey, ...restKeys] = keys.split(".");
   if (Array.isArray(target) && firstKey === "*") {
-    return target.map((t) => getTargetNode(t, restKeys.join(".")));
+    return target.map((t) => getTargetNode(t, restKeys.join("."), adapter));
   }
 
   if (Array.isArray(target) && !Number.isNaN(Number.parseInt(firstKey))) {
@@ -23,30 +18,31 @@ export function getTargetNode<T>(node: T, keys: string): Node<T> | Node<T>[] {
   } else if (typeof target[firstKey] === "function") {
     target = target[firstKey].call(target);
   } else if (firstKey === "nodeType") {
-    target = getAdapter<T>().getNodeType(target);
+    target = adapter.getNodeType(target);
   } else {
     debug("node-query:get-target-node")(
-      `${getAdapter<T>().getNodeType(target)} ${firstKey} not found`
+      `${adapter.getNodeType(target)} ${firstKey} not found`
     );
     target = null;
   }
   if (restKeys.length === 0) {
     return target;
   }
-  return getTargetNode<T>(target, restKeys.join("."));
+  return getTargetNode<T>(target, restKeys.join("."), adapter);
 }
 
 export function handleRecursiveChild<T>(
   node: T,
+  adapter: Adapter<T>,
   handler: (childNode: T) => { stop: boolean } | void
 ): { stop: boolean } {
   let result;
-  for (let childNode of getAdapter<T>().getChildren(node)) {
+  for (let childNode of adapter.getChildren(node)) {
     result = handler(childNode);
     if (result && result.stop) {
       break;
     }
-    result = handleRecursiveChild(childNode, handler);
+    result = handleRecursiveChild(childNode, adapter, handler);
     if (result && result.stop) {
       break;
     }
@@ -67,17 +63,17 @@ export function isNode<T>(node: Node<T>): boolean {
   return true;
 }
 
-export function evaluateNodeValue<T>(node: T, str: string): string {
+export function evaluateNodeValue<T>(node: T, str: string, adapter: Adapter<T>): string {
   for (let matchData of str.matchAll(/{{(.+?)}}/g)) {
-    const targetNode = getTargetNode(node, matchData[1]);
-    str = str.replace(matchData[0], toString(targetNode));
+    const targetNode = getTargetNode(node, matchData[1], adapter);
+    str = str.replace(matchData[0], toString(targetNode, adapter));
   }
   return str;
 }
 
-export function toString<T>(node: Node<T> | Node<T>[]): string {
+export function toString<T>(node: Node<T> | Node<T>[], adapter: Adapter<T>): string {
   if (Array.isArray(node)) {
-    return `(${node.map((n) => toString(n)).join(", ")})`;
+    return `(${node.map((n) => toString(n, adapter)).join(", ")})`;
   }
 
   if (node === null) {
@@ -91,6 +87,6 @@ export function toString<T>(node: Node<T> | Node<T>[]): string {
     case "boolean":
       return node.toString();
     default:
-      return getAdapter<T>().getSource(node);
+      return adapter.getSource(node);
   }
 }
