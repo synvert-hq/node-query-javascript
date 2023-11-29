@@ -12,29 +12,6 @@ class NodeQuery<T> {
   private expression?: InstanceType<typeof ExpressionList>;
   private rules?: NodeRules<any>;
 
-  private static adapter?: Adapter<any>;
-
-  /**
-   * Configure NodeQuery
-   * @static
-   * @param options {Object}
-   * @param options.adapter {Adapter} - adapter, default is TypescriptAdapter
-   */
-  static configure(options: { adapter: Adapter<any> }) {
-    this.adapter = options.adapter;
-  }
-
-  /**
-   * Get the adapter.
-   * @returns {Aapter} the adapter
-   */
-  static getAdapter(): Adapter<any> {
-    if (!this.adapter) {
-      this.adapter = new TypescriptAdapter();
-    }
-    return this.adapter!;
-  }
-
   /**
    * Create a NodeQuery
    * @param nqlOrRules {string | object} Node query language string or node rules
