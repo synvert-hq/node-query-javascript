@@ -13,8 +13,8 @@ abstract class Value<T> {
   match(node: Node<T>, baseNode: T, operator: string): boolean {
     debug("node-query:value")(
       `"${this.actualValue(node)}" ${operator} "${this.expectedValue(
-        baseNode
-      )}"`
+        baseNode,
+      )}"`,
     );
     const result = this.matchString(node, baseNode, operator);
     debug("node-query:value")(`result: ${result}`);
@@ -39,13 +39,13 @@ abstract class Value<T> {
       case "not_includes":
         return Array.isArray(actualNode)
           ? actualNode.every((actualItem) =>
-              this.match(actualItem, baseNode, "!=")
+              this.match(actualItem, baseNode, "!="),
             )
           : actual !== expected;
       case "includes":
         return Array.isArray(actualNode)
           ? actualNode.some((actualItem) =>
-              this.match(actualItem, baseNode, "==")
+              this.match(actualItem, baseNode, "=="),
             )
           : actual === expected;
       case "^=":

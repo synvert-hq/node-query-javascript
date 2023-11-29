@@ -3,7 +3,10 @@ import Value from "./value";
 import Adapter from "../adapter";
 
 class Regexp<T> extends Value<T> {
-  constructor(private value: string, adapter: Adapter<T>) {
+  constructor(
+    private value: string,
+    adapter: Adapter<T>,
+  ) {
     super(adapter);
   }
 
@@ -27,7 +30,7 @@ class Regexp<T> extends Value<T> {
   private matchRegExp(
     actual: string,
     expected: RegExp,
-    operator: string
+    operator: string,
   ): boolean {
     if (operator === "!~") {
       return !expected.test(actual);

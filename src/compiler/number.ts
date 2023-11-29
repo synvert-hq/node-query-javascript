@@ -4,7 +4,10 @@ import Value from "./value";
 import Adapter from "../adapter";
 
 class Number<T> extends Value<T> {
-  constructor(private value: number, adapter: Adapter<T>) {
+  constructor(
+    private value: number,
+    adapter: Adapter<T>,
+  ) {
     super(adapter);
   }
 
@@ -29,7 +32,7 @@ class Number<T> extends Value<T> {
   private matchNumber(
     actual: string,
     expected: string,
-    operator: string
+    operator: string,
   ): boolean {
     switch (operator) {
       case "!=":

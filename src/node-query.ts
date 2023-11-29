@@ -32,7 +32,7 @@ class NodeQuery<T> {
             error.message.startsWith("Parse error"))
         ) {
           throw new SyntaxError(
-            error.message.split("\n").slice(0, 3).join("\n")
+            error.message.split("\n").slice(0, 3).join("\n"),
           );
         } else {
           throw error;

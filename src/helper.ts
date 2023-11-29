@@ -2,7 +2,11 @@ import debug from "debug";
 import type { Node } from "./compiler/types";
 import Adapter from "./adapter";
 
-export function getTargetNode<T>(node: T, keys: string, adapter: Adapter<T>): T | T[] | undefined {
+export function getTargetNode<T>(
+  node: T,
+  keys: string,
+  adapter: Adapter<T>,
+): T | T[] | undefined {
   let target = node as any;
   if (!target) return;
 
@@ -21,7 +25,7 @@ export function getTargetNode<T>(node: T, keys: string, adapter: Adapter<T>): T 
     target = adapter.getNodeType(target);
   } else {
     debug("node-query:get-target-node")(
-      `${adapter.getNodeType(target)} ${firstKey} not found`
+      `${adapter.getNodeType(target)} ${firstKey} not found`,
     );
     target = null;
   }
@@ -34,7 +38,7 @@ export function getTargetNode<T>(node: T, keys: string, adapter: Adapter<T>): T 
 export function handleRecursiveChild<T>(
   node: T,
   adapter: Adapter<T>,
-  handler: (childNode: T) => { stop: boolean } | void
+  handler: (childNode: T) => { stop: boolean } | void,
 ): { stop: boolean } {
   let result;
   for (let childNode of adapter.getChildren(node)) {
@@ -63,7 +67,11 @@ export function isNode<T>(node: Node<T>): boolean {
   return true;
 }
 
-export function evaluateNodeValue<T>(node: T, str: string, adapter: Adapter<T>): string {
+export function evaluateNodeValue<T>(
+  node: T,
+  str: string,
+  adapter: Adapter<T>,
+): string {
   for (let matchData of str.matchAll(/{{(.+?)}}/g)) {
     const targetNode = getTargetNode(node, matchData[1], adapter);
     str = str.replace(matchData[0], toString(targetNode, adapter));
@@ -71,7 +79,10 @@ export function evaluateNodeValue<T>(node: T, str: string, adapter: Adapter<T>):
   return str;
 }
 
-export function toString<T>(node: Node<T> | Node<T>[], adapter: Adapter<T>): string {
+export function toString<T>(
+  node: Node<T> | Node<T>[],
+  adapter: Adapter<T>,
+): string {
   if (Array.isArray(node)) {
     return `(${node.map((n) => toString(n, adapter)).join(", ")})`;
   }

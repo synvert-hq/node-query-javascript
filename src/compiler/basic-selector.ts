@@ -14,7 +14,11 @@ class BasicSelector<T> {
   private attributeList?: AttributeList<T>;
   private adapter: Adapter<T>;
 
-  constructor({ nodeType, attributeList, adapter }: BasicSelectorParameters<T>) {
+  constructor({
+    nodeType,
+    attributeList,
+    adapter,
+  }: BasicSelectorParameters<T>) {
     this.nodeType = nodeType;
     this.attributeList = attributeList;
     this.adapter = adapter;
