@@ -15,6 +15,8 @@ class NodeQuery<T> {
   /**
    * Create a NodeQuery
    * @param nqlOrRules {string | object} Node query language string or node rules
+   * @param options {object}
+   * @param options.adapter {string} Adapter name
    */
   constructor(nqlOrRules: string | object, { adapter }: { adapter: string }) {
     const adapterInstance = this.getAdapterInstance(adapter);
