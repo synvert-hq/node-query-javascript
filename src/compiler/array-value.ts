@@ -2,6 +2,7 @@ import debug from "debug";
 
 import type { Node } from "./types";
 import Value from "./value";
+import Adapter from "../adapter";
 
 interface ArrayValueParameters<T> {
   value?: Value<T>;

@@ -15,16 +15,16 @@ expression
   ;
 
 selector
-  : basic_selector POSITION { $$ = new Compiler.Selector({ basicSelector: $1, position: $2 }) }
-  | basic_selector { $$ = new Compiler.Selector({ basicSelector: $1 }) }
-  | PSEUDO_CLASS OPEN_SELECTOR selector CLOSE_SELECTOR { $$ = new Compiler.Selector({ pseudoClass: $1, pseudoSelector: $3 }) }
-  | RELATIONSHIP selector { $$ = new Compiler.Selector({ relationship: $1, rest: $2 }) }
-  | GOTO_SCOPE selector { $$ = new Compiler.Selector({ gotoScope: $1, rest: $2 }) }
+  : basic_selector POSITION { $$ = new Compiler.Selector({ basicSelector: $1, position: $2, adapter: yy.parser.yy.adapter }) }
+  | basic_selector { $$ = new Compiler.Selector({ basicSelector: $1, adapter: yy.parser.yy.adapter }) }
+  | PSEUDO_CLASS OPEN_SELECTOR selector CLOSE_SELECTOR { $$ = new Compiler.Selector({ pseudoClass: $1, pseudoSelector: $3, adapter: yy.parser.yy.adapter }) }
+  | RELATIONSHIP selector { $$ = new Compiler.Selector({ relationship: $1, rest: $2, adapter: yy.parser.yy.adapter }) }
+  | GOTO_SCOPE selector { $$ = new Compiler.Selector({ gotoScope: $1, rest: $2, adapter: yy.parser.yy.adapter }) }
   ;
 
 basic_selector
-  : NODE_TYPE attribute_list { $$ = new Compiler.BasicSelector({ nodeType: $1, attributeList: $2 }) }
-  | NODE_TYPE { $$ = new Compiler.BasicSelector({ nodeType: $1 }) }
+  : NODE_TYPE attribute_list { $$ = new Compiler.BasicSelector({ nodeType: $1, attributeList: $2, adapter: yy.parser.yy.adapter }) }
+  | NODE_TYPE { $$ = new Compiler.BasicSelector({ nodeType: $1, adapter: yy.parser.yy.adapter }) }
   ;
 
 attribute_list
@@ -39,19 +39,19 @@ attribute
   ;
 
 array_value
-  : value array_value { $$ = new Compiler.ArrayValue({ value: $1, rest: $2 }) }
-  | value { $$ = new Compiler.ArrayValue({ value: $1 }) }
+  : value array_value { $$ = new Compiler.ArrayValue({ value: $1, rest: $2, adapter: yy.parser.yy.adapter }) }
+  | value { $$ = new Compiler.ArrayValue({ value: $1, adapter: yy.parser.yy.adapter }) }
   ;
 
 value
   : selector
-  | NULL { $$ = new Compiler.Null() }
-  | UNDEFINED { $$ = new Compiler.Undefined() }
-  | BOOLEAN { $$ = new Compiler.Boolean($1) }
-  | NUMBER { $$ = new Compiler.Number($1) }
-  | REGEXP { $$ = new Compiler.Regexp($1) }
-  | STRING { $$ = new Compiler.String($1) }
-  | IDENTIFIER_VALUE { $$ = new Compiler.Identifier($1) }
+  | NULL { $$ = new Compiler.Null(yy.parser.yy.adapter) }
+  | UNDEFINED { $$ = new Compiler.Undefined(yy.parser.yy.adapter) }
+  | BOOLEAN { $$ = new Compiler.Boolean($1, yy.parser.yy.adapter) }
+  | NUMBER { $$ = new Compiler.Number($1, yy.parser.yy.adapter) }
+  | REGEXP { $$ = new Compiler.Regexp($1, yy.parser.yy.adapter) }
+  | STRING { $$ = new Compiler.String($1, yy.parser.yy.adapter) }
+  | IDENTIFIER_VALUE { $$ = new Compiler.Identifier($1, yy.parser.yy.adapter) }
   ;
 
 %%

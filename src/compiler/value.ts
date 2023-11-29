@@ -2,10 +2,13 @@ import debug from "debug";
 
 import type { Node } from "./types";
 import { toString } from "../helper";
+import Adapter from "../adapter";
 
 // Value is an atom value,
 // it can be a Boolean, Null, Number, Undefined, String or Identifier.
 abstract class Value<T> {
+  constructor(protected adapter: Adapter<T>) {}
+
   // check if the actual value matches the expected value.
   match(node: Node<T>, baseNode: T, operator: string): boolean {
     debug("node-query:value")(
@@ -20,7 +23,7 @@ abstract class Value<T> {
 
   // actual value can be a string or the source code of a typescript node.
   actualValue(node: any): string {
-    return toString(node);
+    return toString(node, this.adapter);
   }
 
   abstract expectedValue(baseNode: T): string;
@@ -28,7 +31,7 @@ abstract class Value<T> {
   private matchString(
     actualNode: Node<T>,
     baseNode: T,
-    operator: string
+    operator: string,
   ): boolean {
     const actual = this.actualValue(actualNode);
     const expected = this.expectedValue(baseNode);

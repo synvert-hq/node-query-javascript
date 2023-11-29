@@ -1,12 +1,13 @@
 import BasicSelector from "./basic-selector";
 import {
-  getAdapter,
   handleRecursiveChild,
   getTargetNode,
   isNode,
 } from "../helper";
 import { QueryOptions } from "./types";
 import NodeQuery from "../node-query";
+import Adapter from "../adapter";
+import t from "typy";
 
 interface SelectorParameters<T> {
   gotoScope?: string;
@@ -16,6 +17,7 @@ interface SelectorParameters<T> {
   relationship?: string;
   pseudoClass?: string;
   pseudoSelector?: Selector<T>;
+  adapter: Adapter<T>;
 }
 
 class Selector<T> {
@@ -26,6 +28,7 @@ class Selector<T> {
   private relationship?: string;
   private pseudoClass?: string;
   private pseudoSelector?: Selector<T>;
+  private adapter: Adapter<T>;
 
   constructor({
     gotoScope,
@@ -35,6 +38,7 @@ class Selector<T> {
     relationship,
     pseudoClass,
     pseudoSelector,
+    adapter,
   }: SelectorParameters<T>) {
     this.gotoScope = gotoScope;
     this.rest = rest;
@@ -43,6 +47,7 @@ class Selector<T> {
     this.relationship = relationship;
     this.pseudoClass = pseudoClass;
     this.pseudoSelector = pseudoSelector;
+    this.adapter = adapter;
   }
 
   // check if the node matches the selector.
@@ -89,7 +94,7 @@ class Selector<T> {
     }
 
     if (this.gotoScope) {
-      const targetNode = getTargetNode(node, this.gotoScope);
+      const targetNode = getTargetNode(node, this.gotoScope, this.adapter);
       // TODO: handle if this.rest is undefined
       if (this.rest) {
         if (isNode(targetNode)) {
@@ -112,7 +117,7 @@ class Selector<T> {
     }
     if (this.basicSelector) {
       if (options.recursive) {
-        handleRecursiveChild(node, (childNode) => {
+        handleRecursiveChild(node, this.adapter, (childNode) => {
           if (this.match(childNode, childNode)) {
             nodes.push(childNode);
             if (options.stopAtFirstMatch) {
@@ -121,7 +126,7 @@ class Selector<T> {
           }
         });
       } else {
-        NodeQuery.getAdapter()
+        this.adapter
           .getChildren(node)
           .forEach((childNode) => {
             if (this.match(childNode, childNode)) {
@@ -163,7 +168,7 @@ class Selector<T> {
     const nodes: T[] = [];
     switch (this.relationship) {
       case ">":
-        getAdapter<T>()
+        this.adapter
           .getChildren(node)
           .forEach((childNode) => {
             if (this.rest!.match(childNode, childNode)) {
@@ -172,13 +177,13 @@ class Selector<T> {
           });
         break;
       case "+":
-        const nextSibling = getAdapter<T>().getSiblings(node)[0];
+        const nextSibling = this.adapter.getSiblings(node)[0];
         if (nextSibling && this.rest!.match(nextSibling, nextSibling)) {
           nodes.push(nextSibling);
         }
         break;
       case "~":
-        getAdapter<T>()
+        this.adapter
           .getSiblings(node)
           .forEach((siblingNode) => {
             if (this.rest!.match(siblingNode, siblingNode)) {

@@ -1,10 +1,11 @@
 import type { Node } from "./types";
 import Value from "./value";
 import { evaluateNodeValue } from "../helper";
+import Adapter from "../adapter";
 
 class String<T> extends Value<T> {
-  constructor(private value: string) {
-    super();
+  constructor(private value: string, adapter: Adapter<T>) {
+    super(adapter);
   }
 
   // actual value strips the quotes, e.g. '"synvert"' => 'synvert'
@@ -18,7 +19,7 @@ class String<T> extends Value<T> {
 
   // expected value returns the value.
   expectedValue(baseNode: T): string {
-    return evaluateNodeValue(baseNode, this.value);
+    return evaluateNodeValue(baseNode, this.value, this.adapter);
   }
 
   toString(): string {

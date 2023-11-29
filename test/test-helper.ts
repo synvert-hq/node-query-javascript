@@ -2,12 +2,13 @@ import ts from "typescript";
 import { Node as AcornNode } from "acorn";
 import * as espree from "@xinminlabs/espree";
 import gonzales from "@xinminlabs/gonzales-pe";
+import Adapter from "../src/adapter";
 const { parser } = require("../src/parser");
 const Compiler = require("../src/compiler");
 
 // Parse source code and return typescript SourceFile.
 // @param code [String] source code.
-// @return [ts.SourceFile] typescrpt SourceFile node.
+// @return [ts.SourceFile] typescript SourceFile node.
 export const parseCode = (code: string): ts.SourceFile => {
   return ts.createSourceFile("code.ts", code, ts.ScriptTarget.Latest, true);
 };
@@ -28,15 +29,17 @@ export const parseCodeByGonzalesPe = (code: string): gonzales.Node => {
 // @param nql [String] nql string
 // @return [Compiler.Expression]
 export const parseNql = (
-  nql: string
+  nql: string,
+  adapter: Adapter<any>,
 ): InstanceType<typeof Compiler.ExpressionList> => {
+  parser.yy.adapter = adapter;
   parser.parse(nql);
   return parser.yy.result;
 };
 
-// Assert the parser can parse the nsql string.
+// Assert the parser can parse the nql string.
 // @param nql [String] nql string
-export const assertParser = (nql: string): void => {
-  const expression = parseNql(nql);
+export const assertParser = (nql: string, adapter: Adapter<any>): void => {
+  const expression = parseNql(nql, adapter);
   expect(expression.toString()).toEqual(nql);
 };

@@ -1,9 +1,10 @@
 import debug from "debug";
 import Value from "./value";
+import Adapter from "../adapter";
 
 class Regexp<T> extends Value<T> {
-  constructor(private value: string) {
-    super();
+  constructor(private value: string, adapter: Adapter<T>) {
+    super(adapter);
   }
 
   match(node: T, baseNode: T, operator: string): boolean {

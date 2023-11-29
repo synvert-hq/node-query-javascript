@@ -1,8 +1,9 @@
+import Adapter from "../adapter";
 import Value from "./value";
 
 class Identifier<T> extends Value<T> {
-  constructor(private value: string) {
-    super();
+  constructor(private value: string, adapter: Adapter<T>) {
+    super(adapter);
   }
 
   // expected value returns the value.

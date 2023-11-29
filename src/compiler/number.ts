@@ -1,10 +1,11 @@
 import debug from "debug";
 
 import Value from "./value";
+import Adapter from "../adapter";
 
 class Number<T> extends Value<T> {
-  constructor(private value: number) {
-    super();
+  constructor(private value: number, adapter: Adapter<T>) {
+    super(adapter);
   }
 
   match(node: T, baseNode: T, operator: string): boolean {

@@ -1,8 +1,9 @@
+import Adapter from "../adapter";
 import Value from "./value";
 
 class Boolean<T> extends Value<T> {
-  constructor(private value: boolean) {
-    super();
+  constructor(private value: boolean, adapter: Adapter<T>) {
+    super(adapter);
   }
 
   // expected value returns string true or false.
