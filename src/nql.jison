@@ -33,9 +33,9 @@ attribute_list
   ;
 
 attribute
-  : OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY array_value CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $5, operator: $3 }) }
-  | OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: new Compiler.ArrayValue({}), operator: $3 }) }
-  | OPEN_ATTRIBUTE KEY OPERATOR value CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $4, operator: $3 }) }
+  : OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY array_value CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $5, operator: $3, adapter: yy.parser.yy.adapter }) }
+  | OPEN_ATTRIBUTE KEY $OPERATOR OPEN_ARRAY CLOSE_ARRAY CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: new Compiler.ArrayValue({}), operator: $3, adapter: yy.parser.yy.adapter }) }
+  | OPEN_ATTRIBUTE KEY OPERATOR value CLOSE_ATTRIBUTE { $$ = new Compiler.Attribute({ key: $2, value: $4, operator: $3, adapter: yy.parser.yy.adapter }) }
   ;
 
 array_value
