@@ -1,5 +1,12 @@
 # NodeQuery
 
+## 1.19.0 (2023-12-01)
+
+* Add `adapter` parameter to `NodeQuery`
+* Do not allow to configure an `adapter` globally
+* Do not expose `TypescriptAdapter`, `EspreeAdapter` and `GonzalesAdapter`
+* Expose `NodeQuery` `adapter` property
+
 ## 1.18.3 (2023-08-12)
 
 * Update `nql.jison`
@@ -37,7 +44,7 @@
 
 ## 1.14.0 (2022-10-20)
 
-* Supoort `includes` operator
+* Support `includes` operator
 
 ## 1.13.1 (2022-10-15)
 
@@ -66,7 +73,7 @@
 
 ## 1.9.2 (2022-08-23)
 
-* Fix "typescript getText() may contain trailing whitespaces and newlines"
+* Fix "typescript getText() may contain trailing whitespace and newlines"
 * Debug operation result
 
 ## 1.9.1 (2022-08-10)
