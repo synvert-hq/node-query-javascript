@@ -11,6 +11,7 @@ const { ExpressionList } = require("./compiler");
 class NodeQuery<T> {
   private expression?: InstanceType<typeof ExpressionList>;
   private rules?: NodeRules<any>;
+  public adapter: Adapter<T>;
 
   /**
    * Create a NodeQuery
@@ -19,10 +20,10 @@ class NodeQuery<T> {
    * @param options.adapter {string} Adapter name
    */
   constructor(nqlOrRules: string | object, { adapter }: { adapter: string }) {
-    const adapterInstance = this.getAdapterInstance(adapter);
+    this.adapter = this.getAdapterInstance(adapter);
     if (typeof nqlOrRules === "string") {
       try {
-        parser.yy.adapter = adapterInstance;
+        parser.yy.adapter = this.adapter;
         parser.parse(nqlOrRules);
         this.expression = parser.yy.result;
       } catch (error) {
@@ -39,7 +40,7 @@ class NodeQuery<T> {
         }
       }
     } else {
-      this.rules = new NodeRules(nqlOrRules, { adapter: adapterInstance });
+      this.rules = new NodeRules(nqlOrRules, { adapter: this.adapter });
     }
   }
 
