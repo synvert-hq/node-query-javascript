@@ -30,6 +30,8 @@ jobs:
           node-version: 18
       - name: npm install
         run: npm install
+      - name: npm run generate
+        run: npm run generate
       - name: npm run build
         run: npm run build
       - name: Generate docs
