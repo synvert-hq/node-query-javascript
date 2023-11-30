@@ -4,8 +4,4 @@ import SyntaxError from "./syntax-error";
 import type { QueryOptions } from "./compiler/types";
 
 export default NodeQuery;
-export {
-  Adapter,
-  SyntaxError,
-  QueryOptions,
-};
+export { Adapter, SyntaxError, QueryOptions };
