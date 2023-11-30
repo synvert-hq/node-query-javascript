@@ -61,7 +61,7 @@ yarn add @xinminlabs/node-query
 It provides two apis: `queryNodes` and `matchNode`
 
 ```typescript
-const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object, { adapter: string }) // Initialize NodeQuery
+const nodeQuery = new NodeQuery<Node>(nqlOrRules: string | object, { adapter: "typescript" | "espree" | "gonzales-pe" }) // Initialize NodeQuery
 nodeQuery.queryNodes(node: Node, includingSelf = true): Node[] // Get the matching nodes.
 nodeQuery.matchNode(node: Node): boolean // Check if the node matches nql or rules.
 ```
