@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.19.1 (2023-12-02)
+
+* Expose `TypescriptAdapter`, `EspreeAdapter` and `GonzalesAdapter`
+
 ## 1.19.0 (2023-12-01)
 
 * Add `adapter` parameter to `NodeQuery`
