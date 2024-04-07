@@ -1,5 +1,5 @@
-[![npm version](https://badge.fury.io/js/@xinminlabs%2Fnode-query.svg)](https://badge.fury.io/js/@xinminlabs%2Fnode-query)
-[![CI](https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml/badge.svg)](https://github.com/xinminlabs/node-query-javascript/actions/workflows/main.yml)
+[![npm version](https://badge.fury.io/js/@synvert-hq%2Fnode-query.svg)](https://badge.fury.io/js/@synvert-hq%2Fnode-query)
+[![CI](https://github.com/synvert-hq/node-query-javascript/actions/workflows/main.yml/badge.svg)](https://github.com/synvert-hq/node-query-javascript/actions/workflows/main.yml)
 
 # NodeQuery
 
@@ -47,13 +47,13 @@ NodeQuery defines a NQL (node query language) and node rules to query AST nodes.
 Install NodeQuery using npm:
 
 ```
-npm install --save @xinminlabs/node-query
+npm install --save @synvert-hq/node-query
 ```
 
 Or yarn:
 
 ```
-yarn add @xinminlabs/node-query
+yarn add @synvert-hq/node-query
 ```
 
 ## Usage
@@ -70,7 +70,7 @@ Here is an example for typescript ast node.
 
 ```typescript
 import ts, { Node } from 'typescript';
-import NodeQuery from '@xinminlabs/node-query';
+import NodeQuery from '@synvert-hq/node-query';
 
 const source = `
   interface User {
@@ -492,7 +492,7 @@ It matches NewExpressioin node whose arguments are ["Murphy", 1]
 ## Write Adapter
 
 Different parsers, like typescript, espree, will generate different AST nodes, to make NodeQuery work for them all,
-we define an [Adapter](https://github.com/xinminlabs/node-query-javascript/blob/main/src/adapter.ts) interface,
+we define an [Adapter](https://github.com/synvert-hq/node-query-javascript/blob/main/src/adapter.ts) interface,
 if you implement the Adapter interface, you can set it as NodeQuery's adapter.
 
 It provides 3 adapters

@@ -1,7 +1,7 @@
 import ts from "typescript";
 import { Node as AcornNode } from "acorn";
-import * as espree from "@xinminlabs/espree";
-import gonzales from "@xinminlabs/gonzales-pe";
+import * as espree from "@synvert-hq/espree";
+import gonzales from "@synvert-hq/gonzales-pe";
 import Adapter from "../src/adapter";
 const { parser } = require("../src/parser");
 const Compiler = require("../src/compiler");
