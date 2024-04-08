@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.19.2 (2024-04-08)
+
+* Moving from `@xinminlabs` to `@synvert-hq`
+
 ## 1.19.1 (2023-12-02)
 
 * Expose `TypescriptAdapter`, `EspreeAdapter` and `GonzalesAdapter`
