@@ -1,6 +1,6 @@
 {
   "name": "@synvert-hq/node-query",
-  "version": "1.19.2",
+  "version": "1.19.3",
   "description": "ast node query language",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

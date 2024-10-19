@@ -1,5 +1,9 @@
 # NodeQuery
 
+## 1.19.3 (2024-0=10-19)
+
+* Support node v22 on github actions
+
 ## 1.19.2 (2024-04-08)
 
 * Moving from `@xinminlabs` to `@synvert-hq`
