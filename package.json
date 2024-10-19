@@ -32,7 +32,7 @@
     "@types/mock-fs": "^4.13.1",
     "debug": "^4.3.4",
     "flat": "^5.0.2",
-    "mock-fs": "^5.2.0",
+    "mock-fs": "^5.4.0",
     "typy": "^3.3.0"
   },
   "devDependencies": {
