@@ -1,6 +1,10 @@
 # NodeQuery
 
-## 1.19.3 (2024-0=10-19)
+## 1.19.4 (2024-10-19)
+
+* Move ``mock-fs`` to devDependencies
+
+## 1.19.3 (2024-10-19)
 
 * Support node v22 on github actions
 
