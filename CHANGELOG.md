@@ -1,5 +1,11 @@
 # NodeQuery
 
+## 1.19.5 (2026-03-19)
+
+* Add `getNamedValue` method to Adapter interface for converting numeric SyntaxKind values to named strings
+* Support named operator syntax (e.g., `operator=MinusToken` instead of `operator=41`) in TypeScript adapter
+* Maintain backward compatibility with numeric operator syntax
+
 ## 1.19.4 (2024-10-19)
 
 * Move ``mock-fs`` to devDependencies

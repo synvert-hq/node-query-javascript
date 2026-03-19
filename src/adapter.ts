@@ -29,6 +29,15 @@ interface Adapter<T> {
    * @returns {T[]} node siblings
    */
   getSiblings(node: T): T[];
+
+  /**
+   * Get named value for a property (e.g., convert operator number to name like "MinusToken").
+   * Returns undefined if no conversion is needed.
+   * @param key {string} property name
+   * @param value {number} property value
+   * @returns {string | undefined} named value or undefined
+   */
+  getNamedValue?(key: string, value: number): string | undefined;
 }
 
 export default Adapter;

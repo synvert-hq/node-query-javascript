@@ -36,6 +36,17 @@ class TypescriptAdapter implements Adapter<Node> {
     });
     return siblings;
   }
+
+  getNamedValue(_key: string, value: number): string | undefined {
+    // Convert numeric SyntaxKind values to their string names
+    // This allows queries like .PrefixUnaryExpression[operator=MinusToken]
+    const name = SyntaxKind[value];
+    // Only return if it's a valid SyntaxKind name (not just the number as string)
+    if (name && isNaN(Number(name))) {
+      return name;
+    }
+    return undefined;
+  }
 }
 
 export default TypescriptAdapter;
